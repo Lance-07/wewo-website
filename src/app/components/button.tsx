@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { ChevronRight } from "lucide-react";
 
 export default function Button({type = 'primary', label} : {type?: string, label: string}) {
     return (
@@ -9,12 +10,14 @@ export default function Button({type = 'primary', label} : {type?: string, label
             }
         )}>
             <p className={clsx(
+                'inline-flex justify-center items-center',
                 {
                     'font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#4A6BB3] to-[#4A7F3B]': type === 'primary',
                     'text-[#344D80]': type === 'secondary'
                 }
             )}>
                 {label}
+                <ChevronRight color={type === 'primary' ? '#4A7F3B' : "#344D80"} />
             </p>
         </button>
     )
