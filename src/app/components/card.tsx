@@ -40,16 +40,11 @@ type colorVariants = {
 type BaseColor = keyof colorVariants;
 
 const getColorVariants = (type: string): colorVariants => ({
-    blue: type === 'dynamic' ? 'hover:bg-[#4987B0] hover:text-white text-[#4987B0]' : 'text-[#4987B0]',
-    green: type === 'dynamic' ? 'hover:bg-[#7CBA5A] hover:text-white text-[#7CBA5A]' : 'text-[#7CBA5A]',
-    darkBlue: type === 'dynamic' ? 'hover:bg-[#4668B2] hover:text-white text-[#4668B2]' : 'text-[#4668B2]',
+    blue: type === 'dynamic' ? ' hover:text-white text-[#4987B0]' : 'text-[#4987B0]',
+    green: type === 'dynamic' ? ' hover:text-white text-[#7CBA5A]' : 'text-[#7CBA5A]',
+    darkBlue: type === 'dynamic' ? ' hover:text-white text-[#4668B2]' : 'text-[#4668B2]',
 });
 
-const buttonVariants: colorVariants = {
-    blue: 'bg-[#4987B0] text-white group-hover:text-[#4987B0]',
-    green: 'bg-[#7CBA5A] text-white group-hover:text-[#7CBA5A]',
-    darkBlue: 'bg-[#4668B2] text-white group-hover:text-[#4668B2]',
-}
 
 const iconVariants: colorVariants = {
     blue: 'bg-[#4987B0]',
@@ -67,7 +62,7 @@ export function SimpleCard({number, label, iconLink, title, description, baseCol
             </div>
             <div className={`text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`}
                 style={{ backgroundColor: baseColor }}>
-                <Image src={`/${iconLink}`} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
+                <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
                 <p className="font-semibold tracking-wider capitalize text-wrap mb-1">{title}</p>
                 <p className="font-light">{description}</p>
             </div>
@@ -78,15 +73,29 @@ export function SimpleCard({number, label, iconLink, title, description, baseCol
 export function DynamicCard({imgSrc, title, description, baseColor} : DynamicCardProps) {
     const colorVariants = getColorVariants('dynamic');
 
+    const hoverVariants: colorVariants = {
+        blue: 'group-hover:bg-[#4987B0] group-hover:translate-x-0 group-hover:translate-y-0',
+        green: 'group-hover:bg-[#7CBA5A] group-hover:translate-x-0 group-hover:translate-y-0',
+        darkBlue: 'group-hover:bg-[#4668B2] group-hover:translate-x-0 group-hover:translate-y-0',
+    }
+
+    const buttonVariants: colorVariants = {
+        blue: 'bg-[#4987B0] group-hover:opacity-0',
+        green: 'bg-[#7CBA5A] group-hover:opacity-0',
+        darkBlue: 'bg-[#4668B2] group-hover:opacity-0',
+    }
+
     return (
-        <div className={`${colorVariants[baseColor]} max-w-[366px] max-h-[356px] overflow-hidden flex flex-col items-center rounded-2xl transition-all duration-300 ease-in-out group`}>
+        <div className={`${colorVariants[baseColor]}
+            max-w-[366px] max-h-[356px] overflow-hidden flex flex-col items-center rounded-t-2xl rounded-bl-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group`}>
             <Image src={imgSrc} width={366} height={136} alt={title} className="h-[136px] object-cover" />
-            <div className={`flex flex-col w-full flex-1`}>
-                <div className="flex flex-col pt-5 px-5 w-full flex-1">
+            <div className={`flex flex-col w-full flex-1 relative group`}>
+                <div className={`${hoverVariants[baseColor]} absolute w-full h-full transform translate-x-[100%] translate-y-[100%] transition-all duration-300`}></div>
+                <div className="flex flex-col pt-5 px-5 w-full flex-1 group-hover:z-10">
                     <p className="capitalize font-bold text-2xl">{title}</p>
                     <p className="text-sm font-light">{description}</p>
                 </div>
-                <button className={`self-end rounded-tl-2xl p-2 ${buttonVariants[baseColor]} transition-all duration-300 ease-in-out`}>
+                <button className={`self-end rounded-tl-2xl p-2 pointer-events-none transition-all duration-200 text-white opacity-100 ${buttonVariants[baseColor]}`}>
                     <ChevronRight size={32} />
                 </button>
             </div>
@@ -99,8 +108,9 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
 
     return (
         <div className={`flex ${colorVariants[baseColor]} gap-10 w-[745px]`}>
-            <Image src={imgSrc} width={355} height={301} alt={title} className="object-contain min-w-[355px] min-h-[301px] w-1/2" />
-            <div className="flex flex-col flex-1 w-1/2 space-y-3">
+            <Image src={imgSrc} priority width={2359} height={2000} alt={title}
+                className="object-contain min-w-[355px] h-auto w-1/3" />
+            <div className="flex flex-col flex-1 w-2/3 space-y-3">
                 <p className="font-bold text-4xl uppercase">{title}</p>
                 <p className="font-light">{description}</p>
                 <ul className="space-y-2">
