@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { mazzard_soft_h, poppins } from "@/app/ui/fonts";
+import {mazzard_soft_h, poppins} from "@/app/ui/fonts";
+import Navbar from "./ui/components/navbar";
 
 export const metadata: Metadata = {
   title: "WEWO",
@@ -14,7 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mazzard_soft_h.className} antialiased`}>
+      <body
+        className={`${mazzard_soft_h.className} antialiased`}
+      >
+        <header>
+          <Navbar />
+        </header>
         {children}
       </body>
     </html>
