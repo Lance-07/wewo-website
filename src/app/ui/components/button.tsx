@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 
+
+// TODO: Fixed Button and make it accept children and add tailwindmerge package
 export default function Button({type = 'primary', label} : {type?: string, label: string}) {
     return (
         <button className={clsx(
