@@ -77,7 +77,7 @@ export const CarouselItem = ({
               <div className="flex flex-col justify-center items-start gap-4 w-1/2 h-full">
                 <h1 className="text-6xl font-extrabold">{title}</h1>
                 <h2 className="text-base w-4/5">{description}</h2>
-                <Button label="Learn More" />
+                {/* <Button label="Learn More" /> */}
               </div>
           </div>
 
