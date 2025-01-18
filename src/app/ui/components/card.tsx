@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { IconItem } from "@/lib/data";
+import { poppins } from "../fonts";
+import { twMerge } from "tailwind-merge";
 
 
 type SimpleCardProps = {
@@ -10,10 +12,8 @@ type SimpleCardProps = {
     iconLink: string
     title: string;
     description: string;
-    baseColor: string;
+    className: string;
 }
-
-
 
 type DynamicCardProps = {
     imgSrc: string;
@@ -30,6 +30,8 @@ interface HorizontalCardProps extends DynamicCardProps {
     */ 
     iconItems: IconItem[],
 }
+
+type CardProps = & Omit<DynamicCardProps, 'baseColor'>
 
 type colorVariants = {
     blue: string;
@@ -53,15 +55,20 @@ const iconVariants: colorVariants = {
 }
 
 
-export function SimpleCard({number, label, iconLink, title, description, baseColor} : SimpleCardProps) {
+export function SimpleCard({number, label, iconLink, title, description, className} : SimpleCardProps) {
     return (
-        <div className="shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]" style={{ color: `${baseColor}`}}>
+        <div className={twMerge(
+            "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 
+            className,
+        )}>
             <div className="bg-[#FAFAFB] flex justify-center items-center h-full w-full">
                 <p className="font-extrabold text-[5rem]">{number}</p>
                 <p className="vertical-rl rotate-180">{label}</p>
             </div>
-            <div className={`text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`}
-                style={{ backgroundColor: baseColor }}>
+            <div className={twMerge(`
+                text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`, 
+                
+            )}>
                 <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
                 <p className="font-semibold tracking-wider capitalize text-wrap mb-1">{title}</p>
                 <p className="font-light">{description}</p>
@@ -87,12 +94,12 @@ export function DynamicCard({imgSrc, title, description, baseColor} : DynamicCar
 
     return (
         <div className={`${colorVariants[baseColor]}
-            max-w-[366px] max-h-[356px] overflow-hidden flex flex-col items-center rounded-t-2xl rounded-bl-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group`}>
-            <Image src={imgSrc} width={366} height={136} alt={title} className="h-[136px] object-cover" />
+            w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`}>
+            <Image src={imgSrc} width={1000} height={1000} alt={title} className="h-[136px] object-cover" />
             <div className={`flex flex-col w-full flex-1 relative group`}>
                 <div className={`${hoverVariants[baseColor]} absolute w-full h-full transform translate-x-[100%] translate-y-[100%] transition-all duration-300`}></div>
                 <div className="flex flex-col pt-5 px-5 w-full flex-1 group-hover:z-10">
-                    <p className="capitalize font-bold text-2xl">{title}</p>
+                    <p className="capitalize font-bold text-2xl mb-[10px]">{title}</p>
                     <p className="text-sm font-light">{description}</p>
                 </div>
                 <button className={`self-end rounded-tl-2xl p-2 pointer-events-none transition-all duration-200 text-white opacity-100 ${buttonVariants[baseColor]}`}>
@@ -107,7 +114,7 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
     const colorVariants = getColorVariants('horizontal');
 
     return (
-        <div className={`flex ${colorVariants[baseColor]} gap-10 w-[745px]`}>
+        <div className={`${poppins.className} antialiased flex ${colorVariants[baseColor]} gap-10 w-[745px] justify-center items-center`}>
             <Image src={imgSrc} priority width={2359} height={2000} alt={title}
                 className="object-contain min-w-[355px] h-auto w-1/3" />
             <div className="flex flex-col flex-1 w-2/3 space-y-3">
@@ -123,6 +130,22 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
                         </li>
                     ))}
                 </ul>
+            </div>
+        </div>
+    )
+}
+
+export function Card({imgSrc, title, description}: CardProps) {
+    return (
+        <div className="rounded-3xl w-[328px] h-auto bg-[rgba(255,_255,_255,_51%)] p-2 border-8 border-[#2C4D24]">
+            <div className="rounded-[18px] overflow-hidden flex flex-col h-full bg-white">
+                <div className="h-[167px] w-full">
+                    <Image src={imgSrc} width={1000} height={1000} alt={title} className="w-full h-full object-cover" />
+                </div>
+                <div className={`${poppins.className} text-[#2C4D24] p-3 bg-white`}>
+                    <h1 className="font-semibold mb-[10px]">{title}</h1>
+                    <p className="text-sm">{description}</p>
+                </div>
             </div>
         </div>
     )

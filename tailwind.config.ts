@@ -16,13 +16,33 @@ export default {
       colors: {
         // background: "var(--background)",
         // foreground: "var(--foreground)",
-        'main-white': '#FAFAFB',
-        'hover-white': '#DEE7F8',
-        'border-white': 'rgba(52, 77, 128, 0.5)'
-
+        blue: {
+          'main': '#4668B2',
+          'second': '#4987B0',
+          'third': '#53BAC6',
+          'light': '#93D5D2',
+        },
+        green: {
+          'main': '#4A803D',
+          'second': '#5AA645',
+          'third': '#7CBA5A',
+          'light': '#ABCF84',
+        },
       },
       boxShadow: {
         'card-shadow': '0 4px 4px #00000040'
+      },
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(to right, #486BB3 0%, #53BAC6 31%, #7CBA5A 68%, #4A803D 100%)'
+      },
+      keyframes: {
+        scroll: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(calc(-350px * 6))' },
+        }
+      },
+      animation: {
+        'infinite-scroll': 'scroll 10s linear infinite'
       }
     },
   },

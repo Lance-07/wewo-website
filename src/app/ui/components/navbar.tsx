@@ -19,10 +19,11 @@ const navList: {name: string, link: string}[] = [
 
 export default function Navbar() {
   return (
-    <nav className="bg-main-white flex items-center justify-center fixed top-0 w-full z-50 h-[60px]">
+    <nav className="bg-white flex items-center justify-center fixed top-0 w-full z-50 h-[60px]">
       <div className="container px-4 mx-auto flex justify-between items-center">
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center justify-center">
           <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
+        </div>
           <ul>
             {navList.map((navItem, index) => (
               <li key={index} className="inline-block mx-4">
@@ -30,8 +31,7 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-        </div>
-        <Button label={'Get Involved'} />
+          <Button>Connect With Us</Button>
       </div>
     </nav>
   )
