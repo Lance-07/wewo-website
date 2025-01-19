@@ -357,7 +357,7 @@ function CTA() {
 
                     <div className={clsx('max-w-xl w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
                         {
-                            'opacity-100 -translate-y-0': isReady
+                            'opacity-100 translate-y-0': isReady
                         }
                     )}>
                         <h1 className={'font-bold text-4xl tracking-wider'}>
