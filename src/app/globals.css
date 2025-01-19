@@ -19,3 +19,9 @@
 /*  background: var(--background);*/
 /*  font-family: Arial, Helvetica, sans-serif;*/
 /*}*/
+
+@layer components {
+    .box {
+        @apply border border-red-500;
+    }
+}

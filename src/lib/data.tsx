@@ -11,6 +11,11 @@ export interface CarouselItem {
   image: string,
 }
 
+export interface FaqsItem {
+  header: string, content: string
+}
+
+
 export const iconItems: { [key: string]: IconItem[] } = {
   "clean-water": [
     {
@@ -114,3 +119,29 @@ export const cardItems: CarouselItem[] = [
   },
 ]
 
+export const faqItems: FaqsItem[] = [
+  {
+    header: 'What is WEWO, and how does it work?',
+    content: 'Learn about WEWO\'s system that converts recyclable materials into non-potable water using IoT Technology.'
+  },
+  {
+    header: 'Where can I find a WEWO station near me?',
+    content: 'Locate WEWO installations in schools, public parks, malls, and other community spaces.'
+  },
+  {
+    header: 'What types of recyclable materials does WEWO accept?',
+    content: 'Understand the recyclable items, such as plastic bottles, that WEWO collects in exchange for water.'
+  },
+  {
+    header: 'What can WEWO\'s water be used for?',
+    content: 'Discover suitable applications for WEWO\'s non-potable water, such as cleaning irrigation, and other everyday uses.'
+  },
+  {
+    header: 'Can individuals or organizations partner with WEWO?',
+    content: 'Learn how to collaborate with WEWO to increase access and environmental impact.'
+  },
+  {
+    header: 'What should I do if a WEWO station isn’t working?',
+    content: 'Find out how to report issues or request assistance for repairs and maintenance.'
+  },
+]

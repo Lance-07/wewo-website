@@ -42,8 +42,8 @@ export default {
         }
       },
       animation: {
-        'infinite-scroll': 'scroll 10s linear infinite'
-      }
+        'infinite-scroll': 'scroll 20s linear infinite'
+      },
     },
   },
   plugins: [
