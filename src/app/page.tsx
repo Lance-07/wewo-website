@@ -10,9 +10,11 @@ import {ChevronLeft, ChevronRight, Facebook, Mail} from "lucide-react";
 import clsx from "clsx";
 import {Accordion, AccordionItem} from "@/app/ui/components/accordion";
 import Link from "next/link";
+import { InView } from "react-intersection-observer";
 
 
 export default function HomePage() {
+
     return (
         <main>
             <section className="relative w-full h-[778px] overflow-hidden flex">
@@ -31,153 +33,167 @@ export default function HomePage() {
     )
 }
 
-//TODO: Animation
 function Impact() {
     const [activeIdx, setActiveIdx] = React.useState(0);
 
     return (
-        <section id={'impacts'} className="relative w-full h-[607px]">
-            {/* Overlay Color Gradient */}
-            <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
+        <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} onChange={(inView) => console.log('inview', inView)} >
+            {({ inView, ref }) => (
+                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full h-[607px]">
+                    {/* Overlay Color Gradient */}
+                    <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
 
-            {/* Dark Effect Overlay Gradient */}
-            <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-black from-0%"></div>
+                    {/* Dark Effect Overlay Gradient */}
+                    <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-black from-0%"></div>
 
-            {/* White Effect Overlay Gradient */}
-            <div className="absolute h-full w-full inset-0 bg-gradient-to-b from-transparent to-white from-[27%] to-[72%]"></div>
+                    {/* White Effect Overlay Gradient */}
+                    <div className="absolute h-full w-full inset-0 bg-gradient-to-b from-transparent to-white from-[27%] to-[72%]"></div>
 
-            {/* Content */}
-            <div className="relative w-full text-white container mx-auto">
-                <div className="flex justify-center items-center h-full">
-                    <div className="relative bg-white gap-[50px] h-[519px] rounded-t-[34px] flex container mx-auto items-center px-20">
-                        <div className="w-1/3 flex flex-col text-[#4668B2]">
-                            <h1 className="text-5xl font-bold tracking-widest mb-4">
-                                <span className="text-[#4668B2]">WE</span>
-                                <span className="text-[#7CBA5A]">WO</span>
-                            </h1>
-                            <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
+                    {/* Content */}
+                    <div className={clsx(`relative translate-y-full transition-all duration-1000 opacity-0 w-full text-white container mx-auto`,
+                        { 'opacity-100 translate-y-0': inView}
+                    )}>
+                        <div className="flex justify-center items-center h-full">
+                            <div className="relative bg-white gap-[50px] h-[519px] rounded-t-[34px] flex container mx-auto items-center px-20">
+                                <div className="w-1/3 flex flex-col text-[#4668B2]">
+                                    <h1 className="text-5xl font-bold tracking-widest mb-4">
+                                        <span className="text-[#4668B2]">WE</span>
+                                        <span className="text-[#7CBA5A]">WO</span>
+                                    </h1>
+                                    <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
 
-                            <div className="flex-1 flex flex-col gap-3 mt-6">
+                                    <div className="flex-1 flex flex-col gap-3 mt-6">
 
-                                <Button onClick={() => setActiveIdx(0)} border={true} active={activeIdx === 0} variant="gradient">
-                                    {activeIdx === 0 &&
-                                    <>
-                                        <span className="text-[#4668B2]">Key </span>
-                                        <span className="text-[#7CBA5A]">Impact</span>
-                                    
-                                    </> 
+                                        <Button onClick={() => setActiveIdx(0)} border={true} active={activeIdx === 0} variant="gradient">
+                                            {activeIdx === 0 &&
+                                            <>
+                                                <span className="text-[#4668B2]">Key </span>
+                                                <span className="text-[#7CBA5A]">Impact</span>
+                                            
+                                            </> 
+                                            }
+                                            {activeIdx !== 0 &&
+                                            <>
+                                                Key Impact
+                                            </> 
+                                            }
+                                        </Button>
+
+                                        <Button onClick={() => setActiveIdx(1)} border={true} active={activeIdx === 1} variant="blue">
+                                            <span>Water Distributed</span>
+                                        </Button>
+
+                                        <Button onClick={() => setActiveIdx(2)} border={true} active={activeIdx === 2} variant="green">
+                                            <span>PET Bottles Recycled</span>
+                                        </Button>
+
+                                        <Button onClick={() => setActiveIdx(3)} border={true} active={activeIdx === 3} variant="darkblue">
+                                            <span>CO2 Reduced</span>
+                                        </Button>
+
+                                    </div>
+                                </div>
+
+                                <div className="flex-1">
+                                    { activeIdx === 0 && 
+                                        <div className="flex w-full gap-5 justify-center">
+                                            <SimpleCard 
+                                                number="23" label="liters" iconLink="/icons/droplet.png"
+                                                className="bg-blue-second text-blue-second border-2 border-blue-second"
+                                                title="clean water distributed"  
+                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource." />
+                                            <SimpleCard  
+                                                number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                className="bg-green-second text-green-second border-2 border-green-second"
+                                                title="PET bottles recycled"  
+                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."  />
+                                            <SimpleCard  
+                                                number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                className="bg-blue-main text-blue-main border-2 border-blue-main"
+                                                title="carbon footprints reduced"  
+                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."/>
+                                        </div>
                                     }
-                                    {activeIdx !== 0 &&
-                                    <>
-                                        Key Impact
-                                    </> 
+
+                                    { activeIdx === 1 && 
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/splash.png" 
+                                            baseColor="blue" 
+                                            title="clean water distributed"     
+                                            description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
+                                            iconItems={iconItems['clean-water']}
+                                        />
                                     }
-                                </Button>
-
-                                <Button onClick={() => setActiveIdx(1)} border={true} active={activeIdx === 1} variant="blue">
-                                    <span>Water Distributed</span>
-                                </Button>
-
-                                <Button onClick={() => setActiveIdx(2)} border={true} active={activeIdx === 2} variant="green">
-                                    <span>PET Bottles Recycled</span>
-                                </Button>
-
-                                <Button onClick={() => setActiveIdx(3)} border={true} active={activeIdx === 3} variant="darkblue">
-                                    <span>CO2 Reduced</span>
-                                </Button>
-
+                                    { activeIdx === 2 && 
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/plastic-bottle.png" 
+                                            baseColor="green" 
+                                            title="recycled plastic bottles"     
+                                            description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
+                                            iconItems={iconItems['recycled-plastic']}
+                                        />
+                                    }
+                                    { activeIdx === 3 && 
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/carbon-footprint.png" 
+                                            baseColor="darkBlue" 
+                                            title="reduced carbon footprint on earth"     
+                                            description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
+                                            iconItems={iconItems['reduced-carbon']}
+                                        />
+                                    }
+                                </div>
                             </div>
                         </div>
-
-                        <div className="flex-1">
-                            { activeIdx === 0 && 
-                                <div className="flex w-full gap-5 justify-center">
-                                    <SimpleCard 
-                                        number="23" label="liters" iconLink="/icons/droplet.png"
-                                        className="bg-blue-second text-blue-second border-2 border-blue-second"
-                                        title="clean water distributed"  
-                                        description="Like filling thousands of water bottles, ensuring access to life’s most vital resource." />
-                                    <SimpleCard  
-                                        number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
-                                        className="bg-green-second text-green-second border-2 border-green-second"
-                                        title="PET bottles recycled"  
-                                        description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."  />
-                                    <SimpleCard  
-                                        number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                        className="bg-blue-main text-blue-main border-2 border-blue-main"
-                                        title="carbon footprints reduced"  
-                                        description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."/>
-                                </div>
-                            }
-
-                            { activeIdx === 1 && 
-                                <HorizontalCard 
-                                    imgSrc="/illustrations/splash.png" 
-                                    baseColor="blue" 
-                                    title="clean water distributed"     
-                                    description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
-                                    iconItems={iconItems['clean-water']}
-                                />
-                            }
-                            { activeIdx === 2 && 
-                                <HorizontalCard 
-                                    imgSrc="/illustrations/plastic-bottle.png" 
-                                    baseColor="green" 
-                                    title="recycled plastic bottles"     
-                                    description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
-                                    iconItems={iconItems['recycled-plastic']}
-                                />
-                            }
-                            { activeIdx === 3 && 
-                                <HorizontalCard 
-                                    imgSrc="/illustrations/carbon-footprint.png" 
-                                    baseColor="darkBlue" 
-                                    title="reduced carbon footprint on earth"     
-                                    description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
-                                    iconItems={iconItems['reduced-carbon']}
-                                />
-                            }
-                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
+                </section>
+            )}
+        </InView>
     )
 }
 
 function About() {
+
     return (
-        <section id={'about'} className="bg-white h-[675px] flex justify-center items-center container mx-auto">
-            <div className="flex items-center gap-10 ">
-                <div className="w-2/3 h-[429px] rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)]">
-                    <Image src={'/illustrations/splash.png'} width={700} height={430} alt="about us" className="w-full h-full object-contain" />
-                </div>
-                <div className="overflow-hidden relative w-1/3 rounded-r-[34px] h-[475px] pr-8">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25"></div>
-
-                    <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85%"></div>
-                    {/* <div className="absolute inset-0 from-transparent to-white from-15% to-85%"></div> */}
-
-                    <div className="relative pl-3 flex flex-col justify-center h-full gap-3">
-                        <h2 className="text-2xl font-bold text-blue-main">WEWO for Everyone</h2>
-                        <h1 className="text-4xl font-bold">
-                            <span className="text-blue-main">Achieve </span>
-                            <span className="text-green-third">Absolute Conservation</span>
-                        </h1>
-                        <div className="text-blue-main space-y-[10px]">
-                            <p>
-                                <strong className="font-bold tracking-wider">WEWO is a smart solution</strong> to two major problems—plastic waste and water scarcity. By recycling plastic bottles, we transform rainwater into clean, usable water, making a positive impact on our planet and communities in need
-                            </p>
-                            <p>
-                                Our mission is <strong className="font-bold tracking-wider">to inspire a culture of sustainability</strong> by turning waste into opportunity, water into access, and technology into action. Explore the page to discover how WEWO is creating a cleaner, greener future and how 
-                                <span>you can be part of this change</span>
-                            </p>
+        <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true}>
+            {({ inView, ref }) => (
+                <section ref={ref} id={'about'} className="overflow-hidden bg-white h-[675px] w-full flex justify-center items-center">
+                    <div className="flex items-center gap-10 container mx-auto">
+                        <div className={clsx(`w-2/3 h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
+                            { 'translate-x-0 opacity-100' : inView }
+                        )}>
+                            <Image src={'/illustrations/splash.png'} width={700} height={430} alt="about us" className="w-full h-full object-contain" />
                         </div>
-                        <Button className={'px-4'} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                        <div className={clsx(`overflow-hidden translate-x-full opacity-0 transition-all duration-1000 relative w-1/3 rounded-r-[34px] h-[475px] pr-8`,
+                            { 'translate-x-0 opacity-100' : inView}
+                        )}>
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25"></div>
+
+                            <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85%"></div>
+                            {/* <div className="absolute inset-0 from-transparent to-white from-15% to-85%"></div> */}
+
+                            <div className="relative pl-3 flex flex-col justify-center h-full gap-3">
+                                <h2 className="text-2xl font-bold text-blue-main">WEWO for Everyone</h2>
+                                <h1 className="text-4xl font-bold">
+                                    <span className="text-blue-main">Achieve </span>
+                                    <span className="text-green-third">Absolute Conservation</span>
+                                </h1>
+                                <div className="text-blue-main space-y-[10px]">
+                                    <p>
+                                        <strong className="font-bold tracking-wider">WEWO is a smart solution</strong> to two major problems—plastic waste and water scarcity. By recycling plastic bottles, we transform rainwater into clean, usable water, making a positive impact on our planet and communities in need
+                                    </p>
+                                    <p>
+                                        Our mission is <strong className="font-bold tracking-wider">to inspire a culture of sustainability</strong> by turning waste into opportunity, water into access, and technology into action. Explore the page to discover how WEWO is creating a cleaner, greener future and how 
+                                        <span>you can be part of this change</span>
+                                    </p>
+                                </div>
+                                <Button className={'px-4'} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
+                </section>
+            )}
+        </InView>
     )
 }
 
@@ -225,7 +241,7 @@ function InfiniteCarousel() {
 }
 
 // TODO: Add drag control for the carousel
-function Importance() {;
+function Importance() {
     const [position, setPosition] = React.useState(0);
     const [distance, setDistance] = React.useState(0)
 
@@ -357,7 +373,7 @@ function CTA() {
 
                     <div className={clsx('max-w-xl w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
                         {
-                            'opacity-100 translate-y-0': isReady
+                            'opacity-100 -translate-y-0': isReady
                         }
                     )}>
                         <h1 className={'font-bold text-4xl tracking-wider'}>
