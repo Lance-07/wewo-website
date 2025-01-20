@@ -32,14 +32,16 @@ export default function Navbar() {
     <nav className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
       <div className="container px-4 mx-auto flex justify-between items-center">
         <div className="flex gap-4 items-center justify-center h-full">
-          <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
+          <Link href={'/'}>
+            <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
+          </Link>
         </div>
           <ul className={'flex gap-4 h-full items-center'}>
             {navList.map((navItem, index) => (
               <Link key={index}
                     href={navItem.link}
-                    className={`${poppins.className} h-full text-[rgba(70_,104_,178_,80%)] group-hover:text-[rgba(70_,104_,178_,100%)] tracking-wider`}>
-                <li className="relative h-full flex items-center px-4 w-max group
+                    className={`${poppins.className} h-full text-[rgba(70_,104_,178_,80%)] hover:font-semibold hover:text-[rgba(70_,104_,178_,100%)] tracking-wider`}>
+                <li className="relative h-full flex items-center px-4 w-max
                     before:absolute before:w-1 before:h-1 before:bg-blue-main before:bottom-0 before:left-0 before:opacity-0 before:rounded-full
                     before:hover:w-full before:hover:opacity-100 before:transition-all before:duration-300">
                   {navItem.name}
