@@ -11,25 +11,32 @@ import clsx from "clsx";
 import {Accordion, AccordionItem} from "@/app/ui/components/accordion";
 import Link from "next/link";
 import { InView } from "react-intersection-observer";
+import { cn } from "@/lib/utils";
+import Navbar from "./ui/components/navbar";
 
 
-export default function HomePage() {
+export default function LandingPage() {
 
     return (
-        <main>
-            <section className="relative w-full h-[778px] overflow-hidden flex">
-                <Carousel carouselItems={carouselItems} />
-            </section>
+        <>
+            <header>
+                <Navbar />
+            </header>
+            <main>
+                <section className="relative w-full h-[778px] overflow-hidden flex">
+                    <Carousel carouselItems={carouselItems} />
+                </section>
 
-            <Impact />
-            <About />
-            <HowItWorks />
-            <InfiniteCarousel />
-            <Importance />
-            <FAQs />
-            <CTA />
-            <Footer />
-        </main>
+                <Impact />
+                <About />
+                <HowItWorks />
+                <InfiniteCarousel />
+                <Importance />
+                <FAQs />
+                <CTA />
+                <Footer />
+            </main>
+        </>
     )
 }
 
@@ -50,8 +57,8 @@ function Impact() {
                     <div className="absolute h-full w-full inset-0 bg-gradient-to-b from-transparent to-white from-[27%] to-[72%]"></div>
 
                     {/* Content */}
-                    <div className={clsx(`relative translate-y-full transition-all duration-1000 opacity-0 w-full text-white container mx-auto`,
-                        { 'opacity-100 translate-y-0': inView}
+                    <div className={cn(`relative transition-all translate-y-full duration-1000 opacity-0 w-full text-white container mx-auto`,
+                        { 'opacity-100 -translate-y-0': inView}
                     )}>
                         <div className="flex justify-center items-center h-full">
                             <div className="relative bg-white gap-[50px] h-[519px] rounded-t-[34px] flex container mx-auto items-center px-20">
@@ -159,12 +166,12 @@ function About() {
             {({ inView, ref }) => (
                 <section ref={ref} id={'about'} className="overflow-hidden bg-white h-[675px] w-full flex justify-center items-center">
                     <div className="flex items-center gap-10 container mx-auto">
-                        <div className={clsx(`w-2/3 h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
+                        <div className={cn(`w-2/3 h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
                             { 'translate-x-0 opacity-100' : inView }
                         )}>
                             <Image src={'/illustrations/splash.png'} width={700} height={430} alt="about us" className="w-full h-full object-contain" />
                         </div>
-                        <div className={clsx(`overflow-hidden translate-x-full opacity-0 transition-all duration-1000 relative w-1/3 rounded-r-[34px] h-[475px] pr-8`,
+                        <div className={cn(`overflow-hidden translate-x-full opacity-0 transition-all duration-1000 relative w-1/3 rounded-r-[34px] h-[475px] pr-8`,
                             { 'translate-x-0 opacity-100' : inView}
                         )}>
                             <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25"></div>
@@ -371,7 +378,7 @@ function CTA() {
                         </Button>
                     </div>
 
-                    <div className={clsx('max-w-xl w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
+                    <div className={cn('max-w-xl w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
                         {
                             'opacity-100 -translate-y-0': isReady
                         }

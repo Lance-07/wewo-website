@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { IconItem } from "@/lib/data";
 import { poppins } from "../fonts";
 import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
 
 type SimpleCardProps = {
@@ -146,6 +147,30 @@ export function Card({imgSrc, title, description}: CardProps) {
                     <h1 className="font-semibold mb-[10px]">{title}</h1>
                     <p className="text-sm">{description}</p>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+export function AdminCard({number, label, iconLink, title, className} : Omit<SimpleCardProps, 'description' | 'className'> & {
+    description ?: string;
+    className ?: string;
+}) {
+    return (
+        <div className={cn(
+            "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 
+            className,
+        )}>
+            <div className="bg-[#FAFAFB] flex justify-center items-center h-full w-full">
+                <p className="font-extrabold text-[5rem] mr-1">{number}</p>
+                <p className="vertical-rl rotate-180">{label}</p>
+            </div>
+            <div className={cn(`
+                text-white flex gap-2 justify-center items-center text-center h-full px-5 text-xs`, 
+                
+            )}>
+                <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
+                <p className=" tracking-wider capitalize text-wrap mb-1">{title}</p>
             </div>
         </div>
     )
