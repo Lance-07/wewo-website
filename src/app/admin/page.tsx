@@ -1,4 +1,5 @@
 import { AdminCard } from "../ui/components/card";
+import PieChart from "../ui/components/chart";
 
 const adminCardItems = [
     {
@@ -34,17 +35,7 @@ const adminCardItems = [
 export default function AdminPage() {
     return (
         <div className="flex h-screen w-screen items-center justify-center">
-            <div className="flex gap-4">
-                {adminCardItems.map((item, idx) => (
-                    <AdminCard 
-                        key={idx}
-                        className={`${item.className} w-[301px] h-[187px]`}
-                        number={item.number} 
-                        label={item.label} 
-                        iconLink={item.iconLink} 
-                        title={item.title} />
-                ))}
-            </div>
+            <PieChart />
         </div>
     )
 }

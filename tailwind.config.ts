@@ -1,13 +1,19 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
+import fluid, { extract, screens, fontSize } from 'fluid-tailwind'
 
 export default {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: { 
+    files: [
+      "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+      "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+      "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    ],
+    extract
+},
   theme: {
+    screens, // Tailwind's default screens, in `rem`
+    fontSize, // Tailwind's default font sizes, in `rem` (including line heights)
     container: {
       center: true,
       padding: "1rem",
@@ -47,6 +53,7 @@ export default {
     },
   },
   plugins: [
+    fluid,
     plugin(
       function ({ addUtilities }) {
         addUtilities({
@@ -55,6 +62,12 @@ export default {
           },
           '.vertical-lr': {
             'writing-mode': 'vertical-lr',
+          },
+          '.clip-padding-border': {
+            backgroundClip: 'padding-box, border-box',
+          },
+          '.origin-padding-border': {
+            backgroundOrigin: 'padding-box, border-box',
           },
         });
       }
