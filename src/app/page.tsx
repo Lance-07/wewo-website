@@ -22,7 +22,7 @@ export default function LandingPage() {
             <header>
                 <Navbar />
             </header>
-            <main>
+            {/* <main>
                 <section className="relative w-full h-[778px] overflow-hidden flex">
                     <Carousel carouselItems={carouselItems} />
                 </section>
@@ -31,11 +31,11 @@ export default function LandingPage() {
                 <About />
                 <HowItWorks />
                 <InfiniteCarousel />
-                <Importance />
+                <Importance />  
                 <FAQs />
                 <CTA />
                 <Footer />
-            </main>
+            </main> */}
         </>
     )
 }
