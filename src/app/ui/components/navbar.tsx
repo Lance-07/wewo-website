@@ -36,15 +36,15 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="box bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
-        <div className="box border-blue-500 container px-4 mx-auto flex md:justify-between items-center">
+      <nav className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
+        <div className="border-blue-500 container px-4 mx-auto flex md:justify-between items-center">
           <div className="flex shrink-0 gap-4 items-center justify-center mr-auto md:mx-0 h-full">
             <Link href={'/'}>
               <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
             </Link>
           </div>
 
-          <ul className={'box border-green-500 hidden md:flex h-full items-center'}>
+          <ul className={'hidden md:flex h-full items-center'}>
             {navList.map((navItem, index) => (
               <Link key={index}
                     href={navItem.link}
