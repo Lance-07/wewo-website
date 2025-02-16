@@ -23,7 +23,9 @@ const LoginPage = () => {
           }}
         >
           <Image src={"/icons/icon.png"} alt="Logo" width={79.54} height={80.86} className="mb-4" />
-          <h1 className={`${mazzard_soft_h.className} text-center font-bold text-[32px] md:text-[48px] leading-[1.2] md:leading-[57.6px] tracking-[3%] text-[#486BB3]`}>
+          <h1 style={{
+            textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #FFF',
+          }} className={`${mazzard_soft_h.className} text-center font-bold text-[32px] md:text-[48px] leading-[1.2] md:leading-[57.6px] tracking-[3%] text-[#486BB3]`}>
             WE<span className="text-[#4A803D]">WO</span>
           </h1>
           <p className="mt-2 text-center w-4/5 text-sm leading-[24px] tracking-[3%] text-white">
