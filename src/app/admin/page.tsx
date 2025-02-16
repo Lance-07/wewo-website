@@ -6,6 +6,7 @@ import { DiffCard } from "../ui/components/admin/card";
 import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
+import PieChart from "../ui/components/chart";
 
 interface AdminCardItems {
     number: string,
