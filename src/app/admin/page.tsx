@@ -15,12 +15,13 @@ interface AdminCardItems {
     title: string,
     className: string
 }
+
 let adminCardItems:AdminCardItems[]
 const diffCardItems = [
-{
-    title: "Bottle Count by Size",
-    width: "lg:w-[513px]"
-},
+// {
+//     title: "Bottle Count by Size",
+//     width: "lg:w-[513px]"
+// },
 {
     title: "Backwash Indicator",
     width: "lg:w-[407px]"
@@ -73,7 +74,6 @@ return (
         <header>
             <AdminNav />
         </header>
-        
         <main className="pt-[70px] flex flex-col">
             <div className="md:fixed md:top-0 w-full bg-white z-10">
                 <DashboarHeader />
@@ -142,13 +142,15 @@ return (
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-4 justify-between">
+                    <div >
+                        <PieChart />
+                    </div> 
+                    {/* NOTE: TINANGGAL KO LANG YUNG NAKAMAP PARA MAY PLACEHOLDER YUNG IBA */}
                     {diffCardItems.map((item, idx) => (
                         <DiffCard
                         key={idx}
                             title={item.title}
                                 width={item.width}
-                        
-                
                         />
                         ))}
                     </div>
