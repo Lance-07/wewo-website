@@ -95,27 +95,27 @@ export const cardItems: CarouselItem[] = [
   {
     title: 'Less Plastic, Cleaner Earth', 
     description: 'Plastic waste is one of the biggest threats to our planet, polluting oceans and harming ecosystems. WEWO combats this by collecting and recycling plastic bottles, ensuring they are repurposed instead of discarded.', 
-    image: '/illustrations/filter-water.png'
+    image: '/images/less_plastic.png'
   },
   {
     title: 'More Water for Everyone', 
     description: 'Access to water is a fundamental need, yet many communities struggle with shortages. WEWO addresses this by collecting rainwater and purifying it into clean, non-potable water. ', 
-    image: '/illustrations/filter-water.png'
+    image: '/images/more_water.png'
   },
   {
     title: 'Saving the Planet from Pollution', 
     description: 'Pollution affects everyone, from the air we breathe to the water we drink. By recycling bottles, WEWO reduces plastic waste and its harmful effects on the environment. ', 
-    image: '/illustrations/filter-water.png'
+    image: '/images/saving_planet.png'
   },
   {
     title: 'Helping Communities in Need', 
     description: 'Many people live without access to clean, reliable water, impacting their health and quality of life. WEWO provides a practical solution, making water collection and distribution more efficient. ', 
-    image: '/illustrations/filter-water.png'
+    image: '/images/helping_communities.png'
   },
   {
     title: 'A Smarter Way to Recycle', 
     description: 'By linking recycling to clean water distribution, the system motivates individuals to participate actively in sustainability. It’s an innovative approach that turns small actions into big results, fostering a culture of environmental responsibility.', 
-    image: '/illustrations/filter-water.png'
+    image: '/images/a_smarter_way.png'
   },
 ]
 

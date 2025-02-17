@@ -28,13 +28,13 @@ export default function LandingPage() {
                 </section>
 
                 <Impact />
-                {/* <About />
+                <About />
                 <HowItWorks />
                 <InfiniteCarousel />
                 <Importance />  
                 <FAQs />
                 <CTA />
-                <Footer /> */}
+                <Footer />
             </main>
         </>
     )
@@ -71,7 +71,7 @@ function Impact() {
 
                                     <div className="flex-1 flex flex-col gap-3 mt-6">
 
-                                        <Button onClick={() => setActiveIdx(0)} border={true} active={activeIdx === 0} variant="gradient">
+                                        <Button onClick={() => setActiveIdx(0)} background={true} border={true} active={activeIdx === 0} variant="gradient">
                                             {activeIdx === 0 &&
                                             <>
                                                 <span className="text-[#4668B2]">Key </span>
@@ -86,16 +86,16 @@ function Impact() {
                                             }
                                         </Button>
 
-                                        <Button onClick={() => setActiveIdx(1)} border={true} active={activeIdx === 1} variant="blue">
-                                            <span>Water Distributed</span>
+                                        <Button onClick={() => setActiveIdx(1)} background={true} border={true} active={activeIdx === 1} variant="blue">
+                                            Water Distributed
                                         </Button>
 
-                                        <Button onClick={() => setActiveIdx(2)} border={true} active={activeIdx === 2} variant="green">
-                                            <span>PET Bottles Recycled</span>
+                                        <Button onClick={() => setActiveIdx(2)} background={true} border={true} active={activeIdx === 2} variant="green">
+                                            PET Bottles Recycled
                                         </Button>
 
-                                        <Button onClick={() => setActiveIdx(3)} border={true} active={activeIdx === 3} variant="darkblue">
-                                            <span>CO2 Reduced</span>
+                                        <Button onClick={() => setActiveIdx(3)} background={true} border={true} active={activeIdx === 3} variant="darkblue">
+                                            CO2 Reduced
                                         </Button>
 
                                     </div>
@@ -169,7 +169,7 @@ function About() {
                         <div className={cn(`w-2/3 h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
                             { 'translate-x-0 opacity-100' : inView }
                         )}>
-                            <Image src={'/illustrations/splash.png'} width={700} height={430} alt="about us" className="w-full h-full object-contain" />
+                            <Image src={'/images/synergy.png'} width={700} height={430} alt="about us" className="w-full h-full object-cover" />
                         </div>
                         <div className={cn(`overflow-hidden translate-x-full opacity-0 transition-all duration-1000 relative w-1/3 rounded-r-[34px] h-[475px] pr-8`,
                             { 'translate-x-0 opacity-100' : inView}
@@ -194,7 +194,7 @@ function About() {
                                         <span>you can be part of this change</span>
                                     </p>
                                 </div>
-                                <Button className={'px-4'} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                                <Button className={'px-4'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
                             </div>
                         </div>
                     </div>
@@ -237,8 +237,8 @@ function HowItWorks() {
 function InfiniteCarousel() {
     const arrWords: string[] = ["Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense', "Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense']
     return (
-        <div className="h-[175px] bg-custom-gradient overflow-hidden">
-            <div className="flex items-center w-[calc(350px_*_12)] text-[2.5rem] tracking-wider h-full text-center text-white font-medium animate-infinite-scroll">
+        <div className="h-[100px] bg-custom-gradient overflow-hidden">
+            <div className="flex items-center w-[calc(350px_*_12)] text-[1.5rem] tracking-wider h-full text-center text-white font-medium animate-infinite-scroll">
                 {arrWords.map((word, idx) => 
                     <div key={idx} className="w-[350px]">{word}</div>
                 )}
@@ -275,10 +275,8 @@ function Importance() {
                         <h1 className="font-bold text-[2.5rem]">Why WEWO Matters</h1>
                         <h2 className={`font-light ${poppins.className}`}>WEWO transforms plastic waste into clean water, reducing pollution, helping communities, and promoting a greener, sustainable future.</h2>
                         {/* TODO: Add icon */}
-                        <Button >
-                            <span className="text-blue-500">
+                        <Button active={true} border={true} variant="gradient">
                                 Connect With Us &gt;
-                            </span>
                         </Button>
 
                     </div>
@@ -369,7 +367,6 @@ function CTA() {
                         <Button
                             onClick={() => setIsReady(!isReady)}
                             className={'px-6 py-4'}
-                            active={false} variant={'no-border'}
                             childrenStyle={"bg-gradient-to-r from-[#4A6BB3] to-[#4A7F3B]"}>
                             <span className={'text-white flex'}>
                                 Message Us

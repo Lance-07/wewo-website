@@ -62,7 +62,7 @@ export default function Navbar() {
             <Menu />
           </button>
 
-          <Button className={'shrink-0 hidden sm:block'} border={true} variant={'gradient'}>Connect With Us</Button>
+          <Button className={'shrink-0 hidden sm:block'} border={true} active={true} variant={'gradient'}>Login</Button>
         </div>
 
         <div role="dialog" className={cn(`p-4 fixed text-white flex flex-col w-dvw h-dvh md:hidden translate-x-full transition-transform bg-slate-800 inset-0 z-50`,
@@ -80,6 +80,9 @@ export default function Navbar() {
                 <Link href={item.link} onClick={() => setIsOpen(!isOpen)}>{item.name}</Link>
               </li>
             ))}
+            <li>
+              <Link href={'/auth/login'}>Login</Link>
+            </li>
           </ul>
         </div>
       </nav>
