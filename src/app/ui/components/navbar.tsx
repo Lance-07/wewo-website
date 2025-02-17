@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "./button";
 import {poppins} from "@/app/ui/fonts";
-import { Menu, MoveRight, X } from "lucide-react";
+import { Menu, MoveRight} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 

@@ -39,7 +39,7 @@ export default function PieChart({ className }: { className?: string }) {
             <h1 className="font-semibold">Battle Count by Size</h1>
             <div className="flex flex-col sm:flex-row ">
                 <div className="flex flex-col justify-between">
-                    <h2 className="text-sm font-light mt-3 hidden sm:block">Here's a pie chart to visualize the overall count of bottles in the WEWO.</h2>
+                    <h2 className="text-sm font-light mt-3 hidden sm:block">Here&apos;s a pie chart to visualize the overall count of bottles in the WEWO.</h2>
                     {/* <h2 className="text-sm font-light mt-3 block sm:block">Here's a pie chart to visualize the overall count of bottles in the WEWO.</h2> */}
                     <div id="caption" className="hidden sm:flex sm:flex-col">
                             {bottles.map((bottle, idx) => (
@@ -52,7 +52,7 @@ export default function PieChart({ className }: { className?: string }) {
                 </div>
                 <div role="figure" aria-labelledby="caption" className={`flex justify-between`}>
                     <div className="flex flex-col justify-between">
-                            <h2 className="text-sm font-light mt-3 sm:hidden">Here's a pie chart to visualize the overall count of bottles in the WEWO.</h2>
+                            <h2 className="text-sm font-light mt-3 sm:hidden">Here&apos;s a pie chart to visualize the overall count of bottles in the WEWO.</h2>
                             <div id="caption" className="flex flex-col justify-end sm:hidden">
                                     {bottles.map((bottle, idx) => (
                                         <div className="flex gap-2" key={idx}>

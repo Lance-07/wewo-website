@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { IconItem } from "@/lib/data";
 import { poppins } from "../fonts";
-import { twMerge } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 
 

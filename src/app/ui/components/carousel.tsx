@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React, { useEffect } from "react";
-import Button from "./button";
 import { CarouselItem as CarouselItemData } from "@/lib/data";
 import clsx from "clsx";
 

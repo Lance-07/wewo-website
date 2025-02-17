@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import Icons from "@/public/icon.png";
 import { mazzard_soft_h } from "@/app/ui/fonts";
 
 const LoginPage = () => {
@@ -29,7 +28,7 @@ const LoginPage = () => {
             WE<span className="text-[#4A803D]">WO</span>
           </h1>
           <p className="mt-2 text-center w-4/5 text-sm leading-[24px] tracking-[3%] text-white">
-            Let's Turn Waste Into Clean Water
+            Let&apos;s Turn Waste Into Clean Water
           </p>
         </div>
 
