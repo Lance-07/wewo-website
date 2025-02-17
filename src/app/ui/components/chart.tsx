@@ -22,7 +22,7 @@ const bottles = [
     },
 ]
 
-export default function PieChart() {
+export default function PieChart({ className }: { className?: string }) {
     const data = {
         labels: bottles.map(bottle => bottle.bottle),
         datasets: [
@@ -35,7 +35,7 @@ export default function PieChart() {
         ],
     }
     return (
-        <div className={`${poppins.className} flex flex-col sm:w-[513px] sm:h-[291px] shadow-card-shadow rounded-xl justify-center p-8`}>
+        <div className={cn(`${poppins.className} flex flex-col w-full h-full shadow-card-shadow rounded-xl justify-center p-8`, className)}>
             <h1 className="font-semibold">Battle Count by Size</h1>
             <div className="flex flex-col sm:flex-row ">
                 <div className="flex flex-col justify-between">

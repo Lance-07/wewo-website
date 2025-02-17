@@ -1,3 +1,4 @@
+import { EllipsisVertical } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -6,11 +7,12 @@ export default function adminNav() {
   return (
    <nav className="bg-[#4668B2] p-2 md:p-4 lg:p-6 fixed top-0 w-full z-50 border-b-4 border-[#7CBA5A]">
       <div className="flex justify-between items-center relative">
-          <div className="flex-1 flex justify-center md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
-            <Image src="/icon2.png" width={140} height={50} alt="logo" />
+          <div className="flex-1 flex items-center gap-2 justify-center md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
+            <Image src="/icons/logo2.png" width={50} height={50} alt="logo" />
+            <h1 className="text-white text-3xl font-bold">WEWO</h1>
           </div>
           <button id="menu-btn" className="text-white focus:outline-none ml-auto">
-              <i className="bi bi-three-dots-vertical"></i>
+            <EllipsisVertical />
           </button>
       </div>
    </nav>
