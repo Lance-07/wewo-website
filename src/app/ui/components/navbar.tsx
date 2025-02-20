@@ -8,28 +8,32 @@ import { Menu, MoveRight} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const navList: {name: string, link: string}[] = [
+const navList: { name: string; link: string }[] = [
   {
-    name: 'Impacts',
-    link: '#impacts'
+    name: "Impacts",
+    link: "#impacts",
   },
   {
-    name: 'About',
-    link: '#about'
+    name: "About",
+    link: "#about",
   },
   {
-    name: 'How It Works',
-    link: '#how-it-works'
+    name: "How It Works",
+    link: "#how-it-works",
   },
   {
-    name: 'Importance',
-    link: '#importance'
+    name: "Importance",
+    link: "#importance",
   },
   {
-    name: 'FAQs',
-    link: '#faqs'
-  }
-]
+    name: "FAQs",
+    link: "#faqs",
+  },
+  {
+    name: "Articles",
+    link: "#articles",
+  },
+];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
