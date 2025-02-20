@@ -1,7 +1,7 @@
 "use client";
 
 import React, {createContext, useContext, useEffect, useRef, useState} from "react";
-import {ArrowRight} from "lucide-react";0
+import {ArrowRight} from "lucide-react";
 import {cn} from "@/lib/utils";
 
 interface AccordionContextType {

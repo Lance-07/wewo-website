@@ -6,9 +6,9 @@ import React from "react";
 
 export default function DashboardHeader() {
   return (
-    <div className="bg-white flex justify-center">
+    <div className={`${poppins.className} bg-white flex justify-center`}>
       <div className="md:fixed md:top-[60px] w-full max-w-[1150px] h-[100px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto rounded-tl-lg bg-white shadow-lg flex flex-col justify-center items-center">
-        <h1 className="font-['Mazzard_Soft_H'] text-base sm:text-md md:text-lg lg:text-xl font-bold leading-tight tracking-wider text-center px-2">
+        <h1 className="text-base sm:text-md md:text-lg lg:text-xl font-bold leading-tight tracking-wider text-center px-2">
           Welcome to the WEWO Admin Dashboard!
         </h1>
         <p className={`${poppins.className} text-[10px] sm:text-xs md:text-sm font-normal leading-tight tracking-wide text-center max-w-3xl mt-1 px-2`}>

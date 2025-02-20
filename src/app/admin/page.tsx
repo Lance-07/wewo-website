@@ -2,11 +2,12 @@
 import React from "react";
 import { useState } from 'react';
 import { AdminCard } from "../ui/components/card";
-import { DiffCard } from "../ui/components/admin/card";
 import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
+import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
+import { convertLiterToMl } from "@/lib/utils";
 
 interface AdminCardItems {
     number: string,
@@ -17,26 +18,22 @@ interface AdminCardItems {
 }
 
 let adminCardItems:AdminCardItems[]
-const diffCardItems = [
-// {
-//     title: "Bottle Count by Size",
-//     width: "lg:w-[513px]"
-// },
-{
-    title: "Backwash Indicator",
-    width: "lg:w-[407px]"
-},
-{
-    title: "Bottle Bin Indicator",
-    width: "lg:w-[300px]"
-}
-];
+// let bottleSize 
 
 export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0 });
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
 
+    const smallCF = bottleStats.smallTotal * 45.54
+    const mediumCF = bottleStats.mediumTotal * 91.08
+    const largeCF = bottleStats.largeTotal * 240.12
+    const totalCF = (smallCF + mediumCF + largeCF) * 0.001
+
+    console.log("small: ", smallCF)
+    console.log("mediumCF: ", mediumCF)
+    console.log("totalCF: ", totalCF);
+    
 
     adminCardItems = [
 {
@@ -54,14 +51,14 @@ export default function AdminPage() {
     className: 'bg-[#4987B0] text-[#4987B0]'
 },
 {
-    number: '3',
+    number: totalCF.toFixed(1).toString(),
     label: 'kilograms',
     iconLink: '/icons/carbon-footprint.png',
     title: 'carbon footprints reduced',
     className: 'bg-[#7CBA5A] text-[#7CBA5A]'
 },
 {
-    number: '0',
+    number: '0 - 30',
     label: 'NTU',
     iconLink: '/icons/carbon-footprint.png',
     title: 'turbidity clarity',
@@ -79,7 +76,7 @@ return (
                 <DashboarHeader />
             </div>
             <div className="md:mt-[150px] flex justify-center">
-                <div className="w-full max-w-[1150px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
+                <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
                     <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
             </div>
@@ -95,6 +92,30 @@ setActiveTab: (tab: string) => void;
 }
 
 function DashboardCard({ activeTab, setActiveTab }: DashboardCardProps){
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
+    const [isEdit, setIsEdit] = useState(false)
+
+    // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
+    // if no value (undefined) the html will show 0 ml no worries on no value.
+    const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
+        small: '250',
+        medium: '500',
+        large: '1000',
+    })
+
+    const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value} = e.target;
+        console.log(name, value) 
+
+        setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
+    }
+
+    const handleSaveSettings = () => {
+        // call the save server action
+        console.log(dispensedValue)
+        setIsEdit(!isEdit)
+    }
+
 return (
     <div className="w-full">
         <div className="flex bg-transparent overflow-x-auto">
@@ -121,50 +142,189 @@ return (
         </button>
         </div>
 
-            <div className={`border-t-2 rounded-b-lg overflow-y-auto ${
+            <div className={`border-t-2 rounded-b-lg ${
                 activeTab === 'overview' 
                 ? 'border-blue-500' 
                 : 'border-green-500'
             }`}>
             {activeTab === 'overview' ? (
                 <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap justify-center md:justify-between mt-4">
-                    {adminCardItems.map((item, idx) => (
-                    <AdminCard 
-                    key={idx}
-                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-[150px] md:h-[187px]`}
-                    number={item.number} 
-                    label={item.label} 
-                    iconLink={item.iconLink}      
-                    title={item.title} 
-                    />
-                    ))}
-                </div>
-
-                <div className="flex flex-col lg:flex-row gap-4 justify-between">
-                    <div >
-                        <PieChart />
-                    </div> 
-                    {/* NOTE: TINANGGAL KO LANG YUNG NAKAMAP PARA MAY PLACEHOLDER YUNG IBA */}
-                    {diffCardItems.map((item, idx) => (
-                        <DiffCard
+                    <div className="flex flex-wrap justify-center md:justify-between mt-4">
+                        {adminCardItems.map((item, idx) => (
+                        <AdminCard 
                         key={idx}
-                            title={item.title}
-                                width={item.width}
+                        className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-[150px] md:h-[187px]`}
+                        number={item.number} 
+                        label={item.label} 
+                        iconLink={item.iconLink}      
+                        title={item.title} 
                         />
                         ))}
                     </div>
+
+                    <div className="flex flex-col h-[291px] lg:flex-row gap-4 justify-between">
+                        <div className="h-full">
+                            <PieChart className="min-w-[513px]" bottleStats={bottleStats}/>
+                        </div> 
+                        <BottleStats onDataUpdate={setBottleStats} />
+
+                        <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                            <h1 className="font-semibold">Backwash Indicator</h1>
+                            <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
+                            <div className="flex flex-col gap-[10px]">
+                                <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
+                                        <Check color="white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-green-second">Filter OK</h3>
+                                        <p className="font-light text-sm text-stone-400">Turbidity is within safe range (less than 5 NTU)</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
+                                        <TriangleAlert color="white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-yellow-500">Backwash Recommended Soon</h3>
+                                        <p className="font-light text-sm text-stone-400">Turbidity is acceptable (5 - 10 NTU)</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
+                                        <X color="white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-red-700">Perform Backwash Immediately</h3>
+                                        <p className="font-light text-sm text-stone-400">Turbidity exceeds safe limits (more than 10 NTU)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                            <h1 className="font-semibold">Bottle Bin Indicator</h1>
+                            <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
+                            <div className="flex gap-2">
+                                <div className="rounded-lg size-[34px] bg-green-second flex items-center justify-center">
+                                    <Check color="white" />
+                                </div>
+                                <div className="text-sm">
+                                    <h3 className="text-green-second">Bin OK</h3>
+                                    <p className="text-stone-500 text-sm">Bin is not full</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="rounded-lg size-[34px] bg-stone-600 flex items-center justify-center">
+                                    <X color="white" />
+                                </div>
+                                <div className="text-sm">
+                                    <h3 className="text-stone-600">Replaced</h3>
+                                    <p className="text-stone-500 text-sm">Bin is full</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ) : (
-            
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap gap-4 justify-between">
-                <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-4">
-                
+                <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h1 className="font-bold ~text-xl/3xl">Water Dispense Settings</h1>
+                        { !isEdit && (
+                            <button onClick={() => setIsEdit(!isEdit)} 
+                                className="text-white bg-blue-main flex justify-center items-center px-4 py-2 rounded-lg gap-2">
+                                <div className="flex size-6">
+                                    <SquarePen />
+                                </div>
+                                Edit
+                            </button>
+                        ) }
+                        { isEdit && (
+                            <div className="flex gap-4 items-center">
+                                <button onClick={handleSaveSettings} 
+                                    className="text-white bg-green-second flex justify-center items-center px-4 py-2 rounded-lg gap-2">
+                                    <div className="flex size-6">
+                                        <Save />
+                                    </div>
+                                    Save
+                                </button>
+                                <button onClick={() => setIsEdit(!isEdit)} 
+                                    className="text-white bg-red-700 flex justify-center items-center px-4 py-2 rounded-lg gap-2">
+                                    <div className="flex size-6">
+                                        <X />
+                                    </div>
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    <h2 className="font-light">Adjust the water dispense by WEWO depends on the bottle size</h2>
+                    
+                    <table className="w-full">
+                        <thead className="font-semibold text-stone-400 tracking-wider text-sm">
+                            <tr>
+                                <th>Bottle Size</th>
+                                <th>Volume Range (ml)</th>
+                                <th>Pumper Open Time (secs)</th>
+                                <th>Dispensed Water (ml)</th>
+                            </tr>
+                        </thead>
+                        <tbody className="font-light text-center divide-y [&_td]:py-3">
+                            <tr>
+                                <td>Small</td>
+                                <td>250 ml - 350 ml</td>
+                                <td>1 sec</td>
+                                <td>
+                                    {isEdit ? (
+                                        <input 
+                                            value={dispensedValue.small} 
+                                            name="small" 
+                                            onChange={handleDispenseValueChange} 
+                                            type="text"
+                                            className="border p-1" 
+                                        />
+                                    ) : (
+                                        convertLiterToMl(dispensedValue?.small || "0")
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Medium</td>
+                                <td>400 ml - 700 ml</td>
+                                <td>2 sec</td>
+                                <td>
+                                    {isEdit ? (
+                                        <input value={dispensedValue.medium} 
+                                            name="medium" 
+                                            onChange={handleDispenseValueChange} 
+                                            type="text" 
+                                            className="border p-1" 
+                                        />
+                                    ) : (
+                                        convertLiterToMl(dispensedValue?.medium || "0")
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Large</td>
+                                <td>900 ml - 2 L</td>
+                                <td>3 sec</td>
+                                <td>
+                                    {isEdit ? (
+                                        <input value={dispensedValue.large} 
+                                            name="large"
+                                            onChange={handleDispenseValueChange} 
+                                            type="text" 
+                                            className="border p-1" 
+                                        />
+                                    ) : (
+                                        convertLiterToMl(dispensedValue?.large || "0")
+                                    )}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                </div>
-            </div>
-    
             )}
     </div>
     </div>

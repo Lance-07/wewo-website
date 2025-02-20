@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React, { useEffect } from "react";
-import Button from "./button";
 import { CarouselItem as CarouselItemData } from "@/lib/data";
 import clsx from "clsx";
 
@@ -73,10 +72,10 @@ export const CarouselItem = ({
           <div className="w-full h-full absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)] opacity-75"></div>
           
           {/* Content */}
-          <div className="absolute inset-0 text-white container mx-auto">
-              <div className="flex flex-col justify-center items-start gap-4 w-1/2 h-full">
-                <h1 className="text-6xl font-extrabold">{title}</h1>
-                <h2 className="text-base w-4/5">{description}</h2>
+          <div className="absolute inset-0 text-white container">
+              <div className="flex flex-col justify-center items-start gap-4 w-full md:w-1/2 h-full">
+                <h1 className="~text-4xl/6xl font-extrabold">{title}</h1>
+                <h2 className="~text-base/xl w-4/5">{description}</h2>
                 {/* <Button label="Learn More" /> */}
               </div>
           </div>

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { IconItem } from "@/lib/data";
 import { poppins } from "../fonts";
-import { twMerge } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 
 
@@ -58,7 +57,7 @@ const iconVariants: colorVariants = {
 
 export function SimpleCard({number, label, iconLink, title, description, className} : SimpleCardProps) {
     return (
-        <div className={twMerge(
+        <div className={cn(
             "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 
             className,
         )}>
@@ -66,10 +65,7 @@ export function SimpleCard({number, label, iconLink, title, description, classNa
                 <p className="font-extrabold text-[5rem]">{number}</p>
                 <p className="vertical-rl rotate-180">{label}</p>
             </div>
-            <div className={twMerge(`
-                text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`, 
-                
-            )}>
+            <div className={`text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`}>
                 <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
                 <p className="font-semibold tracking-wider capitalize text-wrap mb-1">{title}</p>
                 <p className="font-light">{description}</p>
