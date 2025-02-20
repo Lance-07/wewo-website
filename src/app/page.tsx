@@ -27,6 +27,7 @@ export default function LandingPage() {
                     <Carousel carouselItems={carouselItems} />
                 </section>
 
+                
                 <Impact />
                 <About />
                 <HowItWorks />
@@ -42,11 +43,30 @@ export default function LandingPage() {
 
 function Impact() {
     const [activeIdx, setActiveIdx] = React.useState(0);
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        if (window.innerWidth > 1450) {
+            setIsMobile(false);
+        } else {
+            setIsMobile(true);
+        }
+
+        const updateMedia = () => {
+        if (window.innerWidth > 1450) {
+            setIsMobile(false);
+        } else {
+            setIsMobile(true);
+        }
+        };
+        window.addEventListener('resize', updateMedia);
+        return () => window.removeEventListener('resize', updateMedia);
+    }, []);
 
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} onChange={(inView) => console.log('inview', inView)} >
             {({ inView, ref }) => (
-                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full h-[607px]">
+                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full md:h-[607px] py-20 md:py-0">
                     {/* Overlay Color Gradient */}
                     <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
 
@@ -61,15 +81,15 @@ function Impact() {
                         { 'opacity-100 -translate-y-0': inView}
                     )}>
                         <div className="flex justify-center items-center h-full">
-                            <div className="relative bg-white gap-[50px] h-[519px] rounded-t-[34px] flex container mx-auto items-center px-20">
-                                <div className="w-1/3 flex flex-col text-[#4668B2]">
+                            <div className="relative bg-white gap-[50px] md:h-[519px] rounded-t-[34px] flex flex-col md:flex-row justify-between container mx-auto items-center ~px-4/20 py-4">
+                                <div className="w-full md:w-1/3 flex flex-col text-[#4668B2]">
                                     <h1 className="text-5xl font-bold tracking-widest mb-4">
                                         <span className="text-[#4668B2]">WE</span>
                                         <span className="text-[#7CBA5A]">WO</span>
                                     </h1>
                                     <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
 
-                                    <div className="flex-1 flex flex-col gap-3 mt-6">
+                                    <div className="flex-1 flex md:flex-col gap-3 mt-6 py-2 px-[1px] text-nowrap overflow-x-auto">
 
                                         <Button onClick={() => setActiveIdx(0)} background={true} border={true} active={activeIdx === 0} variant="gradient">
                                             {activeIdx === 0 &&
@@ -103,22 +123,22 @@ function Impact() {
 
                                 <div className="flex-1">
                                     { activeIdx === 0 && 
-                                        <div className="flex w-full gap-5 justify-center">
+                                        <div className="flex flex-col md:flex-row w-full gap-5 justify-center">
                                             <SimpleCard 
                                                 number="23" label="liters" iconLink="/icons/droplet.png"
-                                                className="bg-blue-second text-blue-second border-2 border-blue-second"
+                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
                                                 title="clean water distributed"  
-                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource." />
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
                                             <SimpleCard  
                                                 number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
-                                                className="bg-green-second text-green-second border-2 border-green-second"
+                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-green-second text-green-second border-2 border-green-second"
                                                 title="PET bottles recycled"  
-                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."  />
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
                                             <SimpleCard  
                                                 number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                                className="bg-blue-main text-blue-main border-2 border-blue-main"
+                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
                                                 title="carbon footprints reduced"  
-                                                description="Like filling thousands of water bottles, ensuring access to life’s most vital resource."/>
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
                                         </div>
                                     }
 
@@ -164,22 +184,22 @@ function About() {
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true}>
             {({ inView, ref }) => (
-                <section ref={ref} id={'about'} className="overflow-hidden bg-white h-[675px] w-full flex justify-center items-center">
-                    <div className="flex items-center gap-10 container mx-auto">
-                        <div className={cn(`w-2/3 h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
+                <section ref={ref} id={'about'} className="overflow-hidden bg-white md:h-[675px] w-full py-20 md:py-0 flex justify-center items-center">
+                    <div className="flex flex-col md:flex-row items-center gap-10 container mx-auto">
+                        <div className={cn(`w-full md:w-1/2 order-2 md:order-1 md:h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
                             { 'translate-x-0 opacity-100' : inView }
                         )}>
                             <Image src={'/images/synergy.png'} width={700} height={430} alt="about us" className="w-full h-full object-cover" />
                         </div>
-                        <div className={cn(`overflow-hidden translate-x-full opacity-0 transition-all duration-1000 relative w-1/3 rounded-r-[34px] h-[475px] pr-8`,
+                        <div className={cn(`overflow-hidden order-1 md:order-2 translate-x-full opacity-0 transition-all duration-1000 relative w-full md:w-1/2 rounded-r-[34px] md:h-[475px] md:pr-8`,
                             { 'translate-x-0 opacity-100' : inView}
                         )}>
-                            <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25 hidden md:block"></div>
 
-                            <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85%"></div>
+                            <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85% hidden md:block"></div>
                             {/* <div className="absolute inset-0 from-transparent to-white from-15% to-85%"></div> */}
 
-                            <div className="relative pl-3 flex flex-col justify-center h-full gap-3">
+                            <div className="relative md:pl-3 flex flex-col justify-center h-full gap-3">
                                 <h2 className="text-2xl font-bold text-blue-main">WEWO for Everyone</h2>
                                 <h1 className="text-4xl font-bold">
                                     <span className="text-blue-main">Achieve </span>
@@ -191,12 +211,13 @@ function About() {
                                     </p>
                                     <p>
                                         Our mission is <strong className="font-bold tracking-wider">to inspire a culture of sustainability</strong> by turning waste into opportunity, water into access, and technology into action. Explore the page to discover how WEWO is creating a cleaner, greener future and how 
-                                        <span>you can be part of this change</span>
+                                        <span>you can be part of this change.</span>
                                     </p>
                                 </div>
-                                <Button className={'px-4'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                                <Button className={'px-4 hidden md:block'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
                             </div>
                         </div>
+                        <Button className={'px-4 self-center order-3 md:hidden'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
                     </div>
                 </section>
             )}
@@ -206,23 +227,26 @@ function About() {
 
 function HowItWorks() {
     return (
-        <section id={'how-it-works'} className="bg-stone-50 h-[635px]">
+        <section id={'how-it-works'} className="bg-stone-50 py-20 md:py-0 md:h-[635px]">
             <div className="flex h-full flex-col justify-center items-center container mx-auto gap-10">
-                <h1 className="text-blue-main text-[2.5rem] leading-[38.4px] font-bold">Turning Waste into Clean Water</h1>
-                <div className="flex gap-6">
+                <h1 className="text-blue-main text-[2.5rem] leading-[38.4px] font-bold">Turning Waste into <span className="text-green-third">Clean Water</span></h1>
+                <div className="flex gap-6 flex-col md:flex-row">
                     <DynamicCard 
+                        className="w-full"
                         imgSrc="/illustrations/collect-plastic.png"
                         title="collect plastic"
                         description="Deposit plastic bottles into the Reverse Vending Machine (RVM) to start the recycling process."
                         baseColor="blue"
                     />
                     <DynamicCard 
+                        className="w-full"
                         imgSrc="/illustrations/filter-water.png"
                         title="filter water"
                         description="Rainwater is purified through natural filtration and UV sterilization, ensuring clean, non-potable water."
                         baseColor="green"
                     />
                     <DynamicCard 
+                        className="w-full"
                         imgSrc="/illustrations/dispense-water.png"
                         title="dispense water"
                         description="Receive clean water in exchange for your recycled bottles, rewarding sustainability."
@@ -265,8 +289,8 @@ function Importance() {
     }
 
     return (
-        <section id={'importance'} className="h-[667px] flex">
-            <div className="w-1/3 h-full flex relative justify-center items-center">
+        <section id={'importance'} className="md:h-[667px] flex flex-col md:flex-row">
+            <div className="w-full py-4 md:py-0 md:w-1/3 h-full flex relative justify-center items-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#344D80] to-[#2C4D24]"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-[#344D80] via-[#4769AF] to-[#53BAC5]"></div>
 
@@ -281,7 +305,7 @@ function Importance() {
 
                     </div>
 
-                    <div className="flex justify-end">
+                    <div className="justify-end hidden md:flex">
                         <button onClick={handleLeft} className={clsx(
                             {
                                 'opacity-50': position === 0
@@ -300,14 +324,14 @@ function Importance() {
                 </div>
             </div>
 
-            <div className="w-2/3 h-full flex relative">
+            <div className="w-full py-4 md:py-0 md:w-2/3 h-full box flex relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#93E16E] via-[#7BBA5D] to-[#447538] via-55%"></div>
 
-                <div className="flex px-10 relative w-full h-full items-center gap-10 overflow-hidden">
-                    <div  className="flex gap-10 w-[calc(328px_*_5)] transition-all duration-300"
+                <div className="flex ~px-4/10 relative w-full md:h-full items-center overflow-x-auto md:overflow-hidden">
+                    <div  className="flex gap-10 md:w-[calc(328px_*_5)] transition-all duration-300"
                         style={{ transform: `translateX(calc(-${distance}px - ${position * 10}px))` }}>
                         {cardItems.map((card, idx) => (
-                            <Card key={idx} imgSrc={card.image} title={card.title} description={card.description} />
+                            <Card className="min-w-[301px]" key={idx} imgSrc={card.image} title={card.title} description={card.description} />
                         ))}
                     </div>
                 </div>
@@ -318,14 +342,14 @@ function Importance() {
 
 function FAQs() {
     return (
-        <section id={'faqs'} className="bg-white h-[690px] flex w-full justify-center items-center">
-            <div className="flex flex-col items-center h-[425px] w-11/12">
+        <section id={'faqs'} className="bg-white md:h-[690px] py-20 md:py-0 flex w-full justify-center items-center">
+            <div className="flex flex-col items-center md:h-[425px] w-11/12">
                 <h1 className="font-bold text-4xl mb-10">
                     <span className="text-blue-main">Frequently </span>
                     <span className="text-green-third">Asked Questions</span>
                 </h1>
 
-                <div className={`w-[600px] ${poppins.className}`}>
+                <div className={`md:w-[600px] ${poppins.className}`}>
                     <Accordion className={'flex flex-col gap-4 text-blue-main'}>
                         {faqItems.map((faqItem, idx: number) => (
                             <AccordionItem value={(idx + 1).toString()} trigger={faqItem.header} key={idx}>
@@ -341,10 +365,29 @@ function FAQs() {
 
 function CTA() {
     const [isReady, setIsReady] = React.useState(false);
+    const [message, setMessage] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+
+    const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true)
+
+        const res = await fetch("/api/send-message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+        });
+
+        if (res.ok) {
+            
+            setMessage("");
+        }
+        setLoading(false)
+    };
 
     console.log(isReady);
     return (
-        <section className="h-[586px] w-full relative">
+        <section className="md:h-[586px] py-20 md:py-0 w-full relative">
             <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
             {/* Dark Effect Overlay Gradient */}
             <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-black"></div>
@@ -353,7 +396,7 @@ function CTA() {
 
             <div className={'container mx-auto h-full flex items-center'}>
                 <div className={'bg-white relative w-full h-[436px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
-                    <div className={clsx('max-w-xl text-center space-y-8 transition-all duration-500 ease-in-out',
+                    <div className={clsx('max-w-xl w-11/12 md:w-1/2 text-center space-y-8 transition-all duration-500 ease-in-out',
                         {
                             'opacity-0 -translate-y-full' : isReady
                         }
@@ -368,14 +411,16 @@ function CTA() {
                             onClick={() => setIsReady(!isReady)}
                             className={'px-6 py-4'}
                             childrenStyle={"bg-gradient-to-r from-[#4A6BB3] to-[#4A7F3B]"}>
-                            <span className={'text-white flex'}>
-                                Message Us
-                                <span><ChevronRight /></span>
-                            </span>
+                            { loading ? 'Sending...' :
+                                <span className={'text-white flex'}>
+                                    Message Us
+                                    <span><ChevronRight /></span>
+                                </span>
+                            }
                         </Button>
                     </div>
 
-                    <div className={cn('max-w-xl w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
+                    <form onSubmit={sendMessage} className={cn('max-w-xl w-11/12 md:w-1/2 text-center space-y-8 absolute opacity-0 translate-y-full transition-all duration-500 ease-in-out',
                         {
                             'opacity-100 -translate-y-0': isReady
                         }
@@ -385,18 +430,20 @@ function CTA() {
                             <span className="text-green-third">A Difference!</span>
                         </h1>
                         <textarea
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             className={'block resize-none focus:outline-none w-full rounded-xl bg-stone-50 shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] h-[122px] p-[10px] text-sm placeholder:text-[rgba(70,_104,_178,_60%)]'}
                             placeholder={'Tell us how you\'d like to get involved or ask us anything!'}>
 
                         </textarea>
-                        <Button className={'px-6 py-4'} active={false} variant={'no-border'}
+                        <Button disabled={loading} type="submit" className={'px-6 py-4'} active={false} variant={'no-border'}
                                 childrenStyle={"bg-gradient-to-r from-[#4A6BB3] to-[#4A7F3B]"}>
                             <span className={'text-white flex'}>
-                                Send Message
+                                { loading ? 'Sending...' : ('Send Message')}
                                 <span><ChevronRight/></span>
                             </span>
                         </Button>
-                    </div>
+                    </form>
 
                 </div>
             </div>
@@ -423,7 +470,7 @@ function Footer() {
 
                 <div className={'text-white flex-col flex items-center text-center gap-4'}>
                     <h1 className={'text-4xl font-bold'}>Collect. Conserve. Recycle.</h1>
-                    <h2 className={`w-8/12 ${poppins.className}`}>WEWO isn&#39;t just water purification. It&#39;s the
+                    <h2 className={`w-10/12 md:w-8/12 ${poppins.className}`}>WEWO isn&#39;t just water purification. It&#39;s the
                         breakthrough solution for a sustainable future.
                     </h2>
 
@@ -436,6 +483,9 @@ function Footer() {
                         </Link>
                     </div>
                 </div>
+            </div>
+            <div className="relative bg-[#202020] text-white/70 h-11 flex items-center justify-center">
+                <p>&copy; 2025 WEWO | Synergy</p>
             </div>
         </footer>
     )
