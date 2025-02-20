@@ -379,8 +379,11 @@ function CTA() {
         });
 
         if (res.ok) {
-            
+            alert('Message sent successfully!')
             setMessage("");
+        } else {
+            alert('Failed to send message. Try again.');
+            setMessage("")
         }
         setLoading(false)
     };
