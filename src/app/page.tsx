@@ -23,7 +23,7 @@ export default function LandingPage() {
                 <Navbar />
             </header>
             <main>
-                <section className="relative w-full h-[778px] overflow-hidden flex">
+                <section id="home" className="relative w-full h-[778px] overflow-hidden flex">
                     <Carousel carouselItems={carouselItems} />
                 </section>
 
@@ -81,95 +81,101 @@ function Impact() {
                         { 'opacity-100 -translate-y-0': inView}
                     )}>
                         <div className="flex justify-center items-center h-full">
-                            <div className="relative bg-white gap-[50px] md:h-[519px] rounded-t-[34px] flex flex-col md:flex-row justify-between container mx-auto items-center ~px-4/20 py-4">
-                                <div className="w-full md:w-1/3 flex flex-col text-[#4668B2]">
-                                    <h1 className="text-5xl font-bold tracking-widest mb-4">
-                                        <span className="text-[#4668B2]">WE</span>
-                                        <span className="text-[#7CBA5A]">WO</span>
-                                    </h1>
-                                    <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
+                            <div className="relative bg-white md:h-[519px] gap-[50px] rounded-t-[34px] flex flex-col justify-center container mx-auto items-center ~px-4/20 py-4">
+                                <div className="flex w-full gap-[50px] flex-col md:flex-row justify-between ">
+                                    <div className="w-full md:w-1/3 flex flex-col text-[#4668B2]">
+                                        <h1 className="text-5xl font-bold tracking-widest mb-4">
+                                            <span className="text-[#4668B2]">WE</span>
+                                            <span className="text-[#7CBA5A]">WO</span>
+                                        </h1>
+                                        <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
 
-                                    <div className="flex-1 flex md:flex-col gap-3 mt-6 py-2 px-[1px] text-nowrap overflow-x-auto">
+                                        <div className="flex-1 flex md:flex-col gap-3 mt-6 py-2 px-[1px] text-nowrap overflow-x-auto">
 
-                                        <Button onClick={() => setActiveIdx(0)} background={true} border={true} active={activeIdx === 0} variant="gradient">
-                                            {activeIdx === 0 &&
-                                            <>
-                                                <span className="text-[#4668B2]">Key </span>
-                                                <span className="text-[#7CBA5A]">Impact</span>
-                                            
-                                            </> 
-                                            }
-                                            {activeIdx !== 0 &&
-                                            <>
-                                                Key Impact
-                                            </> 
-                                            }
-                                        </Button>
+                                            <Button onClick={() => setActiveIdx(0)} background={true} border={true} active={activeIdx === 0} variant="gradient">
+                                                {activeIdx === 0 &&
+                                                <>
+                                                    <span className="text-[#4668B2]">Key </span>
+                                                    <span className="text-[#7CBA5A]">Impact</span>
+                                                
+                                                </> 
+                                                }
+                                                {activeIdx !== 0 &&
+                                                <>
+                                                    Key Impact
+                                                </> 
+                                                }
+                                            </Button>
 
-                                        <Button onClick={() => setActiveIdx(1)} background={true} border={true} active={activeIdx === 1} variant="blue">
-                                            Water Distributed
-                                        </Button>
+                                            <Button onClick={() => setActiveIdx(1)} background={true} border={true} active={activeIdx === 1} variant="blue">
+                                                Water Distributed
+                                            </Button>
 
-                                        <Button onClick={() => setActiveIdx(2)} background={true} border={true} active={activeIdx === 2} variant="green">
-                                            PET Bottles Recycled
-                                        </Button>
+                                            <Button onClick={() => setActiveIdx(2)} background={true} border={true} active={activeIdx === 2} variant="green">
+                                                PET Bottles Recycled
+                                            </Button>
 
-                                        <Button onClick={() => setActiveIdx(3)} background={true} border={true} active={activeIdx === 3} variant="darkblue">
-                                            CO2 Reduced
-                                        </Button>
+                                            <Button onClick={() => setActiveIdx(3)} background={true} border={true} active={activeIdx === 3} variant="darkblue">
+                                                CO2 Reduced
+                                            </Button>
 
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        { activeIdx === 0 && 
+                                            <div className="flex flex-col items-center md:flex-row w-full gap-5 justify-center">
+                                                <SimpleCard 
+                                                    number="23" label="liters" iconLink="/icons/droplet.png"
+                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
+                                                    title="clean water distributed"  
+                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                                <SimpleCard  
+                                                    number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-green-second text-green-second border-2 border-green-second"
+                                                    title="PET bottles recycled"  
+                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
+                                                <SimpleCard  
+                                                    number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
+                                                    title="carbon footprints reduced"  
+                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                            </div>
+                                        }
+
+                                        { activeIdx === 1 && 
+                                            <HorizontalCard 
+                                                imgSrc="/illustrations/splash.png" 
+                                                baseColor="blue" 
+                                                title="clean water distributed"     
+                                                description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
+                                                iconItems={iconItems['clean-water']}
+                                            />
+                                        }
+                                        { activeIdx === 2 && 
+                                            <HorizontalCard 
+                                                imgSrc="/illustrations/plastic-bottle.png" 
+                                                baseColor="green" 
+                                                title="recycled plastic bottles"     
+                                                description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
+                                                iconItems={iconItems['recycled-plastic']}
+                                            />
+                                        }
+                                        { activeIdx === 3 && 
+                                            <HorizontalCard 
+                                                imgSrc="/illustrations/carbon-footprint.png" 
+                                                baseColor="darkBlue" 
+                                                title="reduced carbon footprint on earth"     
+                                                description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
+                                                iconItems={iconItems['reduced-carbon']}
+                                            />
+                                        }
                                     </div>
                                 </div>
 
-                                <div className="flex-1">
-                                    { activeIdx === 0 && 
-                                        <div className="flex flex-col md:flex-row w-full gap-5 justify-center">
-                                            <SimpleCard 
-                                                number="23" label="liters" iconLink="/icons/droplet.png"
-                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
-                                                title="clean water distributed"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                            <SimpleCard  
-                                                number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
-                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-green-second text-green-second border-2 border-green-second"
-                                                title="PET bottles recycled"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
-                                            <SimpleCard  
-                                                number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                                className="flex-row w-full h-max md:h-[301px] md:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
-                                                title="carbon footprints reduced"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                        </div>
-                                    }
-
-                                    { activeIdx === 1 && 
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/splash.png" 
-                                            baseColor="blue" 
-                                            title="clean water distributed"     
-                                            description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
-                                            iconItems={iconItems['clean-water']}
-                                        />
-                                    }
-                                    { activeIdx === 2 && 
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/plastic-bottle.png" 
-                                            baseColor="green" 
-                                            title="recycled plastic bottles"     
-                                            description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
-                                            iconItems={iconItems['recycled-plastic']}
-                                        />
-                                    }
-                                    { activeIdx === 3 && 
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/carbon-footprint.png" 
-                                            baseColor="darkBlue" 
-                                            title="reduced carbon footprint on earth"     
-                                            description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
-                                            iconItems={iconItems['reduced-carbon']}
-                                        />
-                                    }
-                                </div>
+                                <Button active={true} border={true} variant="gradient">
+                                    <Link href={'/articles'}>Read More &gt;</Link>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -259,9 +265,9 @@ function HowItWorks() {
 }
 
 function InfiniteCarousel() {
-    const arrWords: string[] = ["Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense', "Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense']
+    const arrWords: string[] = ["Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense', "Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense', "Recycle", 'Repeat', 'Collect', 'Filter', 'Store', 'Dispense']
     return (
-        <div className="h-[100px] bg-custom-gradient overflow-hidden">
+        <div className="~h-14/24 bg-custom-gradient overflow-hidden">
             <div className="flex items-center w-[calc(350px_*_12)] text-[1.5rem] tracking-wider h-full text-center text-white font-medium animate-infinite-scroll">
                 {arrWords.map((word, idx) => 
                     <div key={idx} className="w-[350px]">{word}</div>
@@ -271,7 +277,6 @@ function InfiniteCarousel() {
     )
 }
 
-// TODO: Add drag control for the carousel
 function Importance() {
     const [position, setPosition] = React.useState(0);
     const [distance, setDistance] = React.useState(0)
@@ -324,11 +329,11 @@ function Importance() {
                 </div>
             </div>
 
-            <div className="w-full py-4 md:py-0 md:w-2/3 h-full box flex relative">
+            <div className="w-full py-10 md:py-0 md:w-2/3 h-full flex relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#93E16E] via-[#7BBA5D] to-[#447538] via-55%"></div>
 
                 <div className="flex ~px-4/10 relative w-full md:h-full items-center overflow-x-auto md:overflow-hidden">
-                    <div  className="flex gap-10 md:w-[calc(328px_*_5)] transition-all duration-300"
+                    <div  className="flex ~gap-4/10 md:w-[calc(328px_*_5)] transition-all duration-300"
                         style={{ transform: `translateX(calc(-${distance}px - ${position * 10}px))` }}>
                         {cardItems.map((card, idx) => (
                             <Card className="min-w-[301px]" key={idx} imgSrc={card.image} title={card.title} description={card.description} />

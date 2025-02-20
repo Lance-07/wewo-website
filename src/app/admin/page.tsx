@@ -8,6 +8,7 @@ import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
 import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { convertLiterToMl } from "@/lib/utils";
+import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 
 interface AdminCardItems {
     number: string,
@@ -23,7 +24,7 @@ export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0 });
-
+    const [loading, setLoading] = useState(false)
 
     adminCardItems = [
 {
@@ -67,10 +68,10 @@ return (
             </div>
             <div className="md:mt-[150px] flex justify-center">
                 <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
-                    <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
                 </div>
             </div>
-            <BottleStats onDataUpdate={setBottleStats} />
+            <BottleStats onDataUpdate={setBottleStats} setLoading={setLoading} />
         </main>
     </div>
 );
@@ -79,9 +80,10 @@ return (
 interface DashboardCardProps {
 activeTab: string;
 setActiveTab: (tab: string) => void;
+loading: boolean;
 }
 
-function DashboardCard({ activeTab, setActiveTab }: DashboardCardProps){
+function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps){
     const [isEdit, setIsEdit] = useState(false)
 
     // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
@@ -139,80 +141,98 @@ return (
             {activeTab === 'overview' ? (
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap justify-center md:justify-between mt-4">
-                        {adminCardItems.map((item, idx) => (
-                        <AdminCard 
-                        key={idx}
-                        className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-[150px] md:h-[187px]`}
-                        number={item.number} 
-                        label={item.label} 
-                        iconLink={item.iconLink}      
-                        title={item.title} 
-                        />
-                        ))}
+                        {loading ? 
+                            <CardSkeletons/>
+                        :
+                            adminCardItems.map((item, idx) => (
+                                <AdminCard 
+                                    key={idx}
+                                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-[150px] md:h-[187px]`}
+                                    number={item.number} 
+                                    label={item.label} 
+                                    iconLink={item.iconLink}      
+                                    title={item.title} 
+                                />
+                            ))
+                        }
                     </div>
 
                     <div className="flex flex-col h-[291px] lg:flex-row gap-4 justify-between">
                         <div className="h-full">
-                            <PieChart className="min-w-[513px]" />
+                            { loading ? 
+                                <PieSkeleton />
+                            :
+                                <PieChart className="min-w-[513px]" />
+                            }
                         </div> 
 
-                        <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
-                            <h1 className="font-semibold">Backwash Indicator</h1>
-                            <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
-                            <div className="flex flex-col gap-[10px]">
-                                <div className="flex gap-2 text-nowrap text-sm">
-                                    <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
+                        { loading ?
+                            <BackwashIndSkeleton />
+                        : 
+                            <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                                <h1 className="font-semibold">Backwash Indicator</h1>
+                                <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
+                                <div className="flex flex-col gap-[10px]">
+                                    <div className="flex gap-2 text-nowrap text-sm">
+                                        <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
+                                            <Check color="white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-green-second">Filter OK</h3>
+                                            <p className="font-light text-sm text-stone-400">Turbidity is within safe range (less than 5 NTU)</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 text-nowrap text-sm">
+                                        <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
+                                            <TriangleAlert color="white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-yellow-500">Backwash Recommended Soon</h3>
+                                            <p className="font-light text-sm text-stone-400">Turbidity is acceptable (5 - 10 NTU)</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 text-nowrap text-sm">
+                                        <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
+                                            <X color="white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-red-700">Perform Backwash Immediately</h3>
+                                            <p className="font-light text-sm text-stone-400">Turbidity exceeds safe limits (more than 10 NTU)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        { loading ? 
+                            <BottleBinIndSkeleton />
+                        : 
+                            <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                                <h1 className="font-semibold">Bottle Bin Indicator</h1>
+                                <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
+                                <div className="flex gap-2">
+                                    <div className="rounded-lg size-[34px] bg-green-second flex items-center justify-center">
                                         <Check color="white" />
                                     </div>
-                                    <div>
-                                        <h3 className="text-green-second">Filter OK</h3>
-                                        <p className="font-light text-sm text-stone-400">Turbidity is within safe range (less than 5 NTU)</p>
+                                    <div className="text-sm">
+                                        <h3 className="text-green-second">Bin OK</h3>
+                                        <p className="text-stone-500 text-sm">Bin is not full</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-2 text-nowrap text-sm">
-                                    <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
-                                        <TriangleAlert color="white" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-yellow-500">Backwash Recommended Soon</h3>
-                                        <p className="font-light text-sm text-stone-400">Turbidity is acceptable (5 - 10 NTU)</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2 text-nowrap text-sm">
-                                    <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
+                                <div className="flex gap-2">
+                                    <div className="rounded-lg size-[34px] bg-stone-600 flex items-center justify-center">
                                         <X color="white" />
                                     </div>
-                                    <div>
-                                        <h3 className="text-red-700">Perform Backwash Immediately</h3>
-                                        <p className="font-light text-sm text-stone-400">Turbidity exceeds safe limits (more than 10 NTU)</p>
+                                    <div className="text-sm">
+                                        <h3 className="text-stone-600">Replaced</h3>
+                                        <p className="text-stone-500 text-sm">Bin is full</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
-                            <h1 className="font-semibold">Bottle Bin Indicator</h1>
-                            <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
-                            <div className="flex gap-2">
-                                <div className="rounded-lg size-[34px] bg-green-second flex items-center justify-center">
-                                    <Check color="white" />
-                                </div>
-                                <div className="text-sm">
-                                    <h3 className="text-green-second">Bin OK</h3>
-                                    <p className="text-stone-500 text-sm">Bin is not full</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <div className="rounded-lg size-[34px] bg-stone-600 flex items-center justify-center">
-                                    <X color="white" />
-                                </div>
-                                <div className="text-sm">
-                                    <h3 className="text-stone-600">Replaced</h3>
-                                    <p className="text-stone-500 text-sm">Bin is full</p>
-                                </div>
-                            </div>
-                        </div>
+                        }
+                        
                     </div>
+                    
                 </div>
             ) : (
                 <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">
@@ -249,7 +269,7 @@ return (
                     <h2 className="font-light">Adjust the water dispense by WEWO depends on the bottle size</h2>
                     
                     <table className="w-full">
-                        <thead className="font-semibold text-stone-400 tracking-wider text-sm">
+                        <thead className="font-semibold text-stone-400 tracking-wider [&_th]:py-3 text-sm">
                             <tr>
                                 <th>Bottle Size</th>
                                 <th>Volume Range (ml)</th>
@@ -258,58 +278,67 @@ return (
                             </tr>
                         </thead>
                         <tbody className="font-light text-center divide-y [&_td]:py-3">
-                            <tr>
-                                <td>Small</td>
-                                <td>250 ml - 350 ml</td>
-                                <td>1 sec</td>
-                                <td>
-                                    {isEdit ? (
-                                        <input 
-                                            value={dispensedValue.small} 
-                                            name="small" 
-                                            onChange={handleDispenseValueChange} 
-                                            type="text"
-                                            className="border p-1" 
-                                        />
-                                    ) : (
-                                        convertLiterToMl(dispensedValue?.small || "0")
-                                    )}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Medium</td>
-                                <td>400 ml - 700 ml</td>
-                                <td>2 sec</td>
-                                <td>
-                                    {isEdit ? (
-                                        <input value={dispensedValue.medium} 
-                                            name="medium" 
-                                            onChange={handleDispenseValueChange} 
-                                            type="text" 
-                                            className="border p-1" 
-                                        />
-                                    ) : (
-                                        convertLiterToMl(dispensedValue?.medium || "0")
-                                    )}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Large</td>
-                                <td>900 ml - 2 L</td>
-                                <td>3 sec</td>
-                                <td>
-                                    {isEdit ? (
-                                        <input value={dispensedValue.large} 
-                                            name="large"
-                                            onChange={handleDispenseValueChange} 
-                                            type="text" 
-                                            className="border p-1" 
-                                        />
-                                    ) : (
-                                        convertLiterToMl(dispensedValue?.large || "0")
-                                    )}
-                                </td>
-                            </tr>
+                            { loading ? 
+                                <>
+                                    <TableRowSkeleton />
+                                    <TableRowSkeleton />
+                                    <TableRowSkeleton />
+                                </> : 
+                                <>
+                                    <tr>
+                                        <td>Small</td>
+                                        <td>250 ml - 350 ml</td>
+                                        <td>1 sec</td>
+                                        <td>
+                                            {isEdit ? (
+                                                <input 
+                                                    value={dispensedValue.small} 
+                                                    name="small" 
+                                                    onChange={handleDispenseValueChange} 
+                                                    type="text"
+                                                    className="border p-1" 
+                                                />
+                                            ) : (
+                                                convertLiterToMl(dispensedValue?.small || "0")
+                                            )}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medium</td>
+                                        <td>400 ml - 700 ml</td>
+                                        <td>2 sec</td>
+                                        <td>
+                                            {isEdit ? (
+                                                <input value={dispensedValue.medium} 
+                                                    name="medium" 
+                                                    onChange={handleDispenseValueChange} 
+                                                    type="text" 
+                                                    className="border p-1" 
+                                                />
+                                            ) : (
+                                                convertLiterToMl(dispensedValue?.medium || "0")
+                                            )}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large</td>
+                                        <td>900 ml - 2 L</td>
+                                        <td>3 sec</td>
+                                        <td>
+                                            {isEdit ? (
+                                                <input value={dispensedValue.large} 
+                                                    name="large"
+                                                    onChange={handleDispenseValueChange} 
+                                                    type="text" 
+                                                    className="border p-1" 
+                                                />
+                                            ) : (
+                                                convertLiterToMl(dispensedValue?.large || "0")
+                                            )}
+                                        </td>
+                                    </tr>
+                                </>
+                            }
                         </tbody>
                     </table>
                 </div>

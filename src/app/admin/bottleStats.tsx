@@ -4,10 +4,14 @@ import { supabase } from "../../../supabase";
 
 interface BottleStatsProps {
     onDataUpdate: (data: { totalLiters: number; totalBottles: number }) => void;
+    setLoading?: (T: boolean) => void | undefined;
 }
 
-export default function BottleStats({ onDataUpdate }: BottleStatsProps) {
+export default function BottleStats({ onDataUpdate, setLoading }: BottleStatsProps) {
     const fetchBottleData = async () => {
+        if (setLoading) {
+            setLoading(true);
+        }
         const { data, error } = await supabase
             .from("CollectedBottles")
             .select("totalLiters, small, medium, large");
@@ -24,7 +28,9 @@ export default function BottleStats({ onDataUpdate }: BottleStatsProps) {
             totalLiters += bottle.totalLiters;
             totalBottles += bottle.small + bottle.medium + bottle.large;
         });
-
+        if (setLoading) {
+            setLoading(false);
+        }
         onDataUpdate({ totalLiters, totalBottles });
     };
 
