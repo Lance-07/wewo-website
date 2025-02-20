@@ -1,8 +1,34 @@
+'use client'
 import React from "react";
+import { useState } from 'react'
 import Image from "next/image";
 import { mazzard_soft_h } from "@/app/ui/fonts";
 
 const LoginPage = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // console.log(email, password)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const response = await fetch("/api/login", {
+      method: 'POST',
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({email, password})
+    })
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Login successful:", data);
+    } else {
+      console.log("Login failed:", data);
+    }
+  }
+
   return (
     <div
       className="w-full min-h-screen flex items-center justify-center p-4"
@@ -38,16 +64,19 @@ const LoginPage = () => {
             <h2 className="text-[#4668B2] text-center text-xl md:text-2xl font-semibold leading-[29px] tracking-normal">
               Login Account
             </h2>
-            <form className="w-full space-y-4">
+            <form onSubmit={handleSubmit} className="w-full space-y-4">
               <div>
                 <label className="block mb-1 text-sm font-semibold text-[#4668B2]" htmlFor="email">
                   Email
                 </label>
                 <input
                   type="email"
+                  name="email"
                   id="email"
                   className="w-full p-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   placeholder=""
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} 
                 />
               </div>
               <div>
@@ -57,8 +86,11 @@ const LoginPage = () => {
                 <input
                   type="password"
                   id="password"
+                  name="password"
                   className="w-full p-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   placeholder=""
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} 
                 />
               </div>
               <div className="flex flex-col md:flex-row justify-between gap-2 md:gap-0 text-xs text-[#4668B2]">
@@ -69,7 +101,7 @@ const LoginPage = () => {
                   Need an Account?
                 </a>
               </div>
-              <button className="w-full bg-[#4668B2] text-white rounded-md py-2 text-base font-bold">
+              <button className="w-full bg-[#4668B2] text-white rounded-md py-2 text-base font-bold" type="submit">
                 Continue
               </button>
             </form>

@@ -19,12 +19,22 @@ interface AdminCardItems {
 }
 
 let adminCardItems:AdminCardItems[]
+// let bottleSize 
 
 export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0 });
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
     const [loading, setLoading] = useState(false)
+    const smallCF = bottleStats.smallTotal * 45.54
+    const mediumCF = bottleStats.mediumTotal * 91.08
+    const largeCF = bottleStats.largeTotal * 240.12
+    const totalCF = (smallCF + mediumCF + largeCF) * 0.001
+
+    console.log("small: ", smallCF)
+    console.log("mediumCF: ", mediumCF)
+    console.log("totalCF: ", totalCF);
+    
 
     adminCardItems = [
 {
@@ -42,14 +52,14 @@ export default function AdminPage() {
     className: 'bg-[#4987B0] text-[#4987B0]'
 },
 {
-    number: '3',
+    number: totalCF.toFixed(1).toString(),
     label: 'kilograms',
     iconLink: '/icons/carbon-footprint.png',
     title: 'carbon footprints reduced',
     className: 'bg-[#7CBA5A] text-[#7CBA5A]'
 },
 {
-    number: '0',
+    number: '0 - 30',
     label: 'NTU',
     iconLink: '/icons/carbon-footprint.png',
     title: 'turbidity clarity',
@@ -84,6 +94,7 @@ loading: boolean;
 }
 
 function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps){
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
     const [isEdit, setIsEdit] = useState(false)
 
     // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
@@ -162,9 +173,10 @@ return (
                             { loading ? 
                                 <PieSkeleton />
                             :
-                                <PieChart className="min-w-[513px]" />
+                                <PieChart bottleStats={bottleStats} className="min-w-[513px]" />
                             }
                         </div> 
+                        <BottleStats onDataUpdate={setBottleStats} />
 
                         { loading ?
                             <BackwashIndSkeleton />
