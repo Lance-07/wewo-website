@@ -9,6 +9,9 @@ import PieChart from "../ui/components/chart";
 import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
+import sampleData from '../../lib/tableData.json'
+import Pagination from "../ui/components/pagination";
+import Table from "../ui/components/admin/table";
 
 interface AdminCardItems {
     number: string,
@@ -106,6 +109,11 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         console.log(dispensedValue)
         setIsEdit(!isEdit)
     }
+
+    // TODO:
+    // split the number of rows to 10 :done
+    // implement filter for daily (current day), weekly, monthly :wip (functions done) - frontend (not yet)
+    // filter for from (starting date) to (ending date) :wip (functions done) - frontend (not yet)
 
 return (
     <div className="w-full">
@@ -230,9 +238,30 @@ return (
                                 </div>
                             </div>
                         }
-                        
                     </div>
-                    
+
+                    <div className="w-full flex justify-between">
+                        <span className="py-2 px-4 flex min-w-52 border border-gray-200">
+                            <select className="w-full h-full outline-none">
+                                <option value="all">All</option>
+                                <option value="all">Daily</option>
+                                <option value="all">Weekly</option>
+                                <option value="all">Monthly</option>
+                            </select>
+                        </span>
+                        <div className="flex gap-4 items-center [&>input]:border [&>input]:py-2 [&>input]:px-4 [&>input]:outline-none">
+                            <label htmlFor="from">From: </label>
+                            <input id="from" type="date" />
+                            <label htmlFor="to">To: </label>
+                            <input id="to" type="date" />
+                        </div>
+                    </div>
+
+                    <Table />
+
+                    <div className="my-6 flex justify-center">
+                        <Pagination />
+                    </div>
                 </div>
             ) : (
                 <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">
