@@ -7,9 +7,10 @@ import { poppins } from "@/app/ui/fonts";
 import Link from "next/link";
 import React, { use, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Footer from "@/app/ui/components/footer";
 
 export default function ArticlesPages() {
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const articlesData: Record<
     string,
     {
@@ -188,7 +189,7 @@ export default function ArticlesPages() {
   return (
     <main>
       <Navbar />
-      <ArticleBody articlesData={articles} />
+      <ArticleBody id={id} articlesData={articles} />
       <Footer />
     </main>
   );
@@ -201,7 +202,7 @@ interface Article {
   description: string;
 }
 
-const articlesDataForCards: Article[] = [
+export const articlesDataForCards: Article[] = [
   {
     id: 1,
     title: "The Water Conservation",
@@ -234,7 +235,9 @@ const articlesDataForCards: Article[] = [
 
 function ArticleBody({
   articlesData,
+  id,
 }: {
+  id: string,
   articlesData: {
     title: string;
     image: string;
@@ -255,11 +258,10 @@ function ArticleBody({
     articlesDataForCards.slice(0, 3)
   );
 
-  const handleCardClick = (id: number) => {
-    // Avoid multiple clicks; update once when state changes
+  useEffect(() => {
     setVisibleArticles((prevArticles) => {
       const filteredArticles = prevArticles.filter(
-        (article) => article.id !== id
+        (article) => article.id !== parseInt(id)
       );
 
       const remainingArticles = articlesDataForCards.filter(
@@ -277,7 +279,7 @@ function ArticleBody({
 
       return newVisibleArticles;
     });
-  };
+  }, [])
 
   const today = new Date();
   const formattedDate = today
@@ -390,7 +392,6 @@ function ArticleBody({
             {visibleArticles.map((article) => (
               <div
                 key={article.id}
-                onClick={() => handleCardClick(article.id)}
                 className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
               >
                 <Link href={`/articles/${article.id}`} passHref>
@@ -412,52 +413,5 @@ function ArticleBody({
         </div>
       </div>
     </div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className={"w-full h-[448px] relative"}>
-      {/* Overlay Color Gradient */}
-      <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
-
-      {/* Dark Effect Overlay Gradient */}
-      <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-black from-0%"></div>
-
-      <div
-        className={
-          "relative flex flex-col items-center justify-center h-full w-full"
-        }
-      >
-        <div className={"w-[275px] h-[80px] mb-10"}>
-          <Image
-            src={"/icons/logo.png"}
-            width={609}
-            height={206}
-            alt="logo"
-            className={"w-full h-auto"}
-          />
-        </div>
-
-        <div
-          className={"text-white flex-col flex items-center text-center gap-4"}
-        >
-          <h1 className={"text-4xl font-bold"}>Collect. Conserve. Recycle.</h1>
-          <h2 className={`w-8/12 ${poppins.className}`}>
-            WEWO isn&#39;t just water purification. It&#39;s the breakthrough
-            solution for a sustainable future.
-          </h2>
-
-          <div className={"flex gap-5"}>
-            <Link href={"https://www.facebook.com/"} target="_blank">
-              <Facebook />
-            </Link>
-            <Link href={"https://mail.google.com/mail/u/"} target="_blank">
-              <Mail />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }

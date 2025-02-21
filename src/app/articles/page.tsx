@@ -7,6 +7,8 @@ import Image from "next/image";
 import { poppins } from "../ui/fonts";
 import { useRouter } from "next/navigation";
 import articlesData from "./mockdata/page";
+import Footer from "../ui/components/footer";
+import { articlesDataForCards } from "./[id]/page";
 
 export default function ArticlesPage() {
   return (
@@ -156,103 +158,27 @@ function ArticleBody() {
         <div className={"flex flex-col md:flex-row gap-6 px-6 pb-28"}>
           {/* Main container of 3 cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
-            {/* Sub container of 3 cards */}
-            {/* <!-- Card 1 --> */}
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <img
-                src="your-image.jpg"
-                alt=""
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg">Battles Against Bottles</h3>
-                <p className="text-gray-600 text-sm">
-                  Plastic pollution has become one of the most alarming
-                  environmental challenges of our time.
-                </p>
-              </div>
-            </div>
-            {/* <!-- Card 2 --> */}
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <img
-                src="your-image.jpg"
-                alt=""
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg">Reduced Carbon Footprint</h3>
-                <p className="text-gray-600 text-sm">
-                  Waste management and water conservation strategies can reduce
-                  carbon emissions by up to 20% in urban areas.
-                </p>
-              </div>
-            </div>
-            {/* <!-- Card 3 --> */}
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <img
-                src="your-image.jpg"
-                alt=""
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg">Community Engagement</h3>
-                <p className="text-gray-600 text-sm">
-                  Sustainability awareness through community engagement
-                  programs.
-                </p>
-              </div>
-            </div>
+            {articlesDataForCards
+              .filter(article => article.id !== 1)
+              .map(article => (
+              <Link className="flex flex-1" key={article.id} href={`/articles/${article.id}`}>
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+                  <img
+                    src={article.image}
+                    alt=""
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg">{article.title}</h3>
+                    <p className="text-gray-600 text-sm">{article.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className={"w-full h-[448px] relative"}>
-      {/* Overlay Color Gradient */}
-      <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
-
-      {/* Dark Effect Overlay Gradient */}
-      <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-black from-0%"></div>
-
-      <div
-        className={
-          "relative flex flex-col items-center justify-center h-full w-full"
-        }
-      >
-        <div className={"w-[275px] h-[80px] mb-10"}>
-          <Image
-            src={"/icons/logo.png"}
-            width={609}
-            height={206}
-            alt="logo"
-            className={"w-full h-auto"}
-          />
-        </div>
-
-        <div
-          className={"text-white flex-col flex items-center text-center gap-4"}
-        >
-          <h1 className={"text-4xl font-bold"}>Collect. Conserve. Recycle.</h1>
-          <h2 className={`w-8/12 ${poppins.className}`}>
-            WEWO isn&#39;t just water purification. It&#39;s the breakthrough
-            solution for a sustainable future.
-          </h2>
-
-          <div className={"flex gap-5"}>
-            <Link href={"https://www.facebook.com/"} target="_blank">
-              <Facebook />
-            </Link>
-            <Link href={"https://mail.google.com/mail/u/"} target="_blank">
-              <Mail />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }
 
