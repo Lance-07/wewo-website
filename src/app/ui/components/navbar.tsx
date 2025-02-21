@@ -24,10 +24,6 @@ const navList: { name: string; link: string }[] = [
     name: "FAQs",
     link: "#faqs",
   },
-  {
-    name: "Articles",
-    link: "#articles",
-  },
 ];
 
 export default function Navbar() {
