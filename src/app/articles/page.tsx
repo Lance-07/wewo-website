@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "../ui/components/navbar";
 import { Facebook, Mail } from "lucide-react";
 import Image from "next/image";
 import { poppins } from "../ui/fonts";
+import { useRouter } from "next/navigation";
+import articlesData from "./mockdata/page";
 
 export default function ArticlesPage() {
   return (
@@ -10,6 +14,7 @@ export default function ArticlesPage() {
       <Navbar />
       <ArticleBody />
       <Footer />
+      <ArticlesPages />
     </main>
   );
 }
@@ -46,7 +51,7 @@ function ArticleBody() {
             className={"w-[840px] h-[400px] bg-[#F4F4F4] shadow-lg rounded-lg"}
           >
             <Image
-              src={"/illustrations/dispense-water.png"}
+              src={"/illustrations/WewoImpactPageIMG1.png"}
               alt="Card Image"
               width={840}
               height={400}
@@ -149,7 +154,9 @@ function ArticleBody() {
         </h3>
 
         <div className={"flex flex-col md:flex-row gap-6 px-6 pb-28"}>
+          {/* Main container of 3 cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
+            {/* Sub container of 3 cards */}
             {/* <!-- Card 1 --> */}
             <div className="bg-white shadow-lg rounded-lg overflow-hidden">
               <img
@@ -165,7 +172,6 @@ function ArticleBody() {
                 </p>
               </div>
             </div>
-
             {/* <!-- Card 2 --> */}
             <div className="bg-white shadow-lg rounded-lg overflow-hidden">
               <img
@@ -181,7 +187,6 @@ function ArticleBody() {
                 </p>
               </div>
             </div>
-
             {/* <!-- Card 3 --> */}
             <div className="bg-white shadow-lg rounded-lg overflow-hidden">
               <img
@@ -248,5 +253,29 @@ function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function ArticlesPages() {
+  const pageId = [1, 2, 3];
+
+  return (
+    <div>
+      <h1>Animal List</h1>
+      {pageId.map((id) => (
+        <Link key={id} href={`/articles/${id}`}>
+          <div
+            style={{
+              cursor: "pointer",
+              marginBottom: "10px",
+              border: "1px solid black",
+              padding: "10px",
+            }}
+          >
+            awdadada
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
