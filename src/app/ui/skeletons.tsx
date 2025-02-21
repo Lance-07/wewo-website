@@ -124,3 +124,45 @@ export function TableRowSkeleton() {
         </tr>
     );
 }
+
+export function TableSkeleton() {
+    return (
+        <tr className="[&>td>div>div]:rounded-md [&>td>div:first-child]:flex [&>td>div:first-child]:justify-center">
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-28"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-32"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-20"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-24"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-32"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-20"></div>
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-2">
+                <div>
+                    <div className="bg-gray-100 h-6 w-24"></div>
+                </div>
+            </td>
+        </tr>
+    );
+}
