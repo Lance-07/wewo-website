@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from 'react';
 import { AdminCard } from "../ui/components/card";
 import AdminNav from "../ui/components/admin/adminNav";
@@ -12,6 +12,9 @@ import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, 
 import sampleData from '../../lib/tableData.json'
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { headers } from "next/headers";
+import { poppins } from "../ui/fonts";
 
 interface AdminCardItems {
     number: string,
@@ -99,6 +102,12 @@ loading: boolean;
 function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps){
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
     const [isEdit, setIsEdit] = useState(false)
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const router = useRouter();
+    const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
+
+    const [timeframe, setTimeframe] = useState<string | null>('all')
 
     // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
     // if no value (undefined) the html will show 0 ml no worries on no value.
@@ -123,8 +132,41 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     // TODO:
     // split the number of rows to 10 :done
-    // implement filter for daily (current day), weekly, monthly :wip (functions done) - frontend (not yet)
+    // implement filter for daily (current day), weekly, monthly :done
     // filter for from (starting date) to (ending date) :wip (functions done) - frontend (not yet)
+    
+    // useEffect(() => {
+    //     const params = new URLSearchParams(searchParams);
+    //     const value = params.get('timeframe')
+    //     setTimeframe(value)
+    // }, [])
+
+    // function handleTimeframeChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    //     const value = e.target.value;
+    //     setTimeframe(value)
+    //     const params = new URLSearchParams(searchParams);
+    //     params.set('timeframe', value)
+    //     router.push(`${pathname}?${params.toString()}`)
+    // }
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        const fromValue = params.get('from');
+        const toValue = params.get('to');
+
+        setDateFilter((prev) => ({...prev, from: fromValue || '', to: toValue || ''}))
+    }, [])
+
+    function handleDateFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = e.target;
+        setDateFilter(prev => ({...prev, [name] : value}))
+        console.log(dateFilter)
+        const params = new URLSearchParams(searchParams);
+        params.set(name, value)
+        router.push(`${pathname}?${params.toString()}`)
+    }
+
+    console.log(dateFilter)
 
 return (
     <div className="w-full">
@@ -176,7 +218,7 @@ return (
                         }
                     </div>
 
-                    <div className="flex flex-col h-[291px] lg:flex-row gap-4 justify-between">
+                    <div className={`${poppins.className} flex flex-col h-[291px] lg:flex-row gap-4 justify-between`}>
                         <div className="h-full">
                             { loading ? 
                                 <PieSkeleton />
@@ -252,22 +294,24 @@ return (
                         }
                     </div>
 
-                    <div className="w-full flex justify-between">
-                        <span className="py-2 px-4 flex min-w-52 border border-gray-200">
-                            <select className="w-full h-full outline-none">
+                    <div className="w-full flex justify-end">
+                        {/* <span className="py-2 px-4 flex min-w-52 border border-gray-200">
+                            <select onChange={handleTimeframeChange} value={timeframe || 'all'} className="w-full h-full outline-none">
                                 <option value="all">All</option>
-                                <option value="all">Daily</option>
-                                <option value="all">Weekly</option>
-                                <option value="all">Monthly</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
                             </select>
-                        </span>
+                        </span> */}
                         <div className="flex gap-4 items-center [&>input]:border [&>input]:py-2 [&>input]:px-4 [&>input]:outline-none">
                             <label htmlFor="from">From: </label>
-                            <input id="from" type="date" />
+                            <input value={dateFilter.from} onChange={handleDateFilterChange} name="from" id="from" type="date" />
                             <label htmlFor="to">To: </label>
-                            <input id="to" type="date" />
+                            <input value={dateFilter.to} onChange={handleDateFilterChange} name="to" id="to" type="date" />
                         </div>
                     </div>
+
+                    <hr />
 
                     <Table />
 

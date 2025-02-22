@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { TableSkeleton } from "../../skeletons";
 import { useSearchParams } from "next/navigation";
+import { convertLiterToMl } from "@/lib/utils";
 
 export default function Table() {
     const [data, setData] = useState<TableData[]>([]);
@@ -36,17 +37,20 @@ export default function Table() {
         getData();
     }, [searchParams]);
 
-    console.log(data)
-
     return (
         <div ref={tableRef} className="w-full shadow-card-shadow rounded-lg">
             <table className="w-full border-collapse">
-                <thead className="[&>tr>th]:py-2 [&>tr>th]:px-4 [&>tr>th]:border-2 [&>tr>th]:text-stone-500">
+                <thead className="[&>tr>th]:py-2 bg-blue-main [&>tr>th]:px-4 [&>tr>th]:border-2 [&>tr>th]:text-white [&>tr>th]:font-bold [&>tr>th]:tracking-wider">
                     <tr>
-                        <th rowSpan={2}>Date</th>
+                        <th rowSpan={2}>
+                            <div>
+                                <p>Date</p>
+                                <p className="text-sm">(mm/dd/yyyy)</p>
+                            </div>
+                        </th>
                         <th rowSpan={2}>Distribution</th>
-                        <th rowSpan={2}>PET</th>
-                        <th rowSpan={2}>C02</th>
+                        <th rowSpan={2}>PET Bottle</th>
+                        <th rowSpan={2}>CO2</th>
                         <th colSpan={3}>Bottles</th>
                     </tr>
                     <tr>
@@ -60,9 +64,9 @@ export default function Table() {
                         Array.from({ length: 10 }).map((_, index) => <TableSkeleton key={index} />)
                         : 
                         data.map(item => (
-                            <tr key={item.id}>
-                                <td>{moment(item.date).calendar()}</td>
-                                <td>{item.waterDistribution}</td>
+                            <tr key={item.id} className="even:bg-gray-100">
+                                <td>{moment(item.date).format('LL')}</td>
+                                <td>{convertLiterToMl(item.waterDistribution.toString())}</td>
                                 <td>{item.totalBottles}</td>
                                 <td>{item.co2}</td>
                                 <td>{item.bottles.small}</td>
