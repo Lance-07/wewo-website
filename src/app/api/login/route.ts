@@ -1,65 +1,42 @@
 import { supabase } from "../../../../supabase"; 
-
-
+import { encrypt } from "../../../lib/server-utils";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        console.log(body);
+        console.log("Received Body:", body);
 
         const { data, error } = await supabase
-        .from("adminUser")
-        .select("*")
-        .eq("email", body.email)
-        .single();
+            .from("adminUser")
+            .select("*")
+            .eq("email", body.email)
+            .single();
 
-        console.log(data);
-
-        if (data){
-            console.log("email existing! ", data)
-            if (body.password == data.password){
-                return new Response(JSON.stringify({ message: "Received", data: body }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" },
-                    });
-            } else if (body.password != data.password){
-                return new Response(JSON.stringify({ message: "wrong password", data: body }), {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" },
-                    });
-            }
-
-        } else if (error) {
-            return new Response(JSON.stringify({ message: "No such email exists", data: body }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-                });
+        if (error || !data) {
+            console.log("No such email exists:", error);
+            return NextResponse.json({ message: "No such email exists" }, { status: 400 });
         }
+
+        if (body.password !== data.password) {
+            console.log("Wrong password");
+            return NextResponse.json({ message: "Wrong password" }, { status: 400 });
+        }
+
+        console.log("Login successful!");
+        const token = await encrypt({ id: data.id, email: data.email });
+
+        const response = NextResponse.json({ message: "Log in!", token });
+        response.cookies.set("wewotoken", token, {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === "production", 
+            maxAge: 3600 * 2,
+            path: "/",
+        });
+
+        return response;
     } catch (error) {
-    return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-    });
+        console.error("Error:", error);
+        return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
 }
-
-// try {
-//     const formData = await request.formData()
-// const email = formData.get('email')
-// const password = formData.get('password')
-
-// const { data, error } = await supabase
-// .from("adminUser")
-// .select("email")
-// .eq("email", email)
-// .single();
-
-// if (error) {
-//     return new Response(JSON.stringify({ error: "Database error", details: error.message }), { status: 500 });
-// }
-
-// return new Response(JSON.stringify({ message: "Email exists" }), { status: 200 });
-// }
-// catch (error) {
-//     console.log(error);
-// }

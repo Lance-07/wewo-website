@@ -1,6 +1,7 @@
 'use client'
 import React from "react";
 import { useState } from 'react'
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { mazzard_soft_h } from "@/app/ui/fonts";
 
@@ -8,6 +9,7 @@ const LoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter()
 
   // console.log(email, password)
 
@@ -23,9 +25,9 @@ const LoginPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Login successful:", data);
+      router.push("/admin")
     } else {
-      console.log("Login failed:", data);
+      console.error("Login failed:", data);
     }
   }
 
