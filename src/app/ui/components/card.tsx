@@ -163,7 +163,7 @@ export function AdminCard({number, label, iconLink, title, className} : Omit<Sim
                 <p className="vertical-rl rotate-180">{label}</p>
             </div>
             <div className={cn(`
-                text-white flex gap-2 justify-center items-center text-center h-full px-5 text-xs`, 
+                text-white flex gap-2 py-4 justify-center items-center text-center h-full px-5 text-xs`, 
                 
             )}>
                 <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />

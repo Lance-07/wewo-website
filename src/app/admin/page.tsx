@@ -65,7 +65,7 @@ export default function AdminPage() {
     className: 'bg-[#7CBA5A] text-[#7CBA5A]'
 },
 {
-    number: '0 - 30',
+    number: '0',
     label: 'NTU',
     iconLink: '/icons/carbon-footprint.png',
     title: 'turbidity clarity',
@@ -78,11 +78,11 @@ return (
         <header>
             <AdminNav />
         </header>
-        <main className="pt-[70px] flex flex-col">
-            <div className="md:fixed md:top-0 w-full bg-white z-10">
+        <main className="flex flex-col">
+            <div className="mt-28 md:top-0 w-full bg-white z-10">
                 <DashboarHeader />
             </div>
-            <div className="md:mt-[150px] flex justify-center">
+            <div className="~mt-11/28 flex justify-center">
                 <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
                     <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
                 </div>
@@ -116,6 +116,11 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         medium: '500',
         large: '1000',
     })
+    const [originalDispensedValue, setOriginalDispensedValue] = useState({
+        small: '250',
+        medium: '500',
+        large: '1000',
+    });
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value} = e.target;
@@ -128,6 +133,12 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         // call the save server action
         console.log(dispensedValue)
         setIsEdit(!isEdit)
+        setOriginalDispensedValue(dispensedValue)
+    }
+
+    const handleCancelSettings = () => {
+        setIsEdit(!isEdit)
+        setDispensedValue(originalDispensedValue)
     }
 
     // TODO:
@@ -171,27 +182,27 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 return (
     <div className="w-full">
         <div className="flex bg-transparent overflow-x-auto">
-        <button
-            className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
-                activeTab === 'overview' 
-                ? 'bg-blue-100 text-blue-500 border-2 border-blue-500' 
+            <button
+                className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                    activeTab === 'overview' 
+                    ? 'bg-blue-100 text-blue-500 border-2 border-blue-500' 
+                    : 'text-gray-400'
+                    }`}
+                    onClick={() => setActiveTab('overview')}
+                    >
+                    System Overview
+            </button>
+
+            <button
+                className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                activeTab === 'settings' 
+                ? 'bg-green-100 text-green-600 border-2 border-green-500' 
                 : 'text-gray-400'
                 }`}
-                onClick={() => setActiveTab('overview')}
-                >
-                System Overview
-    </button>
-
-    <button
-            className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
-            activeTab === 'settings' 
-            ? 'bg-green-100 text-green-600 border-2 border-green-500' 
-            : 'text-gray-400'
-            }`}
-            onClick={() => setActiveTab('settings')}
-                >
-            System Settings
-        </button>
+                onClick={() => setActiveTab('settings')}
+                    >
+                System Settings
+            </button>
         </div>
 
             <div className={`border-t-2 rounded-b-lg ${
@@ -200,15 +211,15 @@ return (
                 : 'border-green-500'
             }`}>
             {activeTab === 'overview' ? (
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-wrap justify-center md:justify-between mt-4">
+                <div className="flex  flex-col gap-8">
+                    <div className="flex flex-wrap justify-center gap-4 lg:justify-between mt-4">
                         {loading ? 
                             <CardSkeletons/>
                         :
                             adminCardItems.map((item, idx) => (
                                 <AdminCard 
                                     key={idx}
-                                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-[150px] md:h-[187px]`}
+                                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-full md:h-[187px]`}
                                     number={item.number} 
                                     label={item.label} 
                                     iconLink={item.iconLink}      
@@ -218,24 +229,22 @@ return (
                         }
                     </div>
 
-                    <div className={`${poppins.className} flex flex-col h-[291px] lg:flex-row gap-4 justify-between`}>
-                        <div className="h-full">
-                            { loading ? 
-                                <PieSkeleton />
-                            :
-                                <PieChart bottleStats={bottleStats} className="min-w-[513px]" />
-                            }
-                        </div> 
+                    <div className={`${poppins.className}  flex flex-wrap gap-4`}>
+                        { loading ? 
+                            <PieSkeleton />
+                        :
+                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full" />
+                        }
                         <BottleStats onDataUpdate={setBottleStats} />
 
                         { loading ?
                             <BackwashIndSkeleton />
                         : 
-                            <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                            <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_407px] min-w-[250px] sm:min-w-[320px] md:min-w-[407px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Backwash Indicator</h1>
                                 <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
                                 <div className="flex flex-col gap-[10px]">
-                                    <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="flex gap-2 sm:text-nowrap text-sm">
                                         <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
                                             <Check color="white" />
                                         </div>
@@ -244,7 +253,7 @@ return (
                                             <p className="font-light text-sm text-stone-400">Turbidity is within safe range (less than 5 NTU)</p>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="flex gap-2 sm:text-nowrap text-sm">
                                         <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
                                             <TriangleAlert color="white" />
                                         </div>
@@ -253,7 +262,7 @@ return (
                                             <p className="font-light text-sm text-stone-400">Turbidity is acceptable (5 - 10 NTU)</p>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2 text-nowrap text-sm">
+                                    <div className="flex gap-2 sm:text-nowrap text-sm">
                                         <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
                                             <X color="white" />
                                         </div>
@@ -269,7 +278,7 @@ return (
                         { loading ? 
                             <BottleBinIndSkeleton />
                         : 
-                            <div className="p-8 flex rounded-lg gap-4 flex-col shadow-card-shadow">
+                            <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_291px] min-w-[200px] sm:min-w-[250px] md:min-w-[291px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
                                 <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
@@ -294,7 +303,7 @@ return (
                         }
                     </div>
 
-                    <div className="w-full flex justify-end">
+                    <div className="w-full flex justify-end mt-4">
                         {/* <span className="py-2 px-4 flex min-w-52 border border-gray-200">
                             <select onChange={handleTimeframeChange} value={timeframe || 'all'} className="w-full h-full outline-none">
                                 <option value="all">All</option>
@@ -303,11 +312,15 @@ return (
                                 <option value="monthly">Monthly</option>
                             </select>
                         </span> */}
-                        <div className="flex gap-4 items-center [&>input]:border [&>input]:py-2 [&>input]:px-4 [&>input]:outline-none">
-                            <label htmlFor="from">From: </label>
-                            <input value={dateFilter.from} onChange={handleDateFilterChange} name="from" id="from" type="date" />
-                            <label htmlFor="to">To: </label>
-                            <input value={dateFilter.to} onChange={handleDateFilterChange} name="to" id="to" type="date" />
+                        <div className="flex flex-col sm:flex-row gap-4 items-center [&>div>input]:border [&>div>input]:py-2 [&>div>input]:px-4 [&>div>input]:outline-none">
+                            <div className="flex items-center gap-4">
+                                <label htmlFor="from">From: </label>
+                                <input value={dateFilter.from} onChange={handleDateFilterChange} name="from" id="from" type="date" />
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <label htmlFor="to">To: </label>
+                                <input value={dateFilter.to} onChange={handleDateFilterChange} name="to" id="to" type="date" />
+                            </div>
                         </div>
                     </div>
 
@@ -341,7 +354,7 @@ return (
                                     </div>
                                     Save
                                 </button>
-                                <button onClick={() => setIsEdit(!isEdit)} 
+                                <button onClick={handleCancelSettings} 
                                     className="text-white bg-red-700 flex justify-center items-center px-4 py-2 rounded-lg gap-2">
                                     <div className="flex size-6">
                                         <X />
@@ -353,82 +366,84 @@ return (
                     </div>
                     <h2 className="font-light">Adjust the water dispense by WEWO depends on the bottle size</h2>
                     
-                    <table className="w-full">
-                        <thead className="font-semibold text-stone-400 tracking-wider [&_th]:py-3 text-sm">
-                            <tr>
-                                <th>Bottle Size</th>
-                                <th>Volume Range (ml)</th>
-                                <th>Pumper Open Time (secs)</th>
-                                <th>Dispensed Water (ml)</th>
-                            </tr>
-                        </thead>
-                        <tbody className="font-light text-center divide-y [&_td]:py-3">
-                            { loading ? 
-                                <>
-                                    <TableRowSkeleton />
-                                    <TableRowSkeleton />
-                                    <TableRowSkeleton />
-                                </> : 
-                                <>
-                                    <tr>
-                                        <td>Small</td>
-                                        <td>250 ml - 350 ml</td>
-                                        <td>1 sec</td>
-                                        <td>
-                                            {isEdit ? (
-                                                <input 
-                                                    value={dispensedValue.small} 
-                                                    name="small" 
-                                                    onChange={handleDispenseValueChange} 
-                                                    type="text"
-                                                    className="border p-1" 
-                                                />
-                                            ) : (
-                                                convertLiterToMl(dispensedValue?.small || "0")
-                                            )}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Medium</td>
-                                        <td>400 ml - 700 ml</td>
-                                        <td>2 sec</td>
-                                        <td>
-                                            {isEdit ? (
-                                                <input value={dispensedValue.medium} 
-                                                    name="medium" 
-                                                    onChange={handleDispenseValueChange} 
-                                                    type="text" 
-                                                    className="border p-1" 
-                                                />
-                                            ) : (
-                                                convertLiterToMl(dispensedValue?.medium || "0")
-                                            )}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Large</td>
-                                        <td>900 ml - 2 L</td>
-                                        <td>3 sec</td>
-                                        <td>
-                                            {isEdit ? (
-                                                <input value={dispensedValue.large} 
-                                                    name="large"
-                                                    onChange={handleDispenseValueChange} 
-                                                    type="text" 
-                                                    className="border p-1" 
-                                                />
-                                            ) : (
-                                                convertLiterToMl(dispensedValue?.large || "0")
-                                            )}
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                        </tbody>
-                    </table>
+                    <div className="w-full overflow-auto">
+                        <table className="w-full">
+                            <thead className="[&>tr>th]:py-2 bg-blue-main [&>tr>th]:px-4 [&>tr>th]:border-2 [&>tr>th]:text-white [&>tr>th]:font-bold [&>tr>th]:tracking-wider">
+                                <tr>
+                                    <th>Bottle Size</th>
+                                    <th>Volume Range (ml)</th>
+                                    <th>Pumper Open Time (secs)</th>
+                                    <th>Dispensed Water (ml)</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y hover:[&>tr]:text-white hover:[&>tr]:bg-slate-400 [&>tr]:transition-all text-center text-nowrap [&>tr>td]:py-2 [&>tr>td]:px-3">
+                                { loading ? 
+                                    <>
+                                        <TableRowSkeleton />
+                                        <TableRowSkeleton />
+                                        <TableRowSkeleton />
+                                    </> : 
+                                    <>
+                                        <tr>
+                                            <td>Small</td>
+                                            <td>250 ml - 350 ml</td>
+                                            <td>1 sec</td>
+                                            <td>
+                                                {isEdit ? (
+                                                    <input 
+                                                        value={dispensedValue.small} 
+                                                        name="small" 
+                                                        onChange={handleDispenseValueChange} 
+                                                        type="text"
+                                                        className="border p-1 text-black" 
+                                                    />
+                                                ) : (
+                                                    convertLiterToMl(dispensedValue?.small || "0")
+                                                )}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Medium</td>
+                                            <td>400 ml - 700 ml</td>
+                                            <td>2 sec</td>
+                                            <td>
+                                                {isEdit ? (
+                                                    <input value={dispensedValue.medium} 
+                                                        name="medium" 
+                                                        onChange={handleDispenseValueChange} 
+                                                        type="text" 
+                                                        className="border p-1 text-black" 
+                                                    />
+                                                ) : (
+                                                    convertLiterToMl(dispensedValue?.medium || "0")
+                                                )}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Large</td>
+                                            <td>900 ml - 2 L</td>
+                                            <td>3 sec</td>
+                                            <td>
+                                                {isEdit ? (
+                                                    <input value={dispensedValue.large} 
+                                                        name="large"
+                                                        onChange={handleDispenseValueChange} 
+                                                        type="text" 
+                                                        className="border p-1 text-black" 
+                                                    />
+                                                ) : (
+                                                    convertLiterToMl(dispensedValue?.large || "0")
+                                                )}
+                                            </td>
+                                        </tr>
+                                    </>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
-    </div>
+            </div>
     </div>
 );
 }

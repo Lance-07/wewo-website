@@ -38,7 +38,7 @@ export default function Table() {
     }, [searchParams]);
 
     return (
-        <div ref={tableRef} className="w-full shadow-card-shadow rounded-lg">
+        <div ref={tableRef} className="w-full overflow-auto shadow-card-shadow rounded-lg">
             <table className="w-full border-collapse">
                 <thead className="[&>tr>th]:py-2 bg-blue-main [&>tr>th]:px-4 [&>tr>th]:border-2 [&>tr>th]:text-white [&>tr>th]:font-bold [&>tr>th]:tracking-wider">
                     <tr>
