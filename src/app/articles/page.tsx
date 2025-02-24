@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import Navbar from "../ui/components/navbar";
-import { Facebook, Mail } from "lucide-react";
 import Image from "next/image";
 import { poppins } from "../ui/fonts";
-import { useRouter } from "next/navigation";
 import Footer from "../ui/components/footer";
 import { articlesDataForCards } from "@/lib/data";
 
