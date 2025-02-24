@@ -6,9 +6,8 @@ import { Facebook, Mail } from "lucide-react";
 import Image from "next/image";
 import { poppins } from "../ui/fonts";
 import { useRouter } from "next/navigation";
-import articlesData from "./mockdata/page";
 import Footer from "../ui/components/footer";
-import { articlesDataForCards } from "./[id]/page";
+import { articlesDataForCards } from "@/lib/data";
 
 export default function ArticlesPage() {
   return (
