@@ -11,7 +11,7 @@ type SimpleCardProps = {
     label: string;
     iconLink: string
     title: string;
-    description: string;
+    description?: string;
     className: string;
 }
 
@@ -20,6 +20,7 @@ type DynamicCardProps = {
     title: string;
     description: string;
     baseColor: BaseColor;
+    className?: string;
 }
 
 interface HorizontalCardProps extends DynamicCardProps {
@@ -74,7 +75,7 @@ export function SimpleCard({number, label, iconLink, title, description, classNa
     )
 }
 
-export function DynamicCard({imgSrc, title, description, baseColor} : DynamicCardProps) {
+export function DynamicCard({imgSrc, title, description, baseColor, className} : DynamicCardProps) {
     const colorVariants = getColorVariants('dynamic');
 
     const hoverVariants: colorVariants = {
@@ -90,8 +91,8 @@ export function DynamicCard({imgSrc, title, description, baseColor} : DynamicCar
     }
 
     return (
-        <div className={`${colorVariants[baseColor]}
-            w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`}>
+        <div className={cn(`${colorVariants[baseColor]}
+            md:w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`, className)}>
             <Image src={imgSrc} width={1000} height={1000} alt={title} className="h-[136px] object-cover" />
             <div className={`flex flex-col w-full flex-1 relative group`}>
                 <div className={`${hoverVariants[baseColor]} absolute w-full h-full transform translate-x-[100%] translate-y-[100%] transition-all duration-300`}></div>
@@ -111,16 +112,16 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
     const colorVariants = getColorVariants('horizontal');
 
     return (
-        <div className={`${poppins.className} antialiased flex ${colorVariants[baseColor]} gap-10 w-[745px] justify-center items-center`}>
+        <div className={`${poppins.className} w-full antialiased flex ${colorVariants[baseColor]} gap-10 w-[745px] justify-center items-center`}>
             <Image src={imgSrc} priority width={2359} height={2000} alt={title}
-                className="object-contain min-w-[355px] h-auto w-1/3" />
-            <div className="flex flex-col flex-1 w-2/3 space-y-3">
+                className="object-contain min-w-[355px] h-auto w-1/3 hidden md:block" />
+            <div className="flex flex-col flex-1 w-full md:w-2/3 space-y-3">
                 <p className="font-bold text-4xl uppercase">{title}</p>
                 <p className="font-light">{description}</p>
                 <ul className="space-y-2">
                     {iconItems.map((iconItem, index) => (
                         <li key={index} className="flex gap-3">
-                            <div className={`${iconVariants[baseColor]} rounded w-7 h-7 flex justify-center items-center`}>
+                            <div className={`${iconVariants[baseColor]} shadow-[inset_0_-2px_4px_rgba(0,0,0,0.3)] rounded w-8 h-8 flex justify-center items-center`}>
                                 {iconItem.icon}
                             </div>
                             <span className="font-light capitalize">{iconItem.label}</span>
@@ -132,9 +133,9 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
     )
 }
 
-export function Card({imgSrc, title, description}: CardProps) {
+export function Card({imgSrc, title, description, className}: CardProps) {
     return (
-        <div className="rounded-3xl w-[328px] h-auto bg-[rgba(255,_255,_255,_51%)] p-2 border-8 border-[#2C4D24]">
+        <div className={cn(`rounded-3xl md:w-[328px] h-auto bg-[rgba(255,_255,_255,_51%)] p-2 border-8 border-[#2C4D24]`, className)}>
             <div className="rounded-[18px] overflow-hidden flex flex-col h-full bg-white">
                 <div className="h-[167px] w-full">
                     <Image src={imgSrc} width={1000} height={1000} alt={title} className="w-full h-full object-cover" />
@@ -162,7 +163,7 @@ export function AdminCard({number, label, iconLink, title, className} : Omit<Sim
                 <p className="vertical-rl rotate-180">{label}</p>
             </div>
             <div className={cn(`
-                text-white flex gap-2 justify-center items-center text-center h-full px-5 text-xs`, 
+                text-white flex gap-2 py-4 justify-center items-center text-center h-full px-5 text-xs`, 
                 
             )}>
                 <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
