@@ -12,12 +12,14 @@ import { articlesDataForCards } from "./[id]/page";
 
 export default function ArticlesPage() {
   return (
-    <main>
-      <Navbar />
-      <ArticleBody />
-      <Footer />
-      <ArticlesPages />
-    </main>
+    <>
+      <header><Navbar /></header>
+      <main>
+        <ArticleBody />
+        <Footer />
+      </main>
+    
+    </>
   );
 }
 
@@ -178,30 +180,6 @@ function ArticleBody() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function ArticlesPages() {
-  const pageId = [1, 2, 3];
-
-  return (
-    <div>
-      <h1>Animal List</h1>
-      {pageId.map((id) => (
-        <Link key={id} href={`/articles/${id}`}>
-          <div
-            style={{
-              cursor: "pointer",
-              marginBottom: "10px",
-              border: "1px solid black",
-              padding: "10px",
-            }}
-          >
-            awdadada
-          </div>
-        </Link>
-      ))}
     </div>
   );
 }

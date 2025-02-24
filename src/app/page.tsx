@@ -67,7 +67,7 @@ function Impact() {
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} onChange={(inView) => console.log('inview', inView)} >
             {({ inView, ref }) => (
-                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full md:h-[607px] py-20 md:py-0">
+                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full md:h-[607px] py-20 md:py-0 ~px-6/20">
                     {/* Overlay Color Gradient */}
                     <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
 
@@ -78,7 +78,7 @@ function Impact() {
                     <div className="absolute h-full w-full inset-0 bg-gradient-to-b from-transparent to-white from-[27%] to-[72%]"></div>
 
                     {/* Content */}
-                    <div className={cn(`relative transition-all translate-y-full duration-1000 opacity-0 w-full text-white container mx-auto`,
+                    <div className={cn(`relative transition-all translate-y-full duration-1000 opacity-0 w-full text-white mx-auto`,
                         { 'opacity-100 -translate-y-0': inView}
                     )}>
                         <div className="flex justify-center items-center h-full">
@@ -192,7 +192,7 @@ function About() {
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true}>
             {({ inView, ref }) => (
                 <section ref={ref} id={'about'} className="overflow-hidden bg-white md:h-[675px] w-full py-20 md:py-0 flex justify-center items-center">
-                    <div className="flex flex-col md:flex-row items-center gap-10 container mx-auto">
+                    <div className="flex flex-col md:flex-row items-center gap-10 container ~px-6/20 mx-auto">
                         <div className={cn(`w-full md:w-1/2 order-2 md:order-1 md:h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
                             { 'translate-x-0 opacity-100' : inView }
                         )}>
@@ -235,7 +235,7 @@ function About() {
 function HowItWorks() {
     return (
         <section id={'how-it-works'} className="bg-stone-50 py-20 md:py-0 md:h-[635px]">
-            <div className="flex h-full flex-col justify-center items-center container mx-auto gap-10">
+            <div className="flex h-full flex-col justify-center items-center ~px-6/20 container mx-auto gap-10">
                 <h1 className="text-blue-main text-[2.5rem] leading-[38.4px] font-bold">Turning Waste into <span className="text-green-third">Clean Water</span></h1>
                 <div className="flex gap-6 flex-col md:flex-row">
                     <DynamicCard 
@@ -403,7 +403,7 @@ function CTA() {
             {/* White Effect Overlay Gradient */}
             <div className="absolute h-full w-full inset-0 bg-gradient-to-t from-transparent to-white from-[27%] to-[72%]"></div>
 
-            <div className={'container mx-auto h-full flex items-center'}>
+            <div className={'container ~px-6/20 mx-auto h-full flex items-center'}>
                 <div className={'bg-white relative w-full h-[436px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
                     <div className={clsx('max-w-xl w-11/12 md:w-1/2 text-center space-y-8 transition-all duration-500 ease-in-out',
                         {

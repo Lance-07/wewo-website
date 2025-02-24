@@ -8,6 +8,7 @@ import Link from "next/link";
 import React, { use, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Footer from "@/app/ui/components/footer";
+import { articlesDataForCards } from "@/lib/data";
 
 export default function ArticlesPages() {
   const { id } = useParams() as { id: string };
@@ -195,43 +196,7 @@ export default function ArticlesPages() {
   );
 }
 
-interface Article {
-  id: number;
-  title: string;
-  image: string;
-  description: string;
-}
 
-export const articlesDataForCards: Article[] = [
-  {
-    id: 1,
-    title: "The Water Conservation",
-    image: "/illustrations/WewoImpactPageIMG1.png",
-    description:
-      "The Philippines is classified as a country experiencing high water stress, a demand for water exceeds supply",
-  },
-  {
-    id: 2,
-    title: "Battles Against Bottles",
-    image: "/illustrations/WewoImpactPageIMG2.png",
-    description:
-      "Plastic pollution has become one of the most alarming environmental challenges of our time.",
-  },
-  {
-    id: 3,
-    title: "Reduced Carbon Footprint",
-    image: "/illustrations/WewoImpactPageIMG3.png",
-    description:
-      "Waste management and water conservation strategies can reduce carbon emissions by up to 20% in urban areas.",
-  },
-  {
-    id: 4,
-    title: "Community Engagement",
-    image: "/illustrations/WewoImpactPageIMG4.png",
-    description:
-      "Sustainability awareness through community engagement programs.",
-  },
-];
 
 function ArticleBody({
   articlesData,
