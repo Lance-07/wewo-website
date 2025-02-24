@@ -25,11 +25,11 @@ export const Carousel = ({ carouselItems }: { carouselItems: CarouselItemData[]}
 
       {/* Bottom Pagination */}
       <div className="absolute bottom-4 w-full h-4 flex justify-center z-20 ">
-        <div className="flex w-36 h-full justify-center items-center gap-4">
+        <div className="flex w-32 h-full justify-center items-center gap-4">
 
           {/* Pagination Dots */}
           {carouselItems.length > 1 && Array.from({ length: carouselItems.length }).map((_, index) => (
-            <div className={clsx("h-full w-4 bg-white rounded-full opacity-80         cursor-pointer transition-all duration-500 ease-in-out", 
+            <div className={clsx("h-full w-4 bg-white rounded-full opacity-80 cursor-pointer transition-all duration-500 ease-in-out", 
               { "flex-1 opacity-100": activeIndex == index}
             )} 
               key={index} 
@@ -41,7 +41,6 @@ export const Carousel = ({ carouselItems }: { carouselItems: CarouselItemData[]}
   )
 }
 
-// TODO: Fix flickering issue when transitioning between slides
 export const CarouselItem = ({
   title,
   description,
@@ -72,7 +71,7 @@ export const CarouselItem = ({
           <div className="w-full h-full absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)] opacity-75"></div>
           
           {/* Content */}
-          <div className="absolute inset-0 text-white container">
+          <div className="absolute inset-0 text-white container ~px-6/20">
               <div className="flex flex-col justify-center items-start gap-4 w-full md:w-1/2 h-full">
                 <h1 className="~text-4xl/6xl font-extrabold">{title}</h1>
                 <h2 className="~text-base/xl w-4/5">{description}</h2>

@@ -92,7 +92,7 @@ export function DynamicCard({imgSrc, title, description, baseColor, className} :
 
     return (
         <div className={cn(`${colorVariants[baseColor]}
-            md:w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`, className)}>
+            md:max-w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`, className)}>
             <Image src={imgSrc} width={1000} height={1000} alt={title} className="h-[136px] object-cover" />
             <div className={`flex flex-col w-full flex-1 relative group`}>
                 <div className={`${hoverVariants[baseColor]} absolute w-full h-full transform translate-x-[100%] translate-y-[100%] transition-all duration-300`}></div>
@@ -155,15 +155,15 @@ export function AdminCard({number, label, iconLink, title, className} : Omit<Sim
 }) {
     return (
         <div className={cn(
-            "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 
+            "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden", 
             className,
         )}>
-            <div className="bg-[#FAFAFB] flex justify-center items-center h-full w-full">
-                <p className="font-extrabold text-[5rem] mr-1">{number}</p>
-                <p className="vertical-rl rotate-180">{label}</p>
+            <div className="bg-[#FAFAFB] flex justify-center items-center h-3/4 w-full">
+                <p className="font-extrabold text-6xl mr-1">{number}</p>
+                <p className="vertical-rl text-sm rotate-180">{label}</p>
             </div>
             <div className={cn(`
-                text-white flex gap-2 py-4 justify-center items-center text-center h-full px-5 text-xs`, 
+                text-white flex gap-2 py-4 justify-center items-center text-center h-1/4 px-5 text-xs`, 
                 
             )}>
                 <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />

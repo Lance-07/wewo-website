@@ -107,10 +107,6 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     const router = useRouter();
     const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
 
-    const [timeframe, setTimeframe] = useState<string | null>('all')
-
-    // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
-    // if no value (undefined) the html will show 0 ml no worries on no value.
     const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
         small: '250',
         medium: '500',
@@ -140,25 +136,6 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setIsEdit(!isEdit)
         setDispensedValue(originalDispensedValue)
     }
-
-    // TODO:
-    // split the number of rows to 10 :done
-    // implement filter for daily (current day), weekly, monthly :done
-    // filter for from (starting date) to (ending date) :wip (functions done) - frontend (not yet)
-    
-    // useEffect(() => {
-    //     const params = new URLSearchParams(searchParams);
-    //     const value = params.get('timeframe')
-    //     setTimeframe(value)
-    // }, [])
-
-    // function handleTimeframeChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    //     const value = e.target.value;
-    //     setTimeframe(value)
-    //     const params = new URLSearchParams(searchParams);
-    //     params.set('timeframe', value)
-    //     router.push(`${pathname}?${params.toString()}`)
-    // }
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
@@ -205,21 +182,21 @@ return (
             </button>
         </div>
 
-            <div className={`border-t-2 rounded-b-lg ${
+            <div className={`border-t-2 w-full rounded-b-lg ${
                 activeTab === 'overview' 
                 ? 'border-blue-500' 
                 : 'border-green-500'
             }`}>
             {activeTab === 'overview' ? (
-                <div className="flex py-4 flex-col gap-8">
-                    <div className="flex flex-wrap justify-center gap-6 lg:justify-between mt-4">
+                <div className="flex py-4 flex-col w-full gap-8">
+                    <div className="flex flex-wrap justify-around gap-6 lg:gap-4 w-full mt-4">
                         {loading ? 
                             <CardSkeletons/>
                         :
                             adminCardItems.map((item, idx) => (
                                 <AdminCard 
                                     key={idx}
-                                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-full md:h-[187px]`}
+                                    className={`${item.className} shrink-0 w-[300px]`}
                                     number={item.number} 
                                     label={item.label} 
                                     iconLink={item.iconLink}      
@@ -229,14 +206,14 @@ return (
                         }
                     </div>
 
-                    <div className={`${poppins.className}  flex flex-wrap gap-4`}>
+                    <div className={`${poppins.className} flex flex-wrap items-stretch justify-between gap-4`}>
                         { loading ? 
                             <PieSkeleton />
                         :
-                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full" />
+                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full"/>
                         }
                         <BottleStats onDataUpdate={setBottleStats} />
-
+                        
                         { loading ?
                             <BackwashIndSkeleton />
                         : 
@@ -245,7 +222,7 @@ return (
                                 <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
                                 <div className="flex flex-col gap-[10px]">
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-green-second justify-center flex items-center size-[34px]">
                                             <Check color="white" />
                                         </div>
                                         <div>
@@ -254,7 +231,7 @@ return (
                                         </div>
                                     </div>
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-yellow-500 justify-center flex items-center size-[34px]">
                                             <TriangleAlert color="white" />
                                         </div>
                                         <div>
@@ -263,7 +240,7 @@ return (
                                         </div>
                                     </div>
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-red-700 justify-center flex items-center size-[34px]">
                                             <X color="white" />
                                         </div>
                                         <div>
@@ -282,7 +259,7 @@ return (
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
                                 <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
-                                    <div className="rounded-lg size-[34px] bg-green-second flex items-center justify-center">
+                                    <div className="rounded-lg size-[34px] shrink-0 bg-green-second flex items-center justify-center">
                                         <Check color="white" />
                                     </div>
                                     <div className="text-sm">
@@ -291,7 +268,7 @@ return (
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <div className="rounded-lg size-[34px] bg-stone-600 flex items-center justify-center">
+                                    <div className="rounded-lg size-[34px] shrink-0 bg-stone-600 flex items-center justify-center">
                                         <X color="white" />
                                     </div>
                                     <div className="text-sm">
@@ -304,14 +281,6 @@ return (
                     </div>
 
                     <div className="w-full flex justify-end mt-4">
-                        {/* <span className="py-2 px-4 flex min-w-52 border border-gray-200">
-                            <select onChange={handleTimeframeChange} value={timeframe || 'all'} className="w-full h-full outline-none">
-                                <option value="all">All</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                            </select>
-                        </span> */}
                         <div className="flex flex-col sm:flex-row gap-4 items-center [&>div>input]:border [&>div>input]:py-2 [&>div>input]:px-4 [&>div>input]:outline-none">
                             <div className="flex items-center gap-4">
                                 <label htmlFor="from">From: </label>
