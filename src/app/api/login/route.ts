@@ -19,22 +19,43 @@ export async function POST(request: Request) {
         }
 
         if (body.password !== data.password) {
-            console.log("Wrong password");
-            return NextResponse.json({ message: "Wrong password" }, { status: 400 });
+            if (data.loginAttempts >= 5){
+                await supabase
+                    .from('adminUser')
+                    .update({ isLocked: 'TRUE' })
+                    .eq('id', data.id)
+                return NextResponse.json({ message: "TOO MANY ATTEMPTS. ACC LOCK!" }, { status: 400 });        
+            } else {
+                    console.log("Wrong password");
+                    const { error } = await supabase
+                    .from('adminUser')
+                    .update({ loginAttempts: data.loginAttempts + 1 })
+                    .eq('id', data.id)
+                    console.log("data from password attempt block", error);
+                return NextResponse.json({ message: "Wrong password" }, { status: 400 });
+            }
+            
+        } else {
+        if (data.isLocked == false){
+            console.log("Login successful!");
+            const token = await encrypt({ id: data.id, email: data.email });
+            await supabase
+            .from('adminUser')
+            .update({ loginAttempts: 0 })
+            .eq('id', data.id)
+            const response = NextResponse.json({ message: "Log in!", token });
+            response.cookies.set("wewotoken", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production", 
+                maxAge: 3600 * 2,
+                path: "/",
+            });
+            return response;
+            } else {
+                return NextResponse.json({ message: "YOUR ACCOUNT HAS BEEN LOCKED DUE TO TOO MANY FAILED ATTEMPTS. CONTACT DEVS :P" }, { status: 400 });
+            }
         }
 
-        console.log("Login successful!");
-        const token = await encrypt({ id: data.id, email: data.email });
-
-        const response = NextResponse.json({ message: "Log in!", token });
-        response.cookies.set("wewotoken", token, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production", 
-            maxAge: 3600 * 2,
-            path: "/",
-        });
-
-        return response;
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });

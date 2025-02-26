@@ -28,6 +28,7 @@ const LoginPage = () => {
       router.push("/admin")
     } else {
       console.error("Login failed:", data);
+      
     }
   }
 

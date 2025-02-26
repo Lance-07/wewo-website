@@ -37,6 +37,8 @@ export default function Table() {
         getData();
     }, [searchParams]);
 
+    console.log("data from table.tsx2: ", data);
+
     return (
         <div ref={tableRef} className="w-full overflow-auto shadow-card-shadow rounded-lg">
             <table className="w-full border-collapse">
@@ -66,7 +68,8 @@ export default function Table() {
                         data.map(item => (
                             <tr key={item.id} className="even:bg-gray-100">
                                 <td>{moment(item.date).format('LL')}</td>
-                                <td>{convertLiterToMl(item.waterDistribution.toString())}</td>
+                                {/* <td>{convertLiterToMl(item.waterDistribution.toString())}</td> */}
+                                <td>{item.waterDistribution}</td>
                                 <td>{item.totalBottles}</td>
                                 <td>{item.co2}</td>
                                 <td>{item.bottles.small}</td>
