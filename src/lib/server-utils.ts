@@ -25,6 +25,17 @@ export async function setCookie(token: string){
 });
 }
 
+export async function deleteCookie(){
+
+  (await cookies()).set("wewotoken", "", {
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === "production", 
+    maxAge: 0,
+    path: "/",
+});
+
+}
+
 export async function decrypt(input: string): Promise<unknown> {
   const { payload } = await jwtVerify(input, key, {
     algorithms: ["HS256"],
