@@ -38,10 +38,10 @@ const LoginPage = () => {
         background: "linear-gradient(228.84deg, #7CBA5A 0.85%, #344D80 79.21%)",
       }}
     >
-      <div className="w-full max-w-[818px] md:h-[548px] flex flex-col md:flex-row shadow-lg rounded-2xl overflow-hidden">
+      <div className="w-full h-full max-w-[818px] md:h-[548px] flex flex-col md:flex-row shadow-lg rounded-2xl overflow-hidden">
         {/* Left Section */}
         <div 
-          className="w-full md:w-[397px] py-8 md:h-full flex flex-col items-center justify-center text-white p-6 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none"
+          className="w-full hidden h-full md:w-[397px] py-8 md:h-full md:flex flex-col items-center justify-center text-white p-6 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none"
           style={{
             background: "linear-gradient(228.84deg, #7CBA5A 0.85%, #344D80 79.21%)",
             borderLeft: "5px solid #FAFAFB",
@@ -95,7 +95,7 @@ const LoginPage = () => {
                   onChange={(e) => setPassword(e.target.value)} 
                 />
               </div>
-              <div className="flex flex-col md:flex-row justify-between gap-2 md:gap-0 text-xs text-[#4668B2]">
+              <div className="flex flex-row justify-between gap-2 md:gap-0 text-xs text-[#4668B2]">
                 <a href="#" className="hover:underline">
                   Forgot Password?
                 </a>

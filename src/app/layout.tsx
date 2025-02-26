@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" style={{ scrollBehavior: "smooth" }}>
+    <html lang="en" className="scroll-smooth">
       <body
         className={`${mazzard_soft_h.className} antialiased`}
       >

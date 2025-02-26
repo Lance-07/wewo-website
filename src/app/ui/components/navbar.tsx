@@ -8,28 +8,28 @@ import { Menu, MoveRight} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const navList: {name: string, link: string}[] = [
+const navList: { name: string; link: string }[] = [
   {
-    name: 'Impacts',
-    link: '#impacts'
+    name: "Impacts",
+    link: "#impacts",
   },
   {
-    name: 'About',
-    link: '#about'
+    name: "About",
+    link: "#about",
   },
   {
-    name: 'How It Works',
-    link: '#how-it-works'
+    name: "How It Works",
+    link: "#how-it-works",
   },
   {
-    name: 'Importance',
-    link: '#importance'
+    name: "Importance",
+    link: "#importance",
   },
   {
-    name: 'FAQs',
-    link: '#faqs'
-  }
-]
+    name: "FAQs",
+    link: "#faqs",
+  },
+];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -39,7 +39,7 @@ export default function Navbar() {
       <nav className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
         <div className="border-blue-500 container px-4 mx-auto flex md:justify-between items-center">
           <div className="flex shrink-0 gap-4 items-center justify-center mr-auto md:mx-0 h-full">
-            <Link href={'/'}>
+            <Link href={'/#home'}>
               <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
             </Link>
           </div>
@@ -62,7 +62,7 @@ export default function Navbar() {
             <Menu />
           </button>
 
-          <Button className={'shrink-0 hidden sm:block'} border={true} active={true} variant={'gradient'}>Login</Button>
+          <Button className={'shrink-0 hidden sm:block'} border={true} active={true} variant={'gradient'}><Link href={'/auth/login'}>Login</Link></Button>
         </div>
 
         <div role="dialog" className={cn(`p-4 fixed text-white flex flex-col w-dvw h-dvh md:hidden translate-x-full transition-transform bg-slate-800 inset-0 z-50`,
