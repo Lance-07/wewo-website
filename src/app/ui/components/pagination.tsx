@@ -4,7 +4,6 @@ import clsx from "clsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react";
 
 export default function Pagination({totalPages} : { totalPages: number }) {
     const searchParams = useSearchParams();

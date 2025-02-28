@@ -1,5 +1,5 @@
-"use client"
-import React, { useEffect, useRef } from "react";
+"use client";
+import React, { Suspense, useEffect, useRef } from "react";
 import { useState } from 'react';
 import { AdminCard } from "../ui/components/card";
 import AdminNav from "../ui/components/admin/adminNav";
@@ -82,7 +82,9 @@ return (
             </div>
             <div className="~mt-10/28 flex justify-center">
                 <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
-                    <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
+                    </Suspense>
                 </div>
             </div>
             <BottleStats onDataUpdate={setBottleStats} setLoading={setLoading} />
