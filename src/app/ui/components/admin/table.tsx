@@ -1,44 +1,10 @@
-'use client';
-
-import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { TableSkeleton } from "../../skeletons";
-import { useSearchParams } from "next/navigation";
-import { convertLiterToMl } from "@/lib/utils";
 
-export default function Table() {
-    const [data, setData] = useState<TableData[]>([]);
-    const [loading, setLoading] = useState(true);
-    const searchParams = useSearchParams();
-    const tableRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (tableRef.current) {
-            tableRef.current.scrollIntoView({ block: "start" });
-        }
-    }, [searchParams]);
-
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const res = await fetch(`/api/table/fetch-data?${searchParams.toString()}`);
-                if (!res.ok) throw new Error("Failed to fetch table data.");
-
-                const data = await res.json();
-
-                setData(data.data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        getData();
-    }, [searchParams]);
+export default function Table({data, loading} : {data: TableData[] | null; loading: boolean;}) {
 
     return (
-        <div ref={tableRef} className="w-full overflow-auto shadow-card-shadow rounded-lg">
+        <div className="w-full overflow-auto shadow-card-shadow rounded-lg">
             <table className="w-full border-collapse">
                 <thead className="[&>tr>th]:py-2 bg-blue-main [&>tr>th]:px-4 [&>tr>th]:border-2 [&>tr>th]:text-white [&>tr>th]:font-bold [&>tr>th]:tracking-wider">
                     <tr>
@@ -63,17 +29,20 @@ export default function Table() {
                     {loading ? 
                         Array.from({ length: 10 }).map((_, index) => <TableSkeleton key={index} />)
                         : 
-                        data.map(item => (
+                        data && data.length > 0 ? data.map(item => (
                             <tr key={item.id} className="even:bg-gray-100">
                                 <td>{moment(item.date).format('LL')}</td>
-                                <td>{convertLiterToMl(item.waterDistribution.toString())}</td>
+                                <td>{item.waterDistribution}</td>
                                 <td>{item.totalBottles}</td>
                                 <td>{item.co2}</td>
                                 <td>{item.bottles.small}</td>
                                 <td>{item.bottles.medium}</td>
                                 <td>{item.bottles.large}</td>
                             </tr>
-                        ))
+                        )) : 
+                        <tr className="h-80">
+                            <td className="text-center" colSpan={7}>No Record</td>
+                        </tr>
                     }
                 </tbody>
             </table>
