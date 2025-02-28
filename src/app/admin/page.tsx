@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from 'react';
 import { AdminCard } from "../ui/components/card";
 import AdminNav from "../ui/components/admin/adminNav";
@@ -9,11 +9,9 @@ import PieChart from "../ui/components/chart";
 import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
-import sampleData from '../../lib/tableData.json'
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { headers } from "next/headers";
 import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
@@ -34,17 +32,11 @@ export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const smallCF = bottleStats.smallTotal * 45.54
     const mediumCF = bottleStats.mediumTotal * 91.08
     const largeCF = bottleStats.largeTotal * 240.12
     const totalCF = (smallCF + mediumCF + largeCF) * 0.001
-
-    console.log("small: ", smallCF)
-    console.log("mediumCF: ", mediumCF)
-    console.log("totalCF: ", totalCF);
-
-
 
     adminCardItems = [
 {
@@ -112,7 +104,17 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     const pathname = usePathname();
     const router = useRouter();
     const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
+    const [totalPages, setTotalPages] = useState(1)
+    const [data, setData] = useState(null)
+    const [tableLoading, setTableLoading] = useState(true)
+    const tableRef = useRef<HTMLDivElement>(null);
+    const scrollPosition = useRef(0);
+    const from = searchParams.get('from')
+    const to = searchParams.get('to')
+    const page = searchParams.get('page')
 
+    // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
+    // if no value (undefined) the html will show 0 ml no worries on no value.
     const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
         small: '250',
         medium: '500',
@@ -126,14 +128,11 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value} = e.target;
-        console.log(name, value) 
-
         setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
     }
 
     const handleSaveSettings = () => {
         // call the save server action
-        console.log(dispensedValue)
         setIsEdit(!isEdit)
         setOriginalDispensedValue(dispensedValue)
     }
@@ -145,22 +144,79 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
-        const fromValue = params.get('from');
-        const toValue = params.get('to');
-
-        setDateFilter((prev) => ({...prev, from: fromValue || '', to: toValue || ''}))
-    }, [])
+        const fromValue = params.get("from") || "";
+        const toValue = params.get("to") || "";
+    
+        if (fromValue !== dateFilter.from || toValue !== dateFilter.to) {
+            setDateFilter({ from: fromValue, to: toValue });
+        }
+    }, [from, to]);
+    
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+    
+        if (dateFilter.from) {
+            params.set("from", dateFilter.from);
+        } else {
+            params.delete("from");
+        }
+    
+        if (dateFilter.to) {
+            params.set("to", dateFilter.to);
+        } else {
+            params.delete("to");
+        }
+    
+        if (params.toString() !== searchParams.toString()) {
+            const timeout = setTimeout(() => {
+                router.push(`${pathname}?${params.toString()}`, { scroll: false });
+            }, 300);
+    
+            return () => clearTimeout(timeout);
+        }
+    }, [dateFilter]);
+    
+    
+    useEffect(() => {
+        if (tableRef.current) {
+            scrollPosition.current = tableRef.current.getBoundingClientRect().top + window.scrollY;
+        }
+    }, [page]); 
+    
+    useEffect(() => {
+        const getData = async () => {
+            setTableLoading(true);
+            try {
+                const res = await fetch(`/api/table/fetch-data?${searchParams.toString()}`);
+                if (!res.ok) throw new Error("Failed to fetch table data.");
+    
+                const data = await res.json();
+                setTotalPages(data.totalPages);
+                setData(data.data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setTableLoading(false);
+            }
+        };
+    
+        getData();
+    }, [page, to, from]);
+    
+    useEffect(() => {
+        if (data) {
+            window.scrollTo({
+                top: scrollPosition.current,
+                behavior: "instant", 
+            });
+        }
+    }, [data]); 
+    
 
     function handleDateFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
         setDateFilter(prev => ({...prev, [name] : value}))
-        console.log(dateFilter)
-        const params = new URLSearchParams(searchParams);
-        params.set(name, value)
-        router.push(`${pathname}?${params.toString()}`)
     }
-
-    console.log(dateFilter)
 
 return (
     <div className="w-full">
@@ -303,11 +359,14 @@ return (
 
                     <hr />
 
-                    <Table />
+                    <div ref={tableRef} className="flex flex-col w-full">
+                        <Table data={data} loading={tableLoading} />
 
-                    <div className="my-6 flex justify-center">
-                        <Pagination />
+                        <div className="my-6 flex justify-center">
+                            <Pagination totalPages={totalPages} />
+                        </div>
                     </div>
+
                 </div>
             ) : (
                 <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">

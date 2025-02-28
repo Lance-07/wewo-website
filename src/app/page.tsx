@@ -1,19 +1,19 @@
 "use client";
-import Button from "./ui/components/button";
-import { Carousel } from "./ui/components/carousel";
+import Button from "@/app/ui/components/button";
+import { Carousel } from "@/app/ui/components/carousel";
 import {cardItems, carouselItems, faqItems, iconItems} from "@/lib/data";
-import { Card, DynamicCard, HorizontalCard, SimpleCard } from "./ui/components/card";
+import { Card, DynamicCard, HorizontalCard, SimpleCard } from "@/app/ui/components/card";
 import React from "react";
 import Image from "next/image";
-import { poppins } from "./ui/fonts";
+import { poppins } from "@/app/ui/fonts";
 import {ChevronLeft, ChevronRight, Facebook, Mail} from "lucide-react";
 import clsx from "clsx";
 import {Accordion, AccordionItem} from "@/app/ui/components/accordion";
 import Link from "next/link";
 import { InView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
-import Navbar from "./ui/components/navbar";
-import Footer from "./ui/components/footer";
+import Navbar from "@/app/ui/components/navbar";
+import Footer from "@/app/ui/components/footer";
 
 
 export default function LandingPage() {

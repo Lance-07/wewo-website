@@ -22,10 +22,6 @@ export default function BottleStats({ onDataUpdate, setLoading }: BottleStatsPro
             return;
         }
 
-        if (data) {
-            console.log("data; ",data)
-        }
-
         let smallTotal = 0 
         let mediumTotal = 0
         let largeTotal = 0

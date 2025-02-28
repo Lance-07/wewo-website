@@ -6,25 +6,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react";
 
-export default function Pagination() {
+export default function Pagination({totalPages} : { totalPages: number }) {
     const searchParams = useSearchParams();
-    const [totalPages, setTotalPages] = useState(1);
-
-    useEffect(() => {
-        const fetchTotalPages = async () => {
-            try {
-                const res = await fetch(`/api/table/pages?${searchParams.toString()}`);
-                if (!res.ok) throw new Error("Failed to fetch total pages");
-
-                const data = await res.json();
-                setTotalPages(data.totalPages);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchTotalPages();
-    }, [searchParams]);
 
     const pathname = usePathname();
     const currentPage = Number(searchParams.get('page')) || 1
@@ -131,7 +114,7 @@ function PaginationArrow({
     return isDisabled ? (
         <div className={className}>{icon}</div>
         ) : (
-        <Link className={className} href={href}>
+        <Link className={className} href={href} scroll={false}>
             {icon}
         </Link>
     );
