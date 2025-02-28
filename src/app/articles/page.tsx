@@ -61,7 +61,7 @@ function ArticleBody() {
         </h1>
       </div>
       <div className="flex justify-center pb-10">
-        <div className="w-full sm:w-[540px] md:w-[720px] lg:w-[840px] xl:w-full 2xl:w-full bg-[#F4F4F4] shadow-lg rounded-lg">
+        <div className="w-full sm:w-[540px] md:w-[720px] lg:w-[840px]  bg-[#F4F4F4] shadow-lg rounded-lg">
           <Image
             src="/illustrations/WewoImpactPageIMG1.png"
             alt="Card Image"

@@ -291,7 +291,7 @@ function ArticleBody({
           {/* image card container */}
           <div
             className={
-              "w-full sm:w-[540px] md:w-[720px] lg:w-[840px] xl:w-full 2xl:w-full bg-[#F4F4F4] shadow-lg rounded-lg"
+              "w-full sm:w-[540px] md:w-[720px] lg:w-[840px] bg-[#F4F4F4] shadow-lg rounded-lg"
             }
           >
             <Image

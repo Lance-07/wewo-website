@@ -62,12 +62,12 @@ export function SimpleCard({number, label, iconLink, title, description, classNa
             "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 
             className,
         )}>
-            <div className="bg-[#FAFAFB] flex justify-center items-center h-full w-full">
-                <p className="font-extrabold text-[5rem]">{number}</p>
-                <p className="vertical-rl rotate-180">{label}</p>
+            <div className="bg-[#FAFAFB] gap-2 flex justify-center items-center h-full w-1/2 sm:w-full">
+                <p className="font-extrabold text-5xl sm:text-7xl">{number}</p>
+                <p className="vertical-rl rotate-180 text-sm sm:text-base">{label}</p>
             </div>
-            <div className={`text-white flex flex-col justify-center items-center text-center h-full px-5 text-xs`}>
-                <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2" />
+            <div className={`text-white flex sm:flex-col gap-2 sm:gap-0 justify-center items-center text-center w-1/2 h-full sm:w-full px-5 text-xs`}>
+                <Image src={iconLink} alt={`icon ${iconLink}`} width={19} height={19} className="mb-2 shrink-0" />
                 <p className="font-semibold tracking-wider capitalize text-wrap mb-1">{title}</p>
                 <p className="font-light">{description}</p>
             </div>
@@ -112,10 +112,10 @@ export function HorizontalCard({imgSrc, title, description, baseColor, iconItems
     const colorVariants = getColorVariants('horizontal');
 
     return (
-        <div className={`${poppins.className} w-full antialiased flex ${colorVariants[baseColor]} gap-10 w-[745px] justify-center items-center`}>
+        <div className={`${poppins.className} h-full w-full antialiased flex ${colorVariants[baseColor]} gap-10 justify-center items-center`}>
             <Image src={imgSrc} priority width={2359} height={2000} alt={title}
-                className="object-contain min-w-[355px] h-auto w-1/3 hidden md:block" />
-            <div className="flex flex-col flex-1 w-full md:w-2/3 space-y-3">
+                className="object-contain [flex-shrink:2] h-auto w-1/3 hidden md:block" />
+            <div className="flex flex-col w-full lg:w-2/3 space-y-3">
                 <p className="font-bold text-4xl uppercase">{title}</p>
                 <p className="font-light">{description}</p>
                 <ul className="space-y-2">

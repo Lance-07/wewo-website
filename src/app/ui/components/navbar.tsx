@@ -59,7 +59,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
+      <nav id="nav" className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
         <div className="border-blue-500 container ~px-6/20 mx-auto flex md:justify-between items-center">
           <div className="flex shrink-0 gap-4 items-center justify-center mr-auto md:mx-0 h-full">
             <Link href={'/#home'} scroll={false}>

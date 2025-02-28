@@ -3,7 +3,7 @@ import Button from "@/app/ui/components/button";
 import { Carousel } from "@/app/ui/components/carousel";
 import {cardItems, carouselItems, faqItems, iconItems} from "@/lib/data";
 import { Card, DynamicCard, HorizontalCard, SimpleCard } from "@/app/ui/components/card";
-import React from "react";
+import React, { ReactNode } from "react";
 import Image from "next/image";
 import { poppins } from "@/app/ui/fonts";
 import {ChevronLeft, ChevronRight, Facebook, Mail} from "lucide-react";
@@ -67,7 +67,7 @@ function Impact() {
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} onChange={(inView) => console.log('inview', inView)} >
             {({ inView, ref }) => (
-                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full md:h-[607px] py-20 md:py-0 ~px-6/20">
+                <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full lg:h-[607px] py-20 lg:py-0 ~px-6/20">
                     {/* Overlay Color Gradient */}
                     <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
 
@@ -82,16 +82,16 @@ function Impact() {
                         { 'opacity-100 -translate-y-0': inView}
                     )}>
                         <div className="flex justify-center items-center h-full">
-                            <div className="relative bg-white md:h-[519px] gap-[50px] rounded-t-[34px] flex flex-col justify-center container mx-auto items-center ~px-4/20 py-4">
-                                <div className="flex w-full gap-[50px] flex-col md:flex-row justify-between ">
-                                    <div className="w-full md:w-1/3 flex flex-col text-[#4668B2]">
+                            <div className="relative bg-white lg:h-[519px] gap-[50px] rounded-t-[34px] flex flex-col justify-center container mx-auto items-center ~px-4/20 ~py-4/12">
+                                <div className="flex w-full relative gap-[50px] h-full flex-col lg:flex-row justify-between ">
+                                    <div className="w-full h-full border-red-500 lg:w-1/3 flex flex-col text-[#4668B2]">
                                         <h1 className="text-5xl font-bold tracking-widest mb-4">
                                             <span className="text-[#4668B2]">WE</span>
                                             <span className="text-[#7CBA5A]">WO</span>
                                         </h1>
                                         <h2>First Portable RVM: Transforming Plastic Waste into Clean Water for Non-Potable Use</h2>
 
-                                        <div className="flex-1 flex md:flex-col gap-3 mt-6 py-2 px-[1px] text-nowrap overflow-x-auto">
+                                        <div className="flex lg:flex-col gap-3 mt-6 py-2 px-[1px] text-nowrap overflow-x-auto">
 
                                             <Button onClick={() => setActiveIdx(0)} background={true} border={true} active={activeIdx === 0} variant="gradient">
                                                 {activeIdx === 0 &&
@@ -123,25 +123,69 @@ function Impact() {
                                         </div>
                                     </div>
 
-                                    <div className="flex-1">
+                                    {/* <AnimatedSections activeIdx={activeIdx}>
+                                        <div className="flex flex-col items-center h-full lg:flex-row w-full gap-5 justify-center">
+                                            <SimpleCard 
+                                                number="23" label="liters" iconLink="/icons/droplet.png"
+                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
+                                                title="clean water distributed"  
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                            <SimpleCard  
+                                                number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
+                                                title="PET bottles recycled"  
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
+                                            <SimpleCard  
+                                                number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
+                                                title="carbon footprints reduced"  
+                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                        </div>  
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/splash.png" 
+                                            baseColor="blue" 
+                                            title="clean water distributed"     
+                                            description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
+                                            iconItems={iconItems['clean-water']}
+                                            className="h-full"
+                                        />
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/plastic-bottle.png" 
+                                            baseColor="green" 
+                                            title="recycled plastic bottles"     
+                                            description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
+                                            iconItems={iconItems['recycled-plastic']}
+                                            className="h-full"
+                                        />
+                                        <HorizontalCard 
+                                            imgSrc="/illustrations/carbon-footprint.png" 
+                                            baseColor="darkBlue" 
+                                            title="reduced carbon footprint on earth"     
+                                            description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
+                                            iconItems={iconItems['reduced-carbon']}
+                                            className="h-full"
+                                        />
+                                    </AnimatedSections> */}
+
+                                    <div className="flex-1 relative border-blue-500">
                                         { activeIdx === 0 && 
-                                            <div className="flex flex-col items-center md:flex-row w-full gap-5 justify-center">
+                                            <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
                                                 <SimpleCard 
                                                     number="23" label="liters" iconLink="/icons/droplet.png"
-                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
+                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
                                                     title="clean water distributed"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
                                                 <SimpleCard  
                                                     number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
-                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-green-second text-green-second border-2 border-green-second"
+                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
                                                     title="PET bottles recycled"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
                                                 <SimpleCard  
                                                     number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                                    className="flex-row w-full max-w-[301px] h-max md:h-[301px] md:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
+                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
                                                     title="carbon footprints reduced"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                            </div>
+                                            </div>  
                                         }
 
                                         { activeIdx === 1 && 
@@ -191,22 +235,22 @@ function About() {
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true}>
             {({ inView, ref }) => (
-                <section ref={ref} id={'about'} className="overflow-hidden bg-white md:h-[675px] w-full py-20 md:py-0 flex justify-center items-center">
-                    <div className="flex flex-col md:flex-row items-center gap-10 container ~px-6/20 mx-auto">
-                        <div className={cn(`w-full md:w-1/2 order-2 md:order-1 md:h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
+                <section ref={ref} id={'about'} className="overflow-hidden bg-white lg:h-[675px] w-full py-20 lg:py-0 flex justify-center items-center">
+                    <div className="flex flex-col lg:flex-row items-center gap-10 container ~px-6/20 mx-auto">
+                        <div className={cn(`w-full lg:w-1/2 order-2 lg:order-1 lg:h-[429px] -translate-x-full opacity-0 rounded-[34px] overflow-hidden shadow-[0_4px_4px_rgba(0,_0,_0,_25%)] transition-all duration-1000 ease-in-out`,
                             { 'translate-x-0 opacity-100' : inView }
                         )}>
                             <Image src={'/images/synergy.png'} width={700} height={430} alt="about us" className="w-full h-full object-cover" />
                         </div>
-                        <div className={cn(`overflow-hidden order-1 md:order-2 translate-x-full opacity-0 transition-all duration-1000 relative w-full md:w-1/2 rounded-r-[34px] md:h-[475px] md:pr-8`,
+                        <div className={cn(`overflow-hidden order-1 lg:order-2 translate-x-full opacity-0 transition-all duration-1000 relative w-full lg:w-1/2 rounded-r-[34px] lg:py-4 lg:h-[475px] lg:pr-8`,
                             { 'translate-x-0 opacity-100' : inView}
                         )}>
-                            <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25 hidden md:block"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#486BB3] via-[#53BAC6] to-green-third from-15% via-60% to-95% opacity-25 hidden lg:block"></div>
 
-                            <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85% hidden md:block"></div>
+                            <div className="absolute w-full h-full inset-0 bg-gradient-to-r from-white from-15% to-85% hidden lg:block"></div>
                             {/* <div className="absolute inset-0 from-transparent to-white from-15% to-85%"></div> */}
 
-                            <div className="relative md:pl-3 flex flex-col justify-center h-full gap-3">
+                            <div className="relative lg:pl-3 flex flex-col justify-center h-full gap-3">
                                 <h2 className="text-2xl font-bold text-blue-main">WEWO for Everyone</h2>
                                 <h1 className="text-4xl font-bold">
                                     <span className="text-blue-main">Achieve </span>
@@ -221,10 +265,10 @@ function About() {
                                         <span>you can be part of this change.</span>
                                     </p>
                                 </div>
-                                <Button className={'px-4 hidden md:block'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                                <Button type="button" href={'#cta'} className={'px-4 hidden lg:block'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
                             </div>
                         </div>
-                        <Button className={'px-4 self-center order-3 md:hidden'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
+                        <Button type="button" href={'#cta'} className={'px-4 self-center order-3 lg:hidden'} active={true} border={true} variant={'gradient'}>Connect With Us &gt;</Button>
                     </div>
                 </section>
             )}
@@ -305,7 +349,7 @@ function Importance() {
                         <h1 className="font-bold text-[2.5rem]">Why WEWO Matters</h1>
                         <h2 className={`font-light ${poppins.className}`}>WEWO transforms plastic waste into clean water, reducing pollution, helping communities, and promoting a greener, sustainable future.</h2>
                         {/* TODO: Add icon */}
-                        <Button active={true} border={true} variant="gradient">
+                        <Button type="button" href={'#cta'} active={true} border={true} variant="gradient">
                                 Connect With Us &gt;
                         </Button>
 
@@ -396,7 +440,7 @@ function CTA() {
 
     console.log(isReady);
     return (
-        <section className="md:h-[586px] py-20 md:py-0 w-full relative">
+        <section id="cta" className="md:h-[586px] py-20 md:py-0 w-full relative">
             <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
             {/* Dark Effect Overlay Gradient */}
             <div className="w-full h-full opacity-25 absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-black"></div>
@@ -459,3 +503,18 @@ function CTA() {
         </section>
     )
 }
+
+// export function AnimatedSections({ activeIdx, children }: { activeIdx: number; children: ReactNode }) {
+//     return (
+//         <div className="flex-1 box h-full overflow-hidden  relative">
+//             <div className="relative h-full w-full">
+//                 <div
+//                     className="absolute w-full flex flex-col justify-evenly gap-6 transition-transform duration-500"
+//                     style={{ transform: `translateY(-${activeIdx * 345}px)` }}
+//                 >
+//                     {children}
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
