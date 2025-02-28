@@ -15,13 +15,16 @@ import Table from "../ui/components/admin/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { headers } from "next/headers";
 import { poppins } from "../ui/fonts";
+import { Settings } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 
 interface AdminCardItems {
     number: string,
     label: string,
     iconLink: string,
     title: string,
-    className: string
+    className: string,
+    iconSize?: string,
 }
 
 let adminCardItems:AdminCardItems[]
@@ -40,7 +43,8 @@ export default function AdminPage() {
     console.log("small: ", smallCF)
     console.log("mediumCF: ", mediumCF)
     console.log("totalCF: ", totalCF);
-    
+
+
 
     adminCardItems = [
 {
@@ -48,14 +52,16 @@ export default function AdminPage() {
     label: 'liters',
     iconLink: '/icons/droplet.png',
     title: 'clean water distributed',
-    className: 'bg-[#4668B2] text-[#4668B2]'
+    className: 'bg-[#4668B2] text-[#4668B2]',
+    iconSize: 'w-4 h-4'
 },
 {
     number: bottleStats.totalBottles.toString(),
     label: 'plastics',
     iconLink: '/icons/plastic-bottle.png',
     title: 'PET Bottles Recycled',
-    className: 'bg-[#4987B0] text-[#4987B0]'
+    className: 'bg-[#4987B0] text-[#4987B0]',
+    iconSize: 'w-4 h-4'
 },
 {
     number: totalCF.toFixed(1).toString(),
@@ -82,7 +88,7 @@ return (
             <div className="mt-28 md:top-0 w-full bg-white z-10">
                 <DashboarHeader />
             </div>
-            <div className="~mt-11/28 flex justify-center">
+            <div className="~mt-10/28 flex justify-center">
                 <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
                     <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
                 </div>
@@ -160,32 +166,34 @@ return (
     <div className="w-full">
         <div className="flex bg-transparent overflow-x-auto">
             <button
-                className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 flex items-center gap-2 ${
                     activeTab === 'overview' 
-                    ? 'bg-blue-100 text-blue-500 border-2 border-blue-500' 
+                    ? 'bg-blue-100 text-[#4668B2] border-2 border-[#4668B2]' 
                     : 'text-gray-400'
                     }`}
                     onClick={() => setActiveTab('overview')}
                     >
-                    System Overview
+                      <LayoutGrid size={16} />
+                      <span>System Overview</span>
             </button>
 
             <button
-                className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 flex items-center gap-2 ${
                 activeTab === 'settings' 
-                ? 'bg-green-100 text-green-600 border-2 border-green-500' 
+                ? 'bg-green-100 text-[#7CBA5A] border-2 border-[#7CBA5A]' 
                 : 'text-gray-400'
                 }`}
                 onClick={() => setActiveTab('settings')}
                     >
-                System Settings
+                      <Settings size={16} />
+                      <span>System Settings</span>
             </button>
         </div>
 
-            <div className={`border-t-2 w-full rounded-b-lg ${
+            <div className={`border-t-4 w-full rounded-b-lg ${
                 activeTab === 'overview' 
-                ? 'border-blue-500' 
-                : 'border-green-500'
+                ? 'border-[#4668B2]'
+                : 'border-[#7CBA5A]'
             }`}>
             {activeTab === 'overview' ? (
                 <div className="flex py-4 flex-col w-full gap-8">
@@ -196,7 +204,7 @@ return (
                             adminCardItems.map((item, idx) => (
                                 <AdminCard 
                                     key={idx}
-                                    className={`${item.className} shrink-0 w-[300px]`}
+                                    className={`${item.className} shrink-0 w-[301px] h-[187px] rounded-lg shadow-[0px_2px_4px_0px_#00000040] [&>div:first-child]:${item.className.split(' ')[0]} [&>div:first-child]:h-[128px] [&>div:first-child]:rounded-t-lg [&>div:first-child]:p-4 [&>div:last-child]:h-[59px] [&>div:last-child]:gap-2 [&>div:last-child]:py-4 [&>div:last-child]:px-5 [&>div:last-child]:rounded-b-lg`}
                                     number={item.number} 
                                     label={item.label} 
                                     iconLink={item.iconLink}      
@@ -212,7 +220,7 @@ return (
                         :
                             <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full"/>
                         }
-                        <BottleStats onDataUpdate={setBottleStats} />
+                        <BottleStats onDataUpdate={setBottleStats} className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_407px] min-w-[250px] sm:min-w-[320px] md:min-w-[407px] w-full shadow-card-shadow" />
                         
                         { loading ?
                             <BackwashIndSkeleton />

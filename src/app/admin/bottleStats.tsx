@@ -5,6 +5,7 @@ import { supabase } from "../../../supabase";
 interface BottleStatsProps {
     setLoading?: (T: boolean) => void | undefined;
     onDataUpdate: (data: { totalLiters: number; totalBottles: number, smallTotal: number, mediumTotal: number, largeTotal: number }) => void;
+    className?: string;
 }
 
 export default function BottleStats({ onDataUpdate, setLoading }: BottleStatsProps) {
