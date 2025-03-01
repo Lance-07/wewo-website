@@ -49,9 +49,8 @@ export default function PieChart({ className, bottleStats }: PieChartProps) {
             },
         ],
     }
-    console.log("data: ", data)
     return (
-        <div className={cn(`${poppins.className}  flex flex-col h-full shadow-card-shadow rounded-xl justify-center p-8`, className)}>
+        <div className={cn(`${poppins.className}  flex flex-col h-full shadow-card-shadow rounded-xl justify-center ~p-6/8`, className)}>
             <h1 className="font-semibold">Battle Count by Size</h1>
             <div className="flex flex-col justify-between sm:flex-row ">
                 <div className="flex flex-col justify-between">

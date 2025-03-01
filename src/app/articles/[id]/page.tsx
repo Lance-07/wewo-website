@@ -8,6 +8,7 @@ import Link from "next/link";
 import React, { use, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Footer from "@/app/ui/components/footer";
+import { articlesDataForCards } from "@/lib/data";
 
 export default function ArticlesPages() {
   const { id } = useParams() as { id: string };
@@ -195,49 +196,11 @@ export default function ArticlesPages() {
   );
 }
 
-interface Article {
-  id: number;
-  title: string;
-  image: string;
-  description: string;
-}
-
-export const articlesDataForCards: Article[] = [
-  {
-    id: 1,
-    title: "The Water Conservation",
-    image: "/illustrations/WewoImpactPageIMG1.png",
-    description:
-      "The Philippines is classified as a country experiencing high water stress, a demand for water exceeds supply",
-  },
-  {
-    id: 2,
-    title: "Battles Against Bottles",
-    image: "/illustrations/WewoImpactPageIMG2.png",
-    description:
-      "Plastic pollution has become one of the most alarming environmental challenges of our time.",
-  },
-  {
-    id: 3,
-    title: "Reduced Carbon Footprint",
-    image: "/illustrations/WewoImpactPageIMG3.png",
-    description:
-      "Waste management and water conservation strategies can reduce carbon emissions by up to 20% in urban areas.",
-  },
-  {
-    id: 4,
-    title: "Community Engagement",
-    image: "/illustrations/WewoImpactPageIMG4.png",
-    description:
-      "Sustainability awareness through community engagement programs.",
-  },
-];
-
 function ArticleBody({
   articlesData,
   id,
 }: {
-  id: string,
+  id: string;
   articlesData: {
     title: string;
     image: string;
@@ -254,6 +217,7 @@ function ArticleBody({
     }[];
   };
 }) {
+  const [isMdScreen, setIsMdScreen] = useState(false);
   const [visibleArticles, setVisibleArticles] = useState(
     articlesDataForCards.slice(0, 3)
   );
@@ -279,7 +243,19 @@ function ArticleBody({
 
       return newVisibleArticles;
     });
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    // Function to check screen size
+    const checkScreenSize = () => {
+      setIsMdScreen(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize(); // Run initially
+    window.addEventListener("resize", checkScreenSize); // Listen to window resize
+
+    return () => window.removeEventListener("resize", checkScreenSize); // Cleanup event listener
+  }, []);
 
   const today = new Date();
   const formattedDate = today
@@ -293,24 +269,30 @@ function ArticleBody({
   const { title, image, content } = articlesData;
 
   return (
-    <div className={"flex flex-col items-center justify-center gap-4"}>
-      <div className={"min-h-full max-h-full mt-40 px-[600px]"}>
+    <div
+      className={
+        "min-h-full max-h-full mt-20 px-4 sm:px-6 md:px-10 lg:px-20 xl:px-40 2xl:px-[300px] 3xl:max-w-[600px] 3xl:mx-auto container"
+      }
+    >
+      <div>
         <div className={"justify-self-center p-2"}>
           <label className={`font-light ${poppins.className}`}>
             {formattedDate}
           </label>
         </div>
-        <div className={"py-10"}>
+        <div className={"py-6 md:py-10"}>
           <h1
-            className={`text-5xl font-bold text-[#4668B2] ${poppins.className}`}
+            className={`text-3xl sm:text-4xl md:text-5xl font-bold text-[#4668B2] ${poppins.className}`}
           >
             {articlesData.title}
           </h1>
         </div>
-        <div className={"pb-10"}>
+        <div className={"flex justify-center pb-10"}>
           {/* image card container */}
           <div
-            className={"w-[840px] h-[400px] bg-[#F4F4F4] shadow-lg rounded-lg"}
+            className={
+              "w-full sm:w-[540px] md:w-[720px] lg:w-[840px] bg-[#F4F4F4] shadow-lg rounded-lg"
+            }
           >
             <Image
               src={articlesData.image}
@@ -321,10 +303,10 @@ function ArticleBody({
             />
           </div>
         </div>
-        <div className={""}>
+        <div className={"text-justify"}>
           {/* paragraph main container */}
           <p
-            className={`text-[14px] text-justify font-light ${poppins.className} pb-10`}
+            className={`text-sm sm:text-base font-light ${poppins.className} pb-10`}
           >
             {
               articlesData.content.find((item) => item.ParagraphIntro)
@@ -337,7 +319,7 @@ function ArticleBody({
               {/* Main Heading */}
               {item.heading && (
                 <h2
-                  className={`${poppins.className} font-bold text-[#4668B2] mb-2`}
+                  className={`${poppins.className} text-lg sm:text-lg md:text-lg 2xl:text-xl font-bold text-[#4668B2]`}
                 >
                   {item.heading}
                 </h2>
@@ -353,19 +335,23 @@ function ArticleBody({
                     >
                       {/* Lightly Bold SubHeading */}
                       <h3
-                        className={`${poppins.className} font-semibold text-[14px] mb-1`}
+                        className={`${poppins.className} text-sm sm:text-md font-bold text-black mb-1`}
                       >
                         {section.subHeading}
                       </h3>
                       {/* SubSection Text */}
-                      <p className="font-light text-[14px]">{section.text}</p>
+                      <p className="text-sm sm:text-base font-light pb-10">
+                        {section.text}
+                      </p>
                     </div>
                   ))}
                 </div>
               ) : (
                 /* Else: Display heading and text only if subSections is empty */
                 item.text && (
-                  <p className="font-light text-[14px] mt-2">{item.text}</p>
+                  <p className="text-sm sm:text-base font-light pb-10">
+                    {item.text}
+                  </p>
                 )
               )}
             </div>
@@ -387,29 +373,41 @@ function ArticleBody({
           OTHER ARTICLES
         </h3>
 
-        <div className="flex flex-col md:flex-row gap-6 px-6 pb-28">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
-            {visibleArticles.map((article) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 pb-28">
+          {visibleArticles.map((article, index, array) => {
+            const isLastOddItem =
+              isMdScreen &&
+              array.length % 2 !== 0 && // If there's an odd number of items
+              index === array.length - 1; // Last item in the array
+
+            return (
               <div
                 key={article.id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+                className={`${
+                  isLastOddItem ? "md:col-span-2 flex justify-center" : ""
+                }`}
               >
-                <Link href={`/articles/${article.id}`} passHref>
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg">{article.title}</h3>
-                    <p className="text-gray-600 text-sm">
-                      {article.description}
-                    </p>
+                <Link
+                  href={`/articles/${article.id}`}
+                  className="w-full flex justify-center"
+                >
+                  <div className="bg-white shadow-lg rounded-lg overflow-hidden w-full md:max-w-[400px] min-h-[330px] flex flex-col">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="font-bold text-lg">{article.title}</h3>
+                      <p className="text-gray-600 text-sm flex-grow">
+                        {article.description}
+                      </p>
+                    </div>
                   </div>
                 </Link>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>

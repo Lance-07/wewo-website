@@ -2,16 +2,14 @@ import { poppins } from "@/app/ui/fonts";
 import { FC, ReactNode } from 'react';
 import React from "react";
 
-
-
 export default function DashboardHeader() {
   return (
-    <div className={`${poppins.className} bg-white flex justify-center`}>
-      <div className="md:top-[60px] w-full max-w-[1150px] h-[100px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto rounded-lg bg-white shadow-card-shadow flex flex-col justify-center items-center">
-        <h1 className="text-base text-blue-main sm:text-md md:text-lg lg:text-xl font-bold leading-tight tracking-wider text-center px-2">
-          Welcome to the WEWO Admin Dashboard!
+    <div className={`${poppins.className} flex justify-center`}>
+      <div className="w-[1260px] h-[116px] py-5 gap-2.5 bg-white rounded-lg shadow-[0px_4px_4px_0px_#00000026] flex flex-col justify-center items-center">
+        <h1 className="text-blue-main text-xl font-bold leading-tight tracking-wider text-center">
+          Welcome to the WEWO Admin Dashboard!&#127807;&#128167;
         </h1>
-        <p className={`${poppins.className} text-[10px] sm:text-xs md:text-sm font-normal leading-tight tracking-wide text-center max-w-3xl mt-1 px-2`}>
+        <p className={`${poppins.className} text-sm font-normal leading-tight tracking-wide text-center`}>
           Manage and monitor the WEWO system effortlessly. Track water quality, bottle collections, and system performance—all in one place.
         </p>
       </div>

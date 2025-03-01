@@ -10,11 +10,22 @@ type ButtonProps = {
     border?: boolean;
     variant?: string;
     background?: boolean;
+    href?: string | null;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({className, childrenStyle, active = false, variant, border = false, background = false, children, ...props}: ButtonProps) {
+export default function Button({className, childrenStyle, active = false, variant, border = false, background = false, children, href = null, ...props}: ButtonProps) {
+
+    const handleClick = (id?: string) => {
+        const element = document.querySelector(id || "");
+        if (element) {
+            const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
+            const y = element.getBoundingClientRect().top + window.scrollY - navbarHeight;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+    };
+
     return (
-        <button {...props} className={cn(
+        <button onClick={() => href && handleClick(href)} {...props} className={cn(
             `w-max relative inline-block px-4 py-1 over ${poppins.className} antialiased group text-inherit`,
             className,
             {

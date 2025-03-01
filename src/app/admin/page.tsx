@@ -1,5 +1,5 @@
-"use client"
-import React, { useEffect } from "react";
+"use client";
+import React, { Suspense, useEffect, useRef } from "react";
 import { useState } from 'react';
 import { AdminCard } from "../ui/components/card";
 import AdminNav from "../ui/components/admin/adminNav";
@@ -9,12 +9,12 @@ import PieChart from "../ui/components/chart";
 import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
-import sampleData from '../../lib/tableData.json'
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { headers } from "next/headers";
 import { poppins } from "../ui/fonts";
+import { Settings } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 import { supabase } from "../../../supabase"
 
 interface AdminCardItems {
@@ -22,7 +22,8 @@ interface AdminCardItems {
     label: string,
     iconLink: string,
     title: string,
-    className: string
+    className: string,
+    iconSize?: string,
 }
 
 let adminCardItems:AdminCardItems[]
@@ -32,16 +33,11 @@ export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const smallCF = bottleStats.smallTotal * 45.54
     const mediumCF = bottleStats.mediumTotal * 91.08
     const largeCF = bottleStats.largeTotal * 240.12
     const totalCF = (smallCF + mediumCF + largeCF) * 0.001
-
-    console.log("small: ", smallCF)
-    console.log("mediumCF: ", mediumCF)
-    console.log("totalCF: ", totalCF);
-    
 
     adminCardItems = [
 {
@@ -49,14 +45,16 @@ export default function AdminPage() {
     label: 'liters',
     iconLink: '/icons/droplet.png',
     title: 'clean water distributed',
-    className: 'bg-[#4668B2] text-[#4668B2]'
+    className: 'bg-[#4668B2] text-[#4668B2]',
+    iconSize: 'w-4 h-4'
 },
 {
     number: bottleStats.totalBottles.toString(),
     label: 'plastics',
     iconLink: '/icons/plastic-bottle.png',
     title: 'PET Bottles Recycled',
-    className: 'bg-[#4987B0] text-[#4987B0]'
+    className: 'bg-[#4987B0] text-[#4987B0]',
+    iconSize: 'w-4 h-4'
 },
 {
     number: totalCF.toFixed(1).toString(),
@@ -83,9 +81,11 @@ return (
             <div className="mt-28 md:top-0 w-full bg-white z-10">
                 <DashboarHeader />
             </div>
-            <div className="~mt-11/28 flex justify-center">
+            <div className="~mt-10/28 flex justify-center">
                 <div className="w-full max-w-[1260px] mx-4 sm:mx-6 md:mx-8 lg:mx-auto">
-                    <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <DashboardCard activeTab={activeTab} setActiveTab={setActiveTab} loading={loading} />
+                    </Suspense>
                 </div>
             </div>
             <BottleStats onDataUpdate={setBottleStats} setLoading={setLoading} />
@@ -107,8 +107,14 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     const pathname = usePathname();
     const router = useRouter();
     const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
-
-    const [timeframe, setTimeframe] = useState<string | null>('all')
+    const [totalPages, setTotalPages] = useState(1)
+    const [data, setData] = useState(null)
+    const [tableLoading, setTableLoading] = useState(true)
+    const tableRef = useRef<HTMLDivElement>(null);
+    const scrollPosition = useRef(0);
+    const from = searchParams.get('from')
+    const to = searchParams.get('to')
+    const page = searchParams.get('page')
 
     // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
     // if no value (undefined) the html will show 0 ml no worries on no value.
@@ -154,8 +160,6 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value} = e.target;
-        console.log(name, value) 
-
         setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
     }
 
@@ -192,85 +196,125 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setDispensedValue(originalDispensedValue)
     }
 
-    // TODO:
-    // split the number of rows to 10 :done
-    // implement filter for daily (current day), weekly, monthly :done
-    // filter for from (starting date) to (ending date) :wip (functions done) - frontend (not yet)
-    
-    // useEffect(() => {
-    //     const params = new URLSearchParams(searchParams);
-    //     const value = params.get('timeframe')
-    //     setTimeframe(value)
-    // }, [])
-
-    // function handleTimeframeChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    //     const value = e.target.value;
-    //     setTimeframe(value)
-    //     const params = new URLSearchParams(searchParams);
-    //     params.set('timeframe', value)
-    //     router.push(`${pathname}?${params.toString()}`)
-    // }
-
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
-        const fromValue = params.get('from');
-        const toValue = params.get('to');
-
-        setDateFilter((prev) => ({...prev, from: fromValue || '', to: toValue || ''}))
-    }, [])
+        const fromValue = params.get("from") || "";
+        const toValue = params.get("to") || "";
+    
+        if (fromValue !== dateFilter.from || toValue !== dateFilter.to) {
+            setDateFilter({ from: fromValue, to: toValue });
+        }
+    }, [from, to]);
+    
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+    
+        if (dateFilter.from) {
+            params.set("from", dateFilter.from);
+        } else {
+            params.delete("from");
+        }
+    
+        if (dateFilter.to) {
+            params.set("to", dateFilter.to);
+        } else {
+            params.delete("to");
+        }
+    
+        if (params.toString() !== searchParams.toString()) {
+            const timeout = setTimeout(() => {
+                router.push(`${pathname}?${params.toString()}`, { scroll: false });
+            }, 300);
+    
+            return () => clearTimeout(timeout);
+        }
+    }, [dateFilter]);
+    
+    
+    useEffect(() => {
+        if (tableRef.current) {
+            scrollPosition.current = tableRef.current.getBoundingClientRect().top + window.scrollY;
+        }
+    }, [page]); 
+    
+    useEffect(() => {
+        const getData = async () => {
+            setTableLoading(true);
+            try {
+                const res = await fetch(`/api/table/fetch-data?${searchParams.toString()}`);
+                if (!res.ok) throw new Error("Failed to fetch table data.");
+    
+                const data = await res.json();
+                setTotalPages(data.totalPages);
+                setData(data.data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setTableLoading(false);
+            }
+        };
+    
+        getData();
+    }, [page, to, from]);
+    
+    useEffect(() => {
+        if (data) {
+            window.scrollTo({
+                top: scrollPosition.current,
+                behavior: "instant", 
+            });
+        }
+    }, [data]); 
+    
 
     function handleDateFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
         setDateFilter(prev => ({...prev, [name] : value}))
-        console.log(dateFilter)
-        const params = new URLSearchParams(searchParams);
-        params.set(name, value)
-        router.push(`${pathname}?${params.toString()}`)
     }
-
-    console.log(dateFilter)
 
 return (
     <div className="w-full">
         <div className="flex bg-transparent overflow-x-auto">
             <button
-                className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                className={`w-[180px] md:w-[243px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 flex items-center gap-2 ${
                     activeTab === 'overview' 
-                    ? 'bg-blue-100 text-blue-500 border-2 border-blue-500' 
+                    ? 'bg-blue-100 text-[#4668B2] border-2 border-[#4668B2]' 
                     : 'text-gray-400'
                     }`}
                     onClick={() => setActiveTab('overview')}
                     >
-                    System Overview
+                      <LayoutGrid size={16} />
+                      <span>System Overview</span>
             </button>
 
             <button
-                className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 ${
+                className={`w-[170px] md:w-[227px] h-[45px] md:h-[54px] px-4 md:px-[30px] py-2 md:py-[15px] rounded-t-lg text-sm md:text-base transition-colors duration-200 flex items-center gap-2 ${
                 activeTab === 'settings' 
-                ? 'bg-green-100 text-green-600 border-2 border-green-500' 
+                ? 'bg-green-100 text-[#7CBA5A] border-2 border-[#7CBA5A]' 
                 : 'text-gray-400'
                 }`}
                 onClick={() => setActiveTab('settings')}
                     >
-                System Settings
+                      <Settings size={16} />
+                      <span>System Settings</span>
             </button>
         </div>
 
-            <div className={`border-t-2 rounded-b-lg ${
+            <div className={`border-t-4 w-full rounded-b-lg ${
                 activeTab === 'overview' 
-                ? 'border-blue-500' 
-                : 'border-green-500'
+                ? 'border-[#4668B2]'
+                : 'border-[#7CBA5A]'
             }`}>
             {activeTab === 'overview' ? (
-                <div className="flex  flex-col gap-8">
-                    <div className="flex flex-wrap justify-center gap-4 lg:justify-between mt-4">
+                <div className="flex py-4 flex-col w-full gap-8">
+                    <div className="flex flex-wrap justify-around gap-6 lg:gap-4 w-full mt-4">
                         {loading ? 
                             <CardSkeletons/>
                         :
                             adminCardItems.map((item, idx) => (
                                 <AdminCard 
                                     key={idx}
-                                    className={`${item.className} w-[280px] sm:w-[320px] md:w-[240px] lg:w-[270px] h-full md:h-[187px]`}
+                                    className={`${item.className} shrink-0 w-[301px] h-[187px] rounded-lg shadow-[0px_2px_4px_0px_#00000040] [&>div:first-child]:${item.className.split(' ')[0]} [&>div:first-child]:h-[128px] [&>div:first-child]:rounded-t-lg [&>div:first-child]:p-4 [&>div:last-child]:h-[59px] [&>div:last-child]:gap-2 [&>div:last-child]:py-4 [&>div:last-child]:px-5 [&>div:last-child]:rounded-b-lg`}
                                     number={item.number} 
                                     label={item.label} 
                                     iconLink={item.iconLink}      
@@ -280,14 +324,14 @@ return (
                         }
                     </div>
 
-                    <div className={`${poppins.className}  flex flex-wrap gap-4`}>
+                    <div className={`${poppins.className} flex flex-wrap items-stretch justify-between gap-4`}>
                         { loading ? 
                             <PieSkeleton />
                         :
-                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full" />
+                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full"/>
                         }
-                        <BottleStats onDataUpdate={setBottleStats} />
-
+                        <BottleStats onDataUpdate={setBottleStats} className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_407px] min-w-[250px] sm:min-w-[320px] md:min-w-[407px] w-full shadow-card-shadow" />
+                        
                         { loading ?
                             <BackwashIndSkeleton />
                         : 
@@ -296,7 +340,7 @@ return (
                                 <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
                                 <div className="flex flex-col gap-[10px]">
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-green-second justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-green-second justify-center flex items-center size-[34px]">
                                             <Check color="white" />
                                         </div>
                                         <div>
@@ -305,7 +349,7 @@ return (
                                         </div>
                                     </div>
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-yellow-500 justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-yellow-500 justify-center flex items-center size-[34px]">
                                             <TriangleAlert color="white" />
                                         </div>
                                         <div>
@@ -314,7 +358,7 @@ return (
                                         </div>
                                     </div>
                                     <div className="flex gap-2 sm:text-nowrap text-sm">
-                                        <div className="rounded-lg bg-red-700 justify-center flex items-center size-[34px]">
+                                        <div className="rounded-lg shrink-0 bg-red-700 justify-center flex items-center size-[34px]">
                                             <X color="white" />
                                         </div>
                                         <div>
@@ -333,7 +377,7 @@ return (
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
                                 <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
-                                    <div className="rounded-lg size-[34px] bg-green-second flex items-center justify-center">
+                                    <div className="rounded-lg size-[34px] shrink-0 bg-green-second flex items-center justify-center">
                                         <Check color="white" />
                                     </div>
                                     <div className="text-sm">
@@ -342,7 +386,7 @@ return (
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <div className="rounded-lg size-[34px] bg-stone-600 flex items-center justify-center">
+                                    <div className="rounded-lg size-[34px] shrink-0 bg-stone-600 flex items-center justify-center">
                                         <X color="white" />
                                     </div>
                                     <div className="text-sm">
@@ -355,14 +399,6 @@ return (
                     </div>
 
                     <div className="w-full flex justify-end mt-4">
-                        {/* <span className="py-2 px-4 flex min-w-52 border border-gray-200">
-                            <select onChange={handleTimeframeChange} value={timeframe || 'all'} className="w-full h-full outline-none">
-                                <option value="all">All</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                            </select>
-                        </span> */}
                         <div className="flex flex-col sm:flex-row gap-4 items-center [&>div>input]:border [&>div>input]:py-2 [&>div>input]:px-4 [&>div>input]:outline-none">
                             <div className="flex items-center gap-4">
                                 <label htmlFor="from">From: </label>
@@ -377,11 +413,14 @@ return (
 
                     <hr />
 
-                    <Table />
+                    <div ref={tableRef} className="flex flex-col w-full">
+                        <Table data={data} loading={tableLoading} />
 
-                    <div className="my-6 flex justify-center">
-                        <Pagination />
+                        <div className="my-6 flex justify-center">
+                            <Pagination totalPages={totalPages} />
+                        </div>
                     </div>
+
                 </div>
             ) : (
                 <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">
