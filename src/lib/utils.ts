@@ -55,10 +55,10 @@ export function calculateTimePerDispensed(value: number | string): string {
     throw new Error("Invalid input: value must be a positive number or a valid string.");
   }
 
-  const timeInSeconds = milliliters / DISPENSED_VALUE;
-  const timeInSecondsFormatted = (timeInSeconds / 1000).toFixed(2);
+  const timeInMilliseconds = (milliliters / DISPENSED_VALUE) + 1000;
+  const timeInSecondsFormatted = (timeInMilliseconds / 1000).toFixed(2);
   
-  return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInSeconds)}`;
+  return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInMilliseconds)}`;
 }
 
 function getSecondLabel(seconds: number): string {
