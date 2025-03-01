@@ -15,6 +15,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
+import { supabase } from "../../../supabase"
 
 interface AdminCardItems {
     number: string,
@@ -117,11 +118,40 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
     // if no value (undefined) the html will show 0 ml no worries on no value.
+
+        const fetchPumperValues = async () => {
+            try {
+                
+            const { data, error } = await supabase
+            .from("PumperValues")
+            .select("ml")
+            if (error) {
+                return error
+            }
+            console.log("data from pumper: ", data);
+
+            setDispensedValue({
+                small: data[0].ml.toString(),
+                medium: data[1].ml.toString(),
+                large: data[2].ml.toString()
+            })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    
+    useEffect(() => {
+        fetchPumperValues();
+    }, []);
+
     const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
         small: '250',
         medium: '500',
         large: '1000',
     })
+
+
+
     const [originalDispensedValue, setOriginalDispensedValue] = useState({
         small: '250',
         medium: '500',
@@ -133,8 +163,30 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
     }
 
+    const updatePumperValues = async () => { 
+        try {
+        await supabase.from("PumperValues")
+            .update({ ml: dispensedValue.small })
+            .eq("id", 1);
+
+        await supabase.from("PumperValues")
+            .update({ ml: dispensedValue.medium })
+            .eq("id", 2);
+
+        await supabase.from("PumperValues")
+            .update({ ml: dispensedValue.large })
+            .eq("id", 3);
+
+        console.log("Pumper values updated successfully!");
+    } catch (error) {
+        console.error("Error updating pumper values:", error);
+    }
+    }
+
     const handleSaveSettings = () => {
         // call the save server action
+        console.log(dispensedValue)
+        updatePumperValues()
         setIsEdit(!isEdit)
         setOriginalDispensedValue(dispensedValue)
     }
