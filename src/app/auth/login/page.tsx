@@ -124,7 +124,7 @@ const LoginPage = () => {
                   Need an Account?
                 </a>
               </div>
-              <Button disabled={loading} className="w-full bg-[#4668B2] text-white rounded-md py-2 text-base font-bold" type="submit">
+              <Button disabled={loading} className="w-full bg-[#4668B2] hover:bg-[#3d5b9c] inline-flex items-center text-white rounded-md py-2 text-base font-bold" type="submit">
                 {loading && <Loader2 className="animate-spin" />}
                 {loading ? 'Please wait' : 'Continue'}
               </Button>
