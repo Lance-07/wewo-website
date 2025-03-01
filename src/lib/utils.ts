@@ -46,3 +46,21 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function calculateTimePerDispensed(value: number | string): string {
+  const DISPENSED_VALUE = 0.1;
+  const milliliters = typeof value === "string" ? parseFloat(value) : value;
+  
+  if (isNaN(milliliters) || milliliters < 0) {
+    throw new Error("Invalid input: value must be a positive number or a valid string.");
+  }
+
+  const timeInSeconds = milliliters / DISPENSED_VALUE;
+  const timeInSecondsFormatted = (timeInSeconds / 1000).toFixed(2);
+  
+  return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInSeconds)}`;
+}
+
+function getSecondLabel(seconds: number): string {
+  return seconds === 1 ? 'second' : 'seconds';
+}

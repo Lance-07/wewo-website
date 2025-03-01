@@ -10,6 +10,11 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 const navList: { name: string; link: string, id?: string }[] = [
+  // {
+  //   name: "Home",
+  //   link: '/',
+  //   id: '#home',
+  // },
   {
     name: "Impacts",
     link: "/",
@@ -53,6 +58,7 @@ export default function Navbar() {
               const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
               const y = element.getBoundingClientRect().top + window.scrollY - navbarHeight;
               window.scrollTo({ top: y, behavior: "smooth" });
+              console.log(navbarHeight, y)
           }
       }, 100);
   };
@@ -62,7 +68,7 @@ export default function Navbar() {
       <nav id="nav" className="bg-white flex box- justify-center fixed top-0 w-full z-50 h-[60px] shadow-[0_4px_4px_rgba(0_,0_,0_,15%)]">
         <div className="border-blue-500 container ~px-6/20 mx-auto flex md:justify-between items-center">
           <div className="flex shrink-0 gap-4 items-center justify-center mr-auto md:mx-0 h-full">
-            <Link href={'/#home'} scroll={false}>
+            <Link href={'/#home'} >
               <Image src="/icons/logo.png" width={140} height={50} alt="logo" />
             </Link>
           </div>
