@@ -70,7 +70,7 @@ export function AccordionItem({children, className, value, trigger, ...props}: A
 
               <ArrowRight
                   size={18}
-                  className={`transition-transform ${open ? "rotate-90": ""}`}
+                  className={`transition-transform shrink-0 ${open ? "rotate-90": ""}`}
               />
           </header>
           <div

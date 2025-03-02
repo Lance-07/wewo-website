@@ -14,6 +14,8 @@ import { InView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 import Navbar from "@/app/ui/components/navbar";
 import Footer from "@/app/ui/components/footer";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 
 export default function LandingPage() {
@@ -37,6 +39,7 @@ export default function LandingPage() {
                 <FAQs />
                 <CTA />
                 <Footer />
+                <Toaster richColors position="bottom-right" />
             </main>
         </>
     )
@@ -65,7 +68,7 @@ function Impact() {
     }, []);
 
     return (
-        <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} onChange={(inView) => console.log('inview', inView)} >
+        <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} >
             {({ inView, ref }) => (
                 <section ref={ref} id={'impacts'} className="flex justify-center items-center relative w-full lg:h-[607px] py-20 lg:py-0 ~px-6/20">
                     {/* Overlay Color Gradient */}
@@ -392,7 +395,7 @@ function Importance() {
 
 function FAQs() {
     return (
-        <section id={'faqs'} className="bg-white md:h-[690px] py-20 md:py-0 flex w-full justify-center items-center">
+        <section id={'faqs'} className="bg-white py-20 flex w-full justify-center items-center">
             <div className="flex flex-col items-center md:h-[425px] w-11/12">
                 <h1 className="font-bold text-4xl mb-10">
                     <span className="text-blue-main">Frequently </span>
@@ -416,6 +419,7 @@ function FAQs() {
 function CTA() {
     const [isReady, setIsReady] = React.useState(false);
     const [message, setMessage] = React.useState("");
+    const [email, setEmail] = React.useState('')
     const [loading, setLoading] = React.useState(false);
 
     const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -425,20 +429,21 @@ function CTA() {
         const res = await fetch("/api/send-message", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ email, message }),
         });
 
         if (res.ok) {
-            alert('Message sent successfully!')
+            toast.success('Message sent successfully!')
             setMessage("");
+            setEmail("")
         } else {
-            alert('Failed to send message. Try again.');
+            toast.error('Failed to send message. Try again.');
             setMessage("")
+            setEmail("")
         }
         setLoading(false)
     };
 
-    console.log(isReady);
     return (
         <section id="cta" className="md:h-[586px] py-20 md:py-0 w-full relative">
             <div className="absolute h-full w-full inset-0 bg-[linear-gradient(to_right,_#344D80_0%,_#53BAC6_31%,_#7CBA5A_68%,_#4A803D_100%)]"></div>
@@ -482,6 +487,13 @@ function CTA() {
                             <span className="text-blue-main">Let&#39;s Make </span>
                             <span className="text-green-third">A Difference!</span>
                         </h1>
+                        <input 
+                            onChange={(e) => setEmail(e.target.value)} 
+                            aria-label="email" 
+                            name="email" 
+                            type="email" 
+                            className="border w-full py-2 px-3 outline-none shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] placeholder:text-[rgba(70,_104,_178,_60%)]" 
+                            placeholder="example@gmail.com (optional)" />
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}

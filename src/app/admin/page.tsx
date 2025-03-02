@@ -6,8 +6,8 @@ import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
-import { Check, Save, SquarePen, TriangleAlert, X } from "lucide-react";
-import { convertLiterToMl } from "@/lib/utils";
+import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
+import { calculateTimePerDispensed, convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
@@ -77,7 +77,7 @@ return (
         <header>
             <AdminNav />
         </header>
-        <main className="flex flex-col">
+        <main className="flex relative flex-col">
             <div className="mt-28 md:top-0 w-full bg-white z-10">
                 <DashboarHeader />
             </div>
@@ -116,9 +116,6 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     const to = searchParams.get('to')
     const page = searchParams.get('page')
 
-    // Query the value from the db and map in this state so when the user click edit, the last value will show in the input.
-    // if no value (undefined) the html will show 0 ml no worries on no value.
-
         const fetchPumperValues = async () => {
             try {
                 
@@ -131,6 +128,11 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
             console.log("data from pumper: ", data);
 
             setDispensedValue({
+                small: data[0].ml.toString(),
+                medium: data[1].ml.toString(),
+                large: data[2].ml.toString()
+            })
+            setOriginalDispensedValue({
                 small: data[0].ml.toString(),
                 medium: data[1].ml.toString(),
                 large: data[2].ml.toString()
@@ -157,6 +159,8 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         medium: '500',
         large: '1000',
     });
+
+    console.log(dispensedValue, originalDispensedValue)
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value} = e.target;
@@ -477,7 +481,7 @@ return (
                                         <tr>
                                             <td>Small</td>
                                             <td>250 ml - 350 ml</td>
-                                            <td>1 sec</td>
+                                            <td>{calculateTimePerDispensed(dispensedValue.small || 0)}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input 
@@ -495,7 +499,7 @@ return (
                                         <tr>
                                             <td>Medium</td>
                                             <td>400 ml - 700 ml</td>
-                                            <td>2 sec</td>
+                                            <td>{calculateTimePerDispensed(dispensedValue.medium || 0)}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input value={dispensedValue.medium} 
@@ -512,7 +516,7 @@ return (
                                         <tr>
                                             <td>Large</td>
                                             <td>900 ml - 2 L</td>
-                                            <td>3 sec</td>
+                                            <td>{calculateTimePerDispensed(dispensedValue.large || 0)}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input value={dispensedValue.large} 
@@ -534,6 +538,14 @@ return (
                 </div>
             )}
             </div>
+
+            {tableLoading && 
+                <div className="absolute inset-0 z-30 bg-slate-700/70">
+                    <div className="w-full h-screen flex items-center justify-center overflow-hidden">
+                        <Loader2 className="animate-spin text-white" size={64} />
+                    </div>
+                </div>
+            }
     </div>
 );
 }
