@@ -10,6 +10,8 @@ import { toast, Toaster } from "sonner";
 
 const LoginPage = () => {
 
+  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter()
@@ -17,6 +19,18 @@ const LoginPage = () => {
   const [viewPass, setViewPass] = useState(false)
 
   // console.log(email, password)
+
+
+//   async function checkAuth() {
+//     const res = await fetch("/api/verify", { method: "GET" });
+//     if (res.ok) {
+//         router.push("/admin");
+//         return;
+//     }
+// }
+
+// checkAuth();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,6 +58,7 @@ const LoginPage = () => {
       setLoading(false)
     }
   }
+
 
   return (
     <div

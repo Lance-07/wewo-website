@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { IconItem } from "@/lib/data";
 import { poppins } from "../fonts";
 import { cn } from "@/lib/utils";
+import { supabase } from "../../../../supabase"
 
 
 type SimpleCardProps = {
@@ -57,6 +58,38 @@ const iconVariants: colorVariants = {
 
 
 export function SimpleCard({number, label, iconLink, title, description, className} : SimpleCardProps) {
+    
+    const fetchBottlesImpact = async () => {
+
+        try {
+            const { data, error } = await supabase
+                .from("CollectedBottles")
+                .select("totalLiters, small, medium, large")
+                if (error){
+                    return error;
+                } 
+                console.log(data)
+                let smallTotal = 0 
+                let mediumTotal = 0
+                let largeTotal = 0
+                let totalLiters = 0;
+                let totalBottles = 0;
+                data.forEach((bottle) => {
+                    totalLiters += bottle.totalLiters;
+                    smallTotal += bottle.small
+                    mediumTotal += bottle.medium
+                    largeTotal += bottle.large
+                    totalBottles += bottle.small + bottle.medium + bottle.large;
+                });
+                console.log("totalLiters: ", totalLiters)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchBottlesImpact();
+        }, []);
     return (
         <div className={cn(
             "shadow-card-shadow flex flex-col justify-center items-center rounded-2xl overflow-hidden w-[235px] h-[301px]", 

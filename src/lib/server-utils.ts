@@ -1,5 +1,7 @@
+'use server';
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 
 const secretKey = process.env.SECRET_KEY;
@@ -43,11 +45,19 @@ export async function decrypt(input: string): Promise<unknown> {
   return payload;
 }
 
-export const decodeJWT = (token: string) => {
-  const [header, payload, signature] = token.split(".");
-  return {
-    header: JSON.parse(Buffer.from(header, "base64").toString()),
-    payload: JSON.parse(Buffer.from(payload, "base64").toString()),
-    signature,
-  };
-};
+export async function updateSession(request: NextRequest) {
+  const session = request.cookies.get('wewotoken')?.value;
+  if (!session) return;
+
+  const parsed = await decrypt(session) as  { [key: string] : any}
+ ( parsed as { [key: string] : unknown}).expires = new Date(Date.now() + 60 * 60 * 1000);
+  const res = NextResponse.next();
+  res.cookies.set({
+    name: 'wewotoken',
+    value: await encrypt(parsed),
+    httpOnly: true,
+    expires: parsed.expires
+  })
+  
+  return res;
+}

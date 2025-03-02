@@ -287,8 +287,8 @@ return (
                     }`}
                     onClick={() => setActiveTab('overview')}
                     >
-                      <LayoutGrid size={16} />
-                      <span>System Overview</span>
+                    <LayoutGrid size={16} />
+                    <span>System Overview</span>
             </button>
 
             <button

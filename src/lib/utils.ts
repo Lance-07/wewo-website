@@ -47,6 +47,14 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+export const decodeJWT = (token: string) => {
+  const [header, payload, signature] = token.split(".");
+  return {
+    header: JSON.parse(Buffer.from(header, "base64").toString()),
+    payload: JSON.parse(Buffer.from(payload, "base64").toString()),
+    signature,
+  };
+};
 export function calculateTimePerDispensed(value: number | string): string {
   const DISPENSED_VALUE = 0.1;
   const milliliters = typeof value === "string" ? parseFloat(value) : value;
