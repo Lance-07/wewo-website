@@ -47,7 +47,7 @@ export function PieSkeleton() {
 
 export function BackwashIndSkeleton() {
     return (
-        <div className={`${shimmer} bg-gray-100 flex gap-4 flex-col p-4 min-w-[436px] h-[291px] shadow-card-shadow rounded-lg`}>
+        <div className={`${shimmer} bg-gray-100 flex gap-4 flex-col p-4 w-full min-w-[436px] h-[291px] shadow-card-shadow rounded-lg`}>
             <div className="bg-gray-200 w-6/12 h-1/6"></div>
             <div className="bg-gray-200 w-11/12 h-1/6"></div>
             <div className="flex gap-2 h-1/6">
@@ -77,7 +77,7 @@ export function BackwashIndSkeleton() {
 
 export function BottleBinIndSkeleton() {
     return (
-        <div className={`${shimmer} bg-gray-100 min-w-[278px] h-[291px] p-4 gap-4 shadow-card-shadow rounded-lg flex flex-col`}>
+        <div className={`${shimmer} bg-gray-100 w-full min-w-[278px] h-[291px] p-4 gap-4 shadow-card-shadow rounded-lg flex flex-col`}>
             <div className="bg-gray-200 w-6/12 h-[24px]"></div>
             <div className="bg-gray-200 w-11/12 h-[20px]"></div>
             <div className="flex gap-2">
