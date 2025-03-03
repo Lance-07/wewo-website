@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 const secretKey = process.env.SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
 
+console.log("SECRET_KEY:", process.env.SECRET_KEY);
+
 
 export async function encrypt(payload: JWTPayload | undefined, expiresIn: string =  '1h') {
   return await new SignJWT(payload)
@@ -35,7 +37,6 @@ export async function deleteCookie(){
     maxAge: 0,
     path: "/",
 });
-
 }
 
 export async function decrypt(input: string): Promise<unknown> {
@@ -50,14 +51,16 @@ export async function updateSession(request: NextRequest) {
   if (!session) return;
 
   const parsed = await decrypt(session) as  { [key: string] : any}
- ( parsed as { [key: string] : unknown}).expires = new Date(Date.now() + 60 * 60 * 1000);
+  const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60;
+  parsed.exp = expiresAt; 
+
   const res = NextResponse.next();
   res.cookies.set({
     name: 'wewotoken',
-    value: await encrypt(parsed),
+    value: await encrypt(parsed), // Re-encrypt with updated expiration
     httpOnly: true,
-    expires: parsed.expires
-  })
+    expires: new Date(expiresAt * 1000), // Convert to milliseconds
+  });
   
   return res;
 }

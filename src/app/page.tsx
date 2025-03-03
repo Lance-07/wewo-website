@@ -420,6 +420,7 @@ function CTA() {
     const [isReady, setIsReady] = React.useState(false);
     const [message, setMessage] = React.useState("");
     const [email, setEmail] = React.useState('')
+    const [subject, setSubject] = React.useState('')
     const [loading, setLoading] = React.useState(false);
 
     const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -429,17 +430,19 @@ function CTA() {
         const res = await fetch("/api/send-message", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, message }),
+            body: JSON.stringify({ email, message, subject }),
         });
 
         if (res.ok) {
             toast.success('Message sent successfully!')
             setMessage("");
             setEmail("")
+            setSubject('')
         } else {
             toast.error('Failed to send message. Try again.');
             setMessage("")
             setEmail("")
+            setSubject('')
         }
         setLoading(false)
     };
@@ -453,7 +456,7 @@ function CTA() {
             <div className="absolute h-full w-full inset-0 bg-gradient-to-t from-transparent to-white from-[27%] to-[72%]"></div>
 
             <div className={'container ~px-6/20 mx-auto h-full flex items-center'}>
-                <div className={'bg-white relative w-full h-[436px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
+                <div className={'bg-white relative w-full h-[480px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
                     <div className={clsx('max-w-xl w-11/12 md:w-1/2 text-center space-y-8 transition-all duration-500 ease-in-out',
                         {
                             'opacity-0 -translate-y-full' : isReady
@@ -487,20 +490,38 @@ function CTA() {
                             <span className="text-blue-main">Let&#39;s Make </span>
                             <span className="text-green-third">A Difference!</span>
                         </h1>
-                        <input 
-                            onChange={(e) => setEmail(e.target.value)} 
-                            aria-label="email" 
-                            name="email" 
-                            type="email" 
-                            className="border w-full py-2 px-3 outline-none shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] placeholder:text-[rgba(70,_104,_178,_60%)]" 
-                            placeholder="example@gmail.com (optional)" />
-                        <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            className={'block resize-none focus:outline-none w-full rounded-xl bg-stone-50 shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] h-[122px] p-[10px] text-sm placeholder:text-[rgba(70,_104,_178,_60%)]'}
-                            placeholder={'Tell us how you\'d like to get involved or ask us anything!'}>
+                        <div className="flex gap-4 w-full">
+                            <div className="w-2/3 flex flex-col items-start">
+                                <label htmlFor="email">Email</label>
+                                <input 
+                                    onChange={(e) => setEmail(e.target.value)} 
+                                    id="email" 
+                                    name="email" 
+                                    type="email" 
+                                    className="border w-full bg-stone-50 py-2 px-3 outline-none rounded-2xl shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] placeholder:text-[rgba(70,_104,_178,_60%)]" 
+                                    placeholder="example@gmail.com (optional)" />
+                            </div>
+                            <div className="w-1/3 flex flex-col items-start">
+                                <label htmlFor="subject">Subject</label>
+                                <select required id="subject" name="subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full h-full inline-flex px-3 py-2 text bg-stone-50 rounded-2xl shadow-[0_4px_4px_rgba(0,_0,_0,_10%)]">
+                                    <option disabled value="">Select subject</option>
+                                    <option value="inquire">Inquire</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="purchase">Purchase</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="w-full flex flex-col items-start">
+                            <label htmlFor="message">Message</label>
+                            <textarea
+                                required
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className={'block resize-none focus:outline-none w-full rounded-xl bg-stone-50 shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] h-[122px] p-[10px] text-sm placeholder:text-[rgba(70,_104,_178,_60%)]'}
+                                placeholder={'Tell us how you\'d like to get involved or ask us anything!'}>
 
-                        </textarea>
+                            </textarea>
+                        </div>
                         <Button disabled={loading} type="submit" className={'px-6 py-4'} active={false} variant={'no-border'}
                                 childrenStyle={"bg-gradient-to-r from-[#4A6BB3] to-[#4A7F3B]"}>
                             <span className={'text-white flex'}>

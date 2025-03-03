@@ -169,24 +169,24 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     const updatePumperValues = async () => { 
         try {
-        await supabase.from("PumperValues")
-            .update({ ml: dispensedValue.small })
-            .eq("id", 1);
+            await supabase.from("PumperValues")
+                .update({ ml: dispensedValue.small })
+                .eq("id", 1);
 
-        await supabase.from("PumperValues")
-            .update({ ml: dispensedValue.medium })
-            .eq("id", 2);
+            await supabase.from("PumperValues")
+                .update({ ml: dispensedValue.medium })
+                .eq("id", 2);
 
-        await supabase.from("PumperValues")
-            .update({ ml: dispensedValue.large })
-            .eq("id", 3);
+            await supabase.from("PumperValues")
+                .update({ ml: dispensedValue.large })
+                .eq("id", 3);
 
-        console.log("Pumper values updated successfully!");
-    } catch (error) {
-        console.error("Error updating pumper values:", error);
+            console.log("Pumper values updated successfully!");
+        } catch (error) {
+            console.error("Error updating pumper values:", error);
+        }
     }
-    }
-
+``
     const handleSaveSettings = () => {
         // call the save server action
         console.log(dispensedValue)
@@ -328,7 +328,7 @@ return (
                         }
                     </div>
 
-                    <div className={`${poppins.className} flex flex-wrap items-stretch justify-between gap-4`}>
+                    <div className={`${poppins.className} px-4 md:px-0 flex flex-wrap items-stretch justify-between gap-4`}>
                         { loading ? 
                             <PieSkeleton />
                         :
@@ -540,7 +540,7 @@ return (
             </div>
 
             {tableLoading && 
-                <div className="absolute inset-0 z-30 bg-slate-700/70">
+                <div className="absolute inset-0 z-50 bg-slate-700/90">
                     <div className="w-full h-screen flex items-center justify-center overflow-hidden">
                         <Loader2 className="animate-spin text-white" size={64} />
                     </div>

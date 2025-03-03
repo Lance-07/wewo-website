@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { mazzard_soft_h } from "@/app/ui/fonts";
-import { Eye, EyeClosed, Loader2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeClosed, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "sonner";
+import Link from "next/link";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const LoginPage = () => {
 
@@ -17,6 +19,21 @@ const LoginPage = () => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [viewPass, setViewPass] = useState(false)
+  const [forgotPassEmail, setForgotPassEmail] = useState('')
+  const [forgotPassLoading, setForgotPassLoading] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const handleClick = (id?: string) => {
+    setTimeout(() => {
+        const element = document.querySelector(id || "");
+        if (element) {
+            const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
+            const y = element.getBoundingClientRect().top + window.scrollY - navbarHeight;
+            window.scrollTo({ top: y, behavior: "smooth" });
+            console.log(navbarHeight, y)
+        }
+    }, 100);
+};
 
   // console.log(email, password)
 
@@ -33,8 +50,9 @@ const LoginPage = () => {
 
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    e.stopPropagation();
+    setLoading(true);
 
     try {
       const response = await fetch("/api/login", {
@@ -58,6 +76,42 @@ const LoginPage = () => {
       setLoading(false)
     }
   }
+
+  async function sendResetPassword(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    setForgotPassLoading(true);
+
+    if (!forgotPassEmail) {
+        toast.error("Please enter your email.");
+        setForgotPassLoading(false);
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/forgot-password/send-reset", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ forgotPassEmail }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            toast.success(data.message);
+            setForgotPassEmail("");
+            setOpen(false);
+        } else {
+            toast.error(data.message || "Failed to send reset password email.");
+        }
+    } catch (error) {
+        console.error("Error sending reset password:", error);
+        toast.error("Oops! Something went wrong.");
+    } finally {
+        setForgotPassLoading(false);
+    }
+}
+
 
 
   return (
@@ -127,26 +181,75 @@ const LoginPage = () => {
                   <button 
                     type="button"
                     className="absolute inset-y-0 end-0 flex items-center z-20 px-2.5 cursor-pointer text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors" 
-                    onClick={() => setViewPass(!viewPass)}>{viewPass ? <EyeClosed /> : <Eye />}
+                    onClick={() => setViewPass(!viewPass)}>{!viewPass ? <EyeClosed /> : <Eye />}
                   </button>
                 </div>
               </div>
               <div className="flex flex-row justify-between gap-2 md:gap-0 text-xs text-[#4668B2]">
-                <a href="#" className="hover:underline">
-                  Forgot Password?
-                </a>
-                <a href="#" className="hover:underline">
+                <Dialog onOpenChange={setOpen} open={open}>
+                  <DialogTrigger asChild>
+                    <button onClick={() => setOpen(!open)} className="text-blue-main p-0">
+                      Forgot Password?
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md py-8">
+                    <DialogHeader>
+                      <DialogTitle>Forgot your password?</DialogTitle>
+                      <DialogDescription>
+                        To reset your password, enter your email.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={sendResetPassword} className="flex flex-col gap-4">
+                      <div className="grid gap-2">
+                        <label htmlFor="forgot-pass-email">Email</label>
+                        <input
+                          id="forgot-pass-email"
+                          name="forgotPassEmail"
+                          value={forgotPassEmail}
+                          onChange={(e) => setForgotPassEmail(e.target.value)}
+                          className="py-2 px-3 border rounded"
+                          placeholder="example@gmail.com"
+                          required
+                        />
+                      </div>
+                      <DialogFooter className="sm:justify-end flex gap-2">
+                        <DialogClose asChild>
+                          <Button onClick={() => setOpen(!open)} type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                        <Button disabled={!forgotPassEmail || forgotPassLoading} type="submit" className="text-white inline-flex items-center bg-blue-main rounded hover:bg-blue-800">
+                          {forgotPassLoading && <Loader2 className="animate-spin" />}
+                          {forgotPassLoading ? '' : 'Continue'}
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
+                <button onClick={() => handleClick('#cta')}>
                   Need an Account?
-                </a>
+                </button>
               </div>
-              <Button disabled={loading} className="w-full bg-[#4668B2] hover:bg-[#3d5b9c] inline-flex items-center text-white rounded-md py-2 text-base font-bold" type="submit">
+              <Button disabled={loading || (!email || !password)} className="w-full bg-[#4668B2] hover:bg-[#3d5b9c] inline-flex items-center text-white rounded-md py-2 text-base font-bold" type="submit">
                 {loading && <Loader2 className="animate-spin" />}
-                {loading ? 'Please wait' : 'Continue'}
+                {loading ? '' : 'Continue'}
               </Button>
             </form>
           </div>
         </div>
       </div>
+
+      <div className="absolute top-16 shadow-md hover:bg-stone-200 transition-all bg-white px-4 py-2 rounded-full hover:scale-105">
+        <Link href={'/'}>
+          <div className="flex items-center gap-2">
+            <ArrowLeft size={24} />
+            <p className="tracking-wider">Back To Home page</p>
+          </div>
+        </Link>
+      </div>
+
+
 
       <Toaster richColors position="bottom-right" />
     </div>
