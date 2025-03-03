@@ -20,15 +20,12 @@ export async function POST(req: Request) {
       body: formData
     });
 
-<<<<<<< HEAD:src/app/api/fetch_bottles/route.ts
     // console.log('Response Status:', res.status);
     // console.log('Response Headers:', res.headers);
 
     // console.log(typeof res)
     // console.log('Response: ', res)
 
-=======
->>>>>>> 3590555a3ccdb803bb81837a915bfbcf60e64850:src/app/api/fetch-bottles/route.ts
     if (!res.ok) throw new Error("Failed to fetch data from ngrok");
 
     const data = await res.json();
