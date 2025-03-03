@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     if (!req.body) {
-      console.log('No body.')
+      console.log('No body')
     }
 
-    const apiUrl = "https://modern-snake-evenly.ngrok-free.app/api/get_collected_bottles";
+    const apiUrl = "https://modern-snake-evenly.ngrok-free.app/api/get_turbidity_values";
 
     const formData = new FormData();
     formData.append('date_filter', 'all');
@@ -18,12 +18,6 @@ export async function POST(req: Request) {
       }),
       body: formData
     });
-
-    console.log('Response Status:', res.status);
-    console.log('Response Headers:', res.headers);
-
-    console.log(typeof res)
-    console.log('Response: ', res)
 
     if (!res.ok) throw new Error("Failed to fetch data from ngrok");
 
