@@ -55,20 +55,30 @@ export const decodeJWT = (token: string) => {
     signature,
   };
 };
-export function calculateTimePerDispensed(value: number | string): string {
-  const DISPENSED_VALUE = 0.1;
+export function formatTimePerDispensed(value: number): string {
+
+  if (isNaN(value) || value < 0) {
+    throw new Error("Invalid input: value must be a positive number or a valid string.");
+  }
+
+  // const timeInSecondsFormatted = (timeInMilliseconds / 1000).toFixed(2);
+  
+  // return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInMilliseconds)}`;
+  return `${value.toString()} ${getSecondLabel(value).toString()}`;
+}
+
+function getSecondLabel(seconds: number): string {
+  return seconds === 1 ? 'second' : 'seconds';
+}
+
+export function calculateTimePerDispensed(value: number | string): number { // in seconds
+  const DISPENSED_VALUE = 100;
+  const TIME_ADJUSTMENT = 8;
   const milliliters = typeof value === "string" ? parseFloat(value) : value;
   
   if (isNaN(milliliters) || milliliters < 0) {
     throw new Error("Invalid input: value must be a positive number or a valid string.");
   }
 
-  const timeInMilliseconds = (milliliters / DISPENSED_VALUE) + 8000;
-  const timeInSecondsFormatted = (timeInMilliseconds / 1000).toFixed(2);
-  
-  return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInMilliseconds)}`;
-}
-
-function getSecondLabel(seconds: number): string {
-  return seconds === 1 ? 'second' : 'seconds';
+  return Math.round((milliliters / DISPENSED_VALUE) + TIME_ADJUSTMENT);
 }

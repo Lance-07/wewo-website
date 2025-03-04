@@ -28,7 +28,7 @@ export async function GET(req: Request) {
         let query = supabase
         .from("CollectedBottles")
         .select("*", {count: 'exact'})
-        .order('date', { ascending: true })
+        .order('date', { ascending: false })
         .range(offset, offset + ITEMS_PER_PAGE - 1)
 
         if (fromDate && toDate) {
