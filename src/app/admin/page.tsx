@@ -6,7 +6,7 @@ import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
-import { Check, Loader2, Nut, Save, SquarePen, TriangleAlert, X } from "lucide-react";
+import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { calculateTimePerDispensed, convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
