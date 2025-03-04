@@ -7,7 +7,7 @@ import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
 import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
-import { calculateTimePerDispensed, convertLiterToMl, calculateTime } from "@/lib/utils";
+import { calculateTimePerDispensed, convertLiterToMl, formatTimePerDispensed } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
@@ -15,7 +15,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
-import { supabase } from "../../../supabase"
+import { toast, Toaster } from "sonner";
 
 interface AdminCardItems {
     number: string,
@@ -90,6 +90,8 @@ return (
             </div>
             <BottleStats onDataUpdate={setBottleStats} setLoading={setLoading} />
         </main>
+
+        <Toaster richColors position="top-right" />
     </div>
 );
 }
@@ -103,48 +105,21 @@ loading: boolean;
 function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps){
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
     const [isEdit, setIsEdit] = useState(false)
+
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();
+
     const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
     const [totalPages, setTotalPages] = useState(1)
     const [data, setData] = useState(null)
     const [tableLoading, setTableLoading] = useState(true)
     const tableRef = useRef<HTMLDivElement>(null);
     const scrollPosition = useRef(0);
+
     const from = searchParams.get('from')
     const to = searchParams.get('to')
     const page = searchParams.get('page')
-
-        const fetchPumperValues = async () => {
-            try {
-                
-            const { data, error } = await supabase
-            .from("PumperValues")
-            .select("ml")
-            if (error) {
-                return error
-            }
-            console.log("data from pumper: ", data);
-
-            setDispensedValue({
-                small: data[0].ml.toString(),
-                medium: data[1].ml.toString(),
-                large: data[2].ml.toString()
-            })
-            setOriginalDispensedValue({
-                small: data[0].ml.toString(),
-                medium: data[1].ml.toString(),
-                large: data[2].ml.toString()
-            })
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    
-    useEffect(() => {
-        fetchPumperValues();
-    }, []);
 
     const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
         small: '250',
@@ -152,15 +127,41 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         large: '1000',
     })
 
-
-
     const [originalDispensedValue, setOriginalDispensedValue] = useState({
         small: '250',
         medium: '500',
         large: '1000',
     });
 
-    console.log(dispensedValue, originalDispensedValue)
+
+    const fetchPumperValues = async () => {
+        try {
+            
+            const res = await fetch("/api/fetch-pumper-values");
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.error);
+            }
+
+        setDispensedValue({
+            small: data[0].ml.toString(),
+            medium: data[1].ml.toString(),
+            large: data[2].ml.toString()
+        })
+        setOriginalDispensedValue({
+            small: data[0].ml.toString(),
+            medium: data[1].ml.toString(),
+            large: data[2].ml.toString()
+        })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+    useEffect(() => {
+        fetchPumperValues();
+    }, []);
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value} = e.target;
@@ -168,45 +169,55 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     }
 
     const updatePumperValues = async () => { 
-    
-        const timeSmall = calculateTime(dispensedValue.small)
-        const timeMedium = calculateTime(dispensedValue.medium)
-        const timeLarge = calculateTime(dispensedValue.large)
-        console.log(timeSmall);
+
+        const data = {
+            small_ml: dispensedValue.small,
+            medium_ml: dispensedValue.medium,
+            large_ml: dispensedValue.large,
+            small_sec: calculateTimePerDispensed(dispensedValue.small),
+            medium_sec: calculateTimePerDispensed(dispensedValue.medium),
+            large_sec: calculateTimePerDispensed(dispensedValue.large)
+        }
+
         try {
-            await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.small, value: timeSmall})
-                .eq("id", 1);
 
-            await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.medium, value: timeMedium })
-                .eq("id", 2);
+            const res = await fetch("/api/update-pumper-values", {
+                method: "POST", 
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
 
-            await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.large, value: timeLarge })
-                .eq("id", 3);
+            const response = await res.json();
+
+            if (!res.ok) {
+                toast.error(response.error);
+            } else {
+                toast.success(response.message);
+            }
 
             console.log("Pumper values updated successfully!");
 
-            try {
-                const res = await fetch('http://localhost:3000/api/update-pumper-values', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        small_sec: timeSmall,
-                        small_ml: dispensedValue.small,
-                        medium_sec: timeMedium,
-                        medium_ml: dispensedValue.medium,
-                        large_sec: timeLarge,
-                        large_ml: dispensedValue.large
-                    })
-                });
+            // try {
+            //     const res = await fetch('http://localhost:3000/api/update-pumper-values', {
+            //         method: 'POST',
+            //         headers: { 'Content-Type': 'application/json' },
+            //         body: JSON.stringify({
+            //             small_sec: timeSmall,
+            //             small_ml: dispensedValue.small,
+            //             medium_sec: timeMedium,
+            //             medium_ml: dispensedValue.medium,
+            //             large_sec: timeLarge,
+            //             large_ml: dispensedValue.large
+            //         })
+            //     });
             
-                const data = await res.json(); // If your API returns a JSON response
-                console.log("Response:", data);
-            } catch (error) {
-                console.error("Fetch error:", error);
-            }
+            //     const data = await res.json(); // If your API returns a JSON response
+            //     console.log("Response:", data);
+            // } catch (error) {
+            //     console.error("Fetch error:", error);
+            // }
 
 
             
@@ -509,7 +520,7 @@ return (
                                         <tr>
                                             <td>Small</td>
                                             <td>250 ml - 350 ml</td>
-                                            <td>{calculateTimePerDispensed(dispensedValue.small || 0)}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.small || 0))}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input 
@@ -527,7 +538,7 @@ return (
                                         <tr>
                                             <td>Medium</td>
                                             <td>400 ml - 700 ml</td>
-                                            <td>{calculateTimePerDispensed(dispensedValue.medium || 0)}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.medium || 0))}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input value={dispensedValue.medium} 
@@ -544,7 +555,7 @@ return (
                                         <tr>
                                             <td>Large</td>
                                             <td>900 ml - 2 L</td>
-                                            <td>{calculateTimePerDispensed(dispensedValue.large || 0)}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.large || 0))}</td>
                                             <td>
                                                 {isEdit ? (
                                                     <input value={dispensedValue.large} 

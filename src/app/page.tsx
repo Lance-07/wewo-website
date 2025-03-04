@@ -14,8 +14,7 @@ import { InView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 import Navbar from "@/app/ui/components/navbar";
 import Footer from "@/app/ui/components/footer";
-import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
+import { toast, Toaster } from "sonner";
 
 
 export default function LandingPage() {
@@ -48,6 +47,7 @@ export default function LandingPage() {
 function Impact() {
     const [activeIdx, setActiveIdx] = React.useState(0);
     const [isMobile, setIsMobile] = React.useState(false);
+    const [data, setData] = React.useState<{totalBottles: number; totalLiters: number} | null>(null)
 
     React.useEffect(() => {
         if (window.innerWidth > 1450) {
@@ -65,6 +65,24 @@ function Impact() {
         };
         window.addEventListener('resize', updateMedia);
         return () => window.removeEventListener('resize', updateMedia);
+    }, []);
+
+    const fetchBottlesImpact = async () => {
+
+        try {
+            const res = await fetch("/api/fetch-bottles");
+            const data = await res.json();
+
+            if (!res.ok) toast.error('Failed to fetch total bottles from server.');
+            console.log(data)
+            setData(data)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    React.useEffect(() => {
+        fetchBottlesImpact();
     }, []);
 
     return (
@@ -174,12 +192,12 @@ function Impact() {
                                         { activeIdx === 0 && 
                                             <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
                                                 <SimpleCard 
-                                                    number="23" label="liters" iconLink="/icons/droplet.png"
+                                                    number={data?.totalLiters.toString() ?? '0'} label="liters" iconLink="/icons/droplet.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
                                                     title="clean water distributed"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
                                                 <SimpleCard  
-                                                    number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                    number={data?.totalBottles.toString() ?? '0'} label="plastics" iconLink="/icons/plastic-bottle.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
                                                     title="PET bottles recycled"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
