@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../supabase";
 
-export async function GET(req: NextResponse) {
+export async function GET(req: NextRequest) {
     try {
         const { data, error } = await supabase
             .from('PumperValues')
