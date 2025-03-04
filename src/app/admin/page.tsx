@@ -7,7 +7,7 @@ import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
 import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
-import { calculateTimePerDispensed, convertLiterToMl } from "@/lib/utils";
+import { calculateTimePerDispensed, convertLiterToMl, calculateTime } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
@@ -168,20 +168,48 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     }
 
     const updatePumperValues = async () => { 
+    
+        const timeSmall = calculateTime(dispensedValue.small)
+        const timeMedium = calculateTime(dispensedValue.medium)
+        const timeLarge = calculateTime(dispensedValue.large)
+        console.log(timeSmall);
         try {
             await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.small })
+                .update({ ml: dispensedValue.small, value: timeSmall})
                 .eq("id", 1);
 
             await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.medium })
+                .update({ ml: dispensedValue.medium, value: timeMedium })
                 .eq("id", 2);
 
             await supabase.from("PumperValues")
-                .update({ ml: dispensedValue.large })
+                .update({ ml: dispensedValue.large, value: timeLarge })
                 .eq("id", 3);
 
             console.log("Pumper values updated successfully!");
+
+            try {
+                const res = await fetch('http://localhost:3000/api/update-pumper-values', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        small_sec: timeSmall,
+                        small_ml: dispensedValue.small,
+                        medium_sec: timeMedium,
+                        medium_ml: dispensedValue.medium,
+                        large_sec: timeLarge,
+                        large_ml: dispensedValue.large
+                    })
+                });
+            
+                const data = await res.json(); // If your API returns a JSON response
+                console.log("Response:", data);
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+
+
+            
         } catch (error) {
             console.error("Error updating pumper values:", error);
         }
@@ -299,8 +327,8 @@ return (
                 }`}
                 onClick={() => setActiveTab('settings')}
                     >
-                      <Settings size={16} />
-                      <span>System Settings</span>
+                    <Settings size={16} />
+                    <span>System Settings</span>
             </button>
         </div>
 

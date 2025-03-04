@@ -1,20 +1,22 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const body = await req.json()
   try {
     if (!req.body) {
       console.log('No body')
     }
 
     const apiUrl = "https://modern-snake-evenly.ngrok-free.app/api/update_pumper_values";
+    console.log("req.body: ", body.small_sec);
 
     const formData = new FormData();
-    formData.append('small_sec', '10')
-    formData.append('small_ml', '10')
-    formData.append('medium_sec', '15')
-    formData.append('medium_ml', '15')
-    formData.append('large_sec', '20')
-    formData.append('large_ml', '20')
+    formData.append('small_sec', body.small_sec)
+    formData.append('small_ml', body.small_ml)
+    formData.append('medium_sec', body.medium_sec)
+    formData.append('medium_ml', body.medium_ml)
+    formData.append('large_sec', body.large_sec)
+    formData.append('large_ml', body.large_ml)
 
     const res = await fetch(apiUrl, {
       method: "POST",
