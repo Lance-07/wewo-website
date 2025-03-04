@@ -6,7 +6,7 @@ import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
-import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
+import { Check, Loader2, Nut, Save, SquarePen, TriangleAlert, X } from "lucide-react";
 import { calculateTimePerDispensed, convertLiterToMl } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
@@ -32,7 +32,7 @@ let adminCardItems:AdminCardItems[]
 export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0, ntu:0 });
     const [loading, setLoading] = useState(true)
     const smallCF = bottleStats.smallTotal * 45.54
     const mediumCF = bottleStats.mediumTotal * 91.08
@@ -64,7 +64,7 @@ export default function AdminPage() {
     className: 'bg-[#7CBA5A] text-[#7CBA5A]'
 },
 {
-    number: '0',
+    number: bottleStats.ntu.toString(),
     label: 'NTU',
     iconLink: '/icons/carbon-footprint.png',
     title: 'turbidity clarity',
@@ -186,7 +186,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
             console.error("Error updating pumper values:", error);
         }
     }
-``
+
     const handleSaveSettings = () => {
         // call the save server action
         console.log(dispensedValue)
