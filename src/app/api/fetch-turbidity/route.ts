@@ -6,7 +6,7 @@ export async function POST(req: Request) {
       console.log('No body')
     }
 
-    const apiUrl = "https://modern-snake-evenly.ngrok-free.app/api/get_turbidity_values";
+    const apiUrl = `${process.env.RPI_URL}/api/get_turbidity_values`;
 
     const formData = new FormData();
     formData.append('date_filter', 'all');

@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     console.log('updated value from supabase: ', data)
 
-    const apiUrl = "https://modern-snake-evenly.ngrok-free.app/api/update_pumper_values";
+    const apiUrl = `${process.env.RPI_URL}/api/update_pumper_values`;
 
     const formData = new FormData();
     formData.append('small_sec', body.small_sec.toString());
