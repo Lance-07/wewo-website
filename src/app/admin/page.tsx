@@ -418,7 +418,7 @@ return (
                         : 
                             <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_291px] min-w-[200px] sm:min-w-[250px] md:min-w-[291px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
-                                <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
+                                <h3 className="font-light text-sm">Predict if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
                                     <div className="rounded-lg size-[34px] shrink-0 bg-green-second flex items-center justify-center">
                                         <Check color="white" />
