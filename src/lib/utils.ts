@@ -72,13 +72,15 @@ function getSecondLabel(seconds: number): string {
 }
 
 export function calculateTimePerDispensed(value: number | string): number { // in seconds
-  const DISPENSED_VALUE = 100;
-  const TIME_ADJUSTMENT = 8;
+
+  const base = 0.04 //1 ml is = to 0.04
+  const formula = parseInt(value.toString(), 10)* base + 2
+
   const milliliters = typeof value === "string" ? parseFloat(value) : value;
   
   if (isNaN(milliliters) || milliliters < 0) {
     throw new Error("Invalid input: value must be a positive number or a valid string.");
   }
 
-  return Math.round((milliliters / DISPENSED_VALUE) + TIME_ADJUSTMENT);
+  return Math.floor(formula);
 }
