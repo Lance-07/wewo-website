@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       .from('PumperValues')
       .upsert([
         {id: 1, value: body.small_sec, ml: body.small_ml}, 
-        {id: 2, value: body.medium_sec, ml: body.medium_sec_ml}, 
+        {id: 2, value: body.medium_sec, ml: body.medium_ml}, 
         {id: 3, value: body.large_sec, ml: body.large_ml},
       ])
       .select('name, value, ml');

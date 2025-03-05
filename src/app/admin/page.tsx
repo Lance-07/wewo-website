@@ -15,7 +15,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
-import { supabase } from "../../../supabase"
 import { toast, Toaster } from "sonner";
 
 interface AdminCardItems {
@@ -33,7 +32,7 @@ let adminCardItems:AdminCardItems[]
 export default function AdminPage() {
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
+    const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0, ntu:0 });
     const [loading, setLoading] = useState(true)
     const smallCF = bottleStats.smallTotal * 45.54
     const mediumCF = bottleStats.mediumTotal * 91.08
@@ -65,7 +64,7 @@ export default function AdminPage() {
     className: 'bg-[#7CBA5A] text-[#7CBA5A]'
 },
 {
-    number: '0',
+    number: bottleStats.ntu.toString(),
     label: 'NTU',
     iconLink: '/icons/carbon-footprint.png',
     title: 'turbidity clarity',
@@ -199,11 +198,34 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
             }
 
             console.log("Pumper values updated successfully!");
+
+            // try {
+            //     const res = await fetch('http://localhost:3000/api/update-pumper-values', {
+            //         method: 'POST',
+            //         headers: { 'Content-Type': 'application/json' },
+            //         body: JSON.stringify({
+            //             small_sec: timeSmall,
+            //             small_ml: dispensedValue.small,
+            //             medium_sec: timeMedium,
+            //             medium_ml: dispensedValue.medium,
+            //             large_sec: timeLarge,
+            //             large_ml: dispensedValue.large
+            //         })
+            //     });
+            
+            //     const data = await res.json(); // If your API returns a JSON response
+            //     console.log("Response:", data);
+            // } catch (error) {
+            //     console.error("Fetch error:", error);
+            // }
+
+
+            
         } catch (error) {
             console.error("Error updating pumper values:", error);
         }
     }
-``
+
     const handleSaveSettings = () => {
         // call the save server action
         console.log(dispensedValue)
@@ -316,8 +338,8 @@ return (
                 }`}
                 onClick={() => setActiveTab('settings')}
                     >
-                      <Settings size={16} />
-                      <span>System Settings</span>
+                    <Settings size={16} />
+                    <span>System Settings</span>
             </button>
         </div>
 
@@ -396,7 +418,7 @@ return (
                         : 
                             <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_291px] min-w-[200px] sm:min-w-[250px] md:min-w-[291px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
-                                <h3 className="font-light text-sm">Predic if the bottle bin is full and should be replaced</h3>
+                                <h3 className="font-light text-sm">Predict if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
                                     <div className="rounded-lg size-[34px] shrink-0 bg-green-second flex items-center justify-center">
                                         <Check color="white" />
