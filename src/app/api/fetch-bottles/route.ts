@@ -13,18 +13,37 @@ export async function GET(req: NextRequest) {
       p_columns: ['totalLiters']
     });
 
-    const [bottlesResult, litersResult] = await Promise.all([fetchTotalBottles, fetchTotalLiters]);
+    const fetchSmallTotal = supabase.rpc('get_total_combined_sum_multi', {
+      p_table: 'CollectedBottles',
+      p_columns: ['small']
+    })
+    const fetchMediumlTotal = supabase.rpc('get_total_combined_sum_multi', {
+      p_table: 'CollectedBottles',
+      p_columns: ['small']
+    })
+    const fetchLargeTotal = supabase.rpc('get_total_combined_sum_multi', {
+      p_table: 'CollectedBottles',
+      p_columns: ['small']
+    })
 
-    if (bottlesResult.error || litersResult.error) {
+    const [bottlesResult, litersResult, smallResult, mediumResult, largeResult] = await Promise.all([fetchTotalBottles, fetchTotalLiters, fetchSmallTotal, fetchMediumlTotal, fetchLargeTotal]);
+
+    if (bottlesResult.error || litersResult.error || smallResult.error || mediumResult.error || largeResult.error) {
       return NextResponse.json(
         { error: bottlesResult.error || litersResult.error },
         { status: 500 }
       );
     }
 
+    const smallCF = smallResult.data * 45.54
+    const mediumCF = mediumResult.data * 91.08
+    const largeCF = largeResult.data * 240.12
+    const totalCF = (smallCF + mediumCF + largeCF) * 0.001
+
     const responseData = {
       totalBottles: bottlesResult.data,
-      totalLiters: litersResult.data
+      totalLiters: litersResult.data,
+      totalCo2:Math.round(totalCF)
     };
 
     console.log(responseData);

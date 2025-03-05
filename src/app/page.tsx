@@ -3,10 +3,10 @@ import Button from "@/app/ui/components/button";
 import { Carousel } from "@/app/ui/components/carousel";
 import {cardItems, carouselItems, faqItems, iconItems} from "@/lib/data";
 import { Card, DynamicCard, HorizontalCard, SimpleCard } from "@/app/ui/components/card";
-import React, { ReactNode } from "react";
+import React from "react";
 import Image from "next/image";
 import { poppins } from "@/app/ui/fonts";
-import {ChevronLeft, ChevronRight, Facebook, Mail} from "lucide-react";
+import {ChevronLeft, ChevronRight} from "lucide-react";
 import clsx from "clsx";
 import {Accordion, AccordionItem} from "@/app/ui/components/accordion";
 import Link from "next/link";
@@ -47,7 +47,7 @@ export default function LandingPage() {
 function Impact() {
     const [activeIdx, setActiveIdx] = React.useState(0);
     const [isMobile, setIsMobile] = React.useState(false);
-    const [data, setData] = React.useState<{totalBottles: number; totalLiters: number} | null>(null)
+    const [data, setData] = React.useState<{totalBottles: number; totalLiters: number; totalCo2:number} | null>(null)
 
     React.useEffect(() => {
         if (window.innerWidth > 1450) {
@@ -202,7 +202,7 @@ function Impact() {
                                                     title="PET bottles recycled"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
                                                 <SimpleCard  
-                                                    number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                    number={data?.totalCo2.toString() ?? '0'} label="kilograms" iconLink="/icons/carbon-footprint.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
                                                     title="carbon footprints reduced"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
