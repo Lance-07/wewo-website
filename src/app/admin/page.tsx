@@ -168,7 +168,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
     }
 
-    const updatePumperValues = async () => { 
+    const updatePumperValues = async (): Promise<boolean> => { 
 
         const data = {
             small_ml: dispensedValue.small,
@@ -193,45 +193,25 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
             if (!res.ok) {
                 toast.error(response.error);
+                return false;
             } else {
                 toast.success(response.message);
+                return true;
             }
-
-            console.log("Pumper values updated successfully!");
-
-            // try {
-            //     const res = await fetch('http://localhost:3000/api/update-pumper-values', {
-            //         method: 'POST',
-            //         headers: { 'Content-Type': 'application/json' },
-            //         body: JSON.stringify({
-            //             small_sec: timeSmall,
-            //             small_ml: dispensedValue.small,
-            //             medium_sec: timeMedium,
-            //             medium_ml: dispensedValue.medium,
-            //             large_sec: timeLarge,
-            //             large_ml: dispensedValue.large
-            //         })
-            //     });
-            
-            //     const data = await res.json(); // If your API returns a JSON response
-            //     console.log("Response:", data);
-            // } catch (error) {
-            //     console.error("Fetch error:", error);
-            // }
-
-
-            
         } catch (error) {
             console.error("Error updating pumper values:", error);
+            return false;
         }
     }
 
-    const handleSaveSettings = () => {
-        // call the save server action
-        console.log(dispensedValue)
-        updatePumperValues()
-        setIsEdit(!isEdit)
-        setOriginalDispensedValue(dispensedValue)
+    const handleSaveSettings = async () => {
+        if (await updatePumperValues()) {
+            setIsEdit(!isEdit)
+            setOriginalDispensedValue(dispensedValue)
+            console.log("di nagkwan");
+        } else {
+            setDispensedValue(originalDispensedValue)
+        }
     }
 
     const handleCancelSettings = () => {

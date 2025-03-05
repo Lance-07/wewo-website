@@ -9,19 +9,6 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { data, error } = await supabase
-      .from('PumperValues')
-      .upsert([
-        {id: 1, value: body.small_sec, ml: body.small_ml}, 
-        {id: 2, value: body.medium_sec, ml: body.medium_ml}, 
-        {id: 3, value: body.large_sec, ml: body.large_ml},
-      ])
-      .select('name, value, ml');
-
-    if (error) throw new Error(error.message);
-
-    console.log('updated value from supabase: ', data)
-
     const apiUrl = `${process.env.RPI_URL}/api/update_pumper_values`;
 
     const formData = new FormData();
@@ -40,14 +27,29 @@ export async function POST(req: Request) {
       body: formData
     });
 
-    if (!rpiRes.ok) throw new Error("Failed to fetch data from ngrok");
+    if (!rpiRes.ok) {
+      throw new Error("Failed to fetch data from ngrok");
+    } else {
+        const { data, error } = await supabase
+        .from('PumperValues')
+        .upsert([
+          {id: 1, value: body.small_sec, ml: body.small_ml}, 
+          {id: 2, value: body.medium_sec, ml: body.medium_ml}, 
+          {id: 3, value: body.large_sec, ml: body.large_ml},
+        ])
+        .select('name, value, ml');
 
+        if (error) throw new Error(error.message);
+
+        console.log('updated value from supabase: ', data)
+    }
+      
     const responseData = await rpiRes.text();
     console.log(responseData);
 
     return NextResponse.json({message: "Successfully updated pumper values."}, {status: 200});
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: "Failed to fetch external data" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update pumper values." }, { status: 500 });
   }
 }
