@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "sonner";
 import Link from "next/link";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import clsx from "clsx";
 
 const LoginPage = () => {
 
@@ -22,10 +23,12 @@ const LoginPage = () => {
   const [forgotPassEmail, setForgotPassEmail] = useState('')
   const [forgotPassLoading, setForgotPassLoading] = useState(false)
   const [open, setOpen] = useState(false)
+  const [errors, setErrors] = useState<{email: boolean, password: boolean} | null>(null)
 
   const handleClick = (id?: string) => {
     setTimeout(() => {
         const element = document.querySelector(id || "");
+        console.log(element)
         if (element) {
             const navbarHeight = document.querySelector("nav")?.offsetHeight || 0;
             const y = element.getBoundingClientRect().top + window.scrollY - navbarHeight;
@@ -34,20 +37,6 @@ const LoginPage = () => {
         }
     }, 100);
 };
-
-  // console.log(email, password)
-
-
-//   async function checkAuth() {
-//     const res = await fetch("/api/verify", { method: "GET" });
-//     if (res.ok) {
-//         router.push("/admin");
-//         return;
-//     }
-// }
-
-// checkAuth();
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,9 +53,15 @@ const LoginPage = () => {
       const data = await response.json();
   
       if (response.ok) {
+        toast.success(data.message)
         router.push("/admin")
       } else {
         toast.error(data.message)
+        if (data.message == 'No such email exists') {
+          setErrors({email: true, password: false})
+        } else {
+          setErrors({email: false, password: true})
+        }
       }
     
     } catch (error) {
@@ -112,8 +107,6 @@ const LoginPage = () => {
     }
 }
 
-
-
   return (
     <div
       className="w-full min-h-screen overflow-hidden relative flex items-center justify-center p-4"
@@ -158,7 +151,11 @@ const LoginPage = () => {
                   type="email"
                   name="email"
                   id="email"
-                  className="w-full p-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className={clsx(`w-full p-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm`,
+                    {
+                      'border-red-500' : errors?.email
+                    }
+                  )}
                   placeholder=""
                   value={email}
                   onChange={(e) => setEmail(e.target.value)} 
@@ -173,7 +170,11 @@ const LoginPage = () => {
                     type={viewPass ? 'text' : 'password'}
                     id="password"
                     name="password"
-                    className="w-full p-2 ps-3.5 pe-10 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    className={clsx(`w-full p-2 ps-3.5 pe-10 border border-[#4668B2] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm`,
+                      {
+                        'border-red-500' : errors?.password
+                      }
+                    )}
                     placeholder=""
                     value={password}
                     onChange={(e) => setPassword(e.target.value)} 
@@ -227,9 +228,11 @@ const LoginPage = () => {
                   </DialogContent>
                 </Dialog>
 
-                <button onClick={() => handleClick('#cta')}>
-                  Need an Account?
-                </button>
+                <Link href={'/'}>
+                  <button type="button" onClick={() => handleClick('#cta')}>
+                    Need an Account?
+                  </button>
+                </Link>
               </div>
               <Button disabled={loading || (!email || !password)} className="w-full bg-[#4668B2] hover:bg-[#3d5b9c] inline-flex items-center text-white rounded-md py-2 text-base font-bold" type="submit">
                 {loading && <Loader2 className="animate-spin" />}
@@ -240,7 +243,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <div className="absolute top-16 shadow-md hover:bg-stone-200 transition-all bg-white px-4 py-2 rounded-full hover:scale-105">
+      <div className="absolute sm:left-16 top-16 shadow-md hover:bg-stone-200 transition-all bg-white px-4 py-2 rounded-full hover:scale-105">
         <Link href={'/'}>
           <div className="flex items-center gap-2">
             <ArrowLeft size={24} />
@@ -251,7 +254,7 @@ const LoginPage = () => {
 
 
 
-      <Toaster richColors position="bottom-right" />
+      <Toaster richColors position="top-right" />
     </div>
   );
 };

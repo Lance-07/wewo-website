@@ -7,8 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 const secretKey = process.env.SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
 
-console.log("SECRET_KEY:", process.env.SECRET_KEY);
-
 
 export async function encrypt(payload: JWTPayload | undefined, expiresIn: string =  '1h') {
   return await new SignJWT(payload)
