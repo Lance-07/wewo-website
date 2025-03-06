@@ -192,17 +192,17 @@ function Impact() {
                                         { activeIdx === 0 && 
                                             <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
                                                 <SimpleCard 
-                                                    number={data?.totalLiters.toString() ?? '0'} label="liters" iconLink="/icons/droplet.png"
+                                                    number={data?.totalLiters?.toString() ?? '0'} label="liters" iconLink="/icons/droplet.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
                                                     title="clean water distributed"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
                                                 <SimpleCard  
-                                                    number={data?.totalBottles.toString() ?? '0'} label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                    number={data?.totalBottles?.toString() ?? '0'} label="plastics" iconLink="/icons/plastic-bottle.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
                                                     title="PET bottles recycled"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
                                                 <SimpleCard  
-                                                    number={data?.totalCo2.toString() ?? '0'} label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                    number={data?.totalCo2?.toString() ?? '0'} label="kilograms" iconLink="/icons/carbon-footprint.png"
                                                     className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
                                                     title="carbon footprints reduced"  
                                                     description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
@@ -414,7 +414,7 @@ function Importance() {
 function FAQs() {
     return (
         <section id={'faqs'} className="bg-white py-20 flex w-full justify-center items-center">
-            <div className="flex flex-col items-center md:h-[425px] w-11/12">
+            <div className="flex flex-col items-center w-11/12">
                 <h1 className="font-bold text-4xl mb-10">
                     <span className="text-blue-main">Frequently </span>
                     <span className="text-green-third">Asked Questions</span>
@@ -473,8 +473,13 @@ function CTA() {
             {/* White Effect Overlay Gradient */}
             <div className="absolute h-full w-full inset-0 bg-gradient-to-t from-transparent to-white from-[27%] to-[72%]"></div>
 
-            <div className={'container ~px-6/20 mx-auto h-full flex items-center'}>
-                <div className={'bg-white relative w-full h-[480px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
+            <div className={clsx('container ~px-4/20 mx-auto sm:h-auto flex items-center',
+                {
+                    'h-[360px]': !isReady,
+                    'h-[580px]': isReady
+                }
+            )}>
+                <div className={'bg-white relative w-full h-full sm:h-[480px] rounded-[34px] overflow-y-hidden flex justify-center items-center text-blue-main'}>
                     <div className={clsx('max-w-xl w-11/12 md:w-1/2 text-center space-y-8 transition-all duration-500 ease-in-out',
                         {
                             'opacity-0 -translate-y-full' : isReady
@@ -508,8 +513,8 @@ function CTA() {
                             <span className="text-blue-main">Let&#39;s Make </span>
                             <span className="text-green-third">A Difference!</span>
                         </h1>
-                        <div className="flex gap-4 w-full">
-                            <div className="w-2/3 flex flex-col items-start">
+                        <div className="flex flex-col sm:flex-row gap-4 w-full">
+                            <div className="w-full sm:w-2/3 flex flex-col items-start">
                                 <label htmlFor="email">Email</label>
                                 <input 
                                     onChange={(e) => setEmail(e.target.value)} 
@@ -519,7 +524,7 @@ function CTA() {
                                     className="border w-full bg-stone-50 py-2 px-3 outline-none rounded-2xl shadow-[0_4px_4px_rgba(0,_0,_0,_10%)] placeholder:text-[rgba(70,_104,_178,_60%)]" 
                                     placeholder="example@gmail.com (optional)" />
                             </div>
-                            <div className="w-1/3 flex flex-col items-start">
+                            <div className="w-full sm:w-1/3 flex flex-col items-start">
                                 <label htmlFor="subject">Subject</label>
                                 <select required id="subject" name="subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full h-full inline-flex px-3 py-2 text bg-stone-50 rounded-2xl shadow-[0_4px_4px_rgba(0,_0,_0,_10%)]">
                                     <option disabled value="">Select subject</option>

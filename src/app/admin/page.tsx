@@ -6,7 +6,7 @@ import AdminNav from "../ui/components/admin/adminNav";
 import DashboarHeader from "../ui/components/admin/card";
 import BottleStats from "./bottleStats"
 import PieChart from "../ui/components/chart";
-import { Check, Loader2, Save, SquarePen, TriangleAlert, X } from "lucide-react";
+import { Check, Loader2, SquarePen, TriangleAlert, X } from "lucide-react";
 import { calculateTimePerDispensed, convertLiterToMl, formatTimePerDispensed } from "@/lib/utils";
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
@@ -16,6 +16,7 @@ import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
 import { toast, Toaster } from "sonner";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface AdminCardItems {
     number: string,
@@ -116,6 +117,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     const [tableLoading, setTableLoading] = useState(true)
     const tableRef = useRef<HTMLDivElement>(null);
     const scrollPosition = useRef(0);
+    const [saveLoading, setSaveLoading] = useState(false);
 
     const from = searchParams.get('from')
     const to = searchParams.get('to')
@@ -164,9 +166,10 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     }, []);
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value} = e.target;
-        setDispensedValue((prevValue) => ({...prevValue, [name]: value}))
-    }
+        const { name, value } = e.target;
+
+        setDispensedValue((prevValue) => ({ ...prevValue, [name]: value }));
+    };
 
     const updatePumperValues = async (): Promise<boolean> => { 
 
@@ -204,7 +207,9 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         }
     }
 
-    const handleSaveSettings = async () => {
+    const handleSaveSettings = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaveLoading(true)
         if (await updatePumperValues()) {
             setIsEdit(!isEdit)
             setOriginalDispensedValue(dispensedValue)
@@ -212,6 +217,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         } else {
             setDispensedValue(originalDispensedValue)
         }
+        setSaveLoading(false)
     }
 
     const handleCancelSettings = () => {
@@ -220,13 +226,17 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
     }
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-        const fromValue = params.get("from") || "";
-        const toValue = params.get("to") || "";
+        const timeout = setTimeout(() => {
+            const params = new URLSearchParams(searchParams);
+            const fromValue = params.get("from") || "";
+            const toValue = params.get("to") || "";
     
-        if (fromValue !== dateFilter.from || toValue !== dateFilter.to) {
-            setDateFilter({ from: fromValue, to: toValue });
-        }
+            if (fromValue !== dateFilter.from || toValue !== dateFilter.to) {
+                setDateFilter({ from: fromValue, to: toValue });
+            }
+        }, 300); // Adjust the debounce delay as needed
+    
+        return () => clearTimeout(timeout);
     }, [from, to]);
     
     useEffect(() => {
@@ -436,7 +446,7 @@ return (
 
                     <hr />
 
-                    <div ref={tableRef} className="flex flex-col w-full">
+                    <div ref={tableRef} className="flex flex-col w-full px-3">
                         <Table data={data} loading={tableLoading} />
 
                         <div className="my-6 flex justify-center">
@@ -449,33 +459,84 @@ return (
                 <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-lg p-8 space-y-4">
                     <div className="flex items-center justify-between">
                         <h1 className="font-bold ~text-xl/3xl">Water Dispense Settings</h1>
-                        { !isEdit && (
-                            <button onClick={() => setIsEdit(!isEdit)} 
-                                className="text-white bg-blue-main flex justify-center items-center px-4 py-2 rounded-lg gap-2">
-                                <div className="flex size-6">
-                                    <SquarePen />
-                                </div>
-                                Edit
-                            </button>
-                        ) }
-                        { isEdit && (
-                            <div className="flex gap-4 items-center">
-                                <button onClick={handleSaveSettings} 
-                                    className="text-white bg-green-second flex justify-center items-center px-4 py-2 rounded-lg gap-2">
-                                    <div className="flex size-6">
-                                        <Save />
-                                    </div>
-                                    Save
-                                </button>
-                                <button onClick={handleCancelSettings} 
-                                    className="text-white bg-red-700 flex justify-center items-center px-4 py-2 rounded-lg gap-2">
-                                    <div className="flex size-6">
-                                        <X />
-                                    </div>
-                                    Cancel
-                                </button>
-                            </div>
-                        )}
+                            <Dialog open={isEdit} onOpenChange={setIsEdit}>
+                                <DialogTrigger asChild>
+                                    <button 
+                                        className="text-white bg-blue-main flex justify-center items-center px-4 py-2 gap-2 rounded-lg">
+                                        <span>Edit</span>
+                                        <SquarePen />
+                                    </button>
+                                </DialogTrigger>
+                                <DialogContent className="[&_label]:text-blue-main sm:max-w-md py-8">
+                                    <DialogHeader>
+                                        <DialogTitle>Update Pumper Values</DialogTitle>
+                                        <DialogDescription>This will update the amount of water the WEWO machine release per bottle sizes.</DialogDescription>
+                                    </DialogHeader>
+                                    <form onSubmit={handleSaveSettings} className="flex flex-col w-full gap-4 [&>div>p]:text-sm [&>div>p]:mt-[1px] [&>div>p]:text-gray-500">
+                                        <div className="w-full">
+                                            <label htmlFor="small">Small:</label>
+                                            <input type="number" 
+                                                className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
+                                                placeholder="240"
+                                                required
+                                                value={dispensedValue.small}
+                                                onChange={handleDispenseValueChange}
+                                                name="small"
+                                            />
+                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.small || 0))}</p>
+                                        </div>
+                                        <div className="w-full">
+                                            <label htmlFor="small">Medium:</label>
+                                            <input type="number" 
+                                                className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
+                                                placeholder="400"
+                                                required
+                                                value={dispensedValue.medium}
+                                                onChange={handleDispenseValueChange}
+                                                name="medium"
+                                            />
+                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.medium || 0))}</p>
+                                        </div>
+                                        <div className="w-full">
+                                            <label htmlFor="small">Large:</label>
+                                            <input type="number" 
+                                                className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
+                                                placeholder="750"
+                                                required
+                                                value={dispensedValue.large}
+                                                onChange={handleDispenseValueChange}
+                                                name="large"
+                                            />
+                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.large || 0))}</p>
+                                        </div>
+                                        <DialogFooter className="mt-4">
+                                            <div className="w-full flex gap-4 justify-center">
+                                                <DialogClose asChild>
+                                                    <button
+                                                    onClick={handleCancelSettings}
+                                                    className="text-black border border-slate-800 flex justify-center items-center px-4 py-2 rounded-lg gap-2 w-full transition-all hover:border-black hover:bg-slate-100"
+                                                    >
+                                                    <div className="flex items-center gap-2">
+                                                        <span>Close</span>
+                                                    </div>
+                                                    </button>
+                                                </DialogClose>
+                                                <button
+                                                    type="submit"
+                                                    className="text-white bg-blue-main flex justify-center items-center px-4 py-2 rounded-lg gap-2 w-full transition-transform duration-200 hover:scale-105 hover:bg-blue-700"
+                                                >
+                                                    {saveLoading && <Loader2 className="animate-spin text-white" size={24} />}
+                                                    {!saveLoading && (
+                                                    <div className="flex items-center gap-2">
+                                                        <span>Save</span>
+                                                    </div>
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </DialogFooter>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
                     </div>
                     <h2 className="font-light">Adjust the water dispense by WEWO depends on the bottle size</h2>
                     
@@ -502,7 +563,7 @@ return (
                                             <td>250 ml - 350 ml</td>
                                             <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.small || 0))}</td>
                                             <td>
-                                                {isEdit ? (
+                                                {/* {isEdit ? (
                                                     <input 
                                                         value={dispensedValue.small} 
                                                         name="small" 
@@ -512,7 +573,8 @@ return (
                                                     />
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.small || "0")
-                                                )}
+                                                )} */}
+                                                {convertLiterToMl(dispensedValue?.small || "0")}
                                             </td>
                                         </tr>
                                         <tr>
@@ -520,7 +582,7 @@ return (
                                             <td>400 ml - 700 ml</td>
                                             <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.medium || 0))}</td>
                                             <td>
-                                                {isEdit ? (
+                                                {/* {isEdit ? (
                                                     <input value={dispensedValue.medium} 
                                                         name="medium" 
                                                         onChange={handleDispenseValueChange} 
@@ -529,7 +591,8 @@ return (
                                                     />
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.medium || "0")
-                                                )}
+                                                )} */}
+                                                {convertLiterToMl(dispensedValue?.medium || "0")}
                                             </td>
                                         </tr>
                                         <tr>
@@ -537,7 +600,7 @@ return (
                                             <td>900 ml - 2 L</td>
                                             <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.large || 0))}</td>
                                             <td>
-                                                {isEdit ? (
+                                                {/* {isEdit ? (
                                                     <input value={dispensedValue.large} 
                                                         name="large"
                                                         onChange={handleDispenseValueChange} 
@@ -546,7 +609,8 @@ return (
                                                     />
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.large || "0")
-                                                )}
+                                                )} */}
+                                                {convertLiterToMl(dispensedValue?.large || "0")}
                                             </td>
                                         </tr>
                                     </>

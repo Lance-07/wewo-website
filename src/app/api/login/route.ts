@@ -32,8 +32,9 @@ export async function POST(request: Request) {
                     .update({ loginAttempts: data.loginAttempts + 1 })
                     .eq('id', data.id)
                     console.log("data from password attempt block", error);
-                    const attempsRemaining = 5 - (data.loginAttempts + 1)
-                return NextResponse.json({ message: `Wrong password! ${attempsRemaining} attemps remaining.` }, { status: 400 });
+                    const attempsRemaining = 6 - (data.loginAttempts + 1)
+                    let attempsMessage = attempsRemaining == 1 ? 'Only 1 attempts left before account lock!' : `Wrong password! ${attempsRemaining} attempts remaining.`;
+                return NextResponse.json({ message: attempsMessage }, { status: 400 });
             }
             
         } else {

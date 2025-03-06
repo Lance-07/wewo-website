@@ -56,15 +56,21 @@ export const decodeJWT = (token: string) => {
   };
 };
 export function formatTimePerDispensed(value: number): string {
-
   if (isNaN(value) || value < 0) {
-    throw new Error("Invalid input: value must be a positive number or a valid string.");
+    throw new Error("Invalid input: value must be a positive number.");
   }
 
-  // const timeInSecondsFormatted = (timeInMilliseconds / 1000).toFixed(2);
-  
-  // return `${timeInSecondsFormatted.replace(/\.00$/, '')} ${getSecondLabel(timeInMilliseconds)}`;
-  return `${value.toString()} ${getSecondLabel(value).toString()}`;
+  if (value >= 86400) {
+    return `${(value / 86400).toFixed(2).replace(/\.00$/, '')} days`;
+  }
+  if (value >= 3600) {
+    return `${(value / 3600).toFixed(2).replace(/\.00$/, '')} hours`;
+  }
+  if (value >= 60) {
+    return `${(value / 60).toFixed(2).replace(/\.00$/, '')} minutes`;
+  }
+
+  return `${value} seconds`;
 }
 
 function getSecondLabel(seconds: number): string {

@@ -32,10 +32,12 @@ export async function GET(req: Request) {
         .range(offset, offset + ITEMS_PER_PAGE - 1)
 
         if (fromDate && toDate) {
-            query = query.gte("date", from).lte("date", to).range(0, offset);
+            query = query.gte("date", fromDate).lte("date", toDate);
         } else {
-            if (fromDate) query = query.gte("date", from);
-            if (toDate) query = query.lte("date", to);
+            // Apply individual filters and paginate
+            if (fromDate) query = query.gte("date", fromDate);
+            if (toDate) query = query.lte("date", toDate);
+            query = query.range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
         }
 
         const { data, count, error } = await query
