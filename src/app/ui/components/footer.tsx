@@ -16,7 +16,7 @@ export default function Footer() {
 
 
             <div className={'~px-2/0 ~py-4/0 relative flex flex-col items-center justify-center h-full w-full'}>
-                <div className={'sm:w-[275px] h-[80px] mb-10'}>
+                <div className={'w-[275px] h-[80px] mb-10'}>
                     <Image src={'/icons/logo.png'} width={609} height={206} alt="logo" className={'w-full h-auto'}/>
                 </div>
 
@@ -27,10 +27,15 @@ export default function Footer() {
                     </h2>
 
                     <div className={'flex gap-5'}>
-                        <Link href={'https://www.facebook.com/'} target="_blank">
+                        <Link
+                            className="icon-link" 
+                            href={'https://www.facebook.com/profile.php?id=61573967395629'} target="_blank">
                             <Facebook />
                         </Link>
-                        <Link href={'https://mail.google.com/mail/u/'} target="_blank">
+                        <Link
+                            className="icon-link" 
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=synergy.wewo.911@gmail.com" 
+                            target="_blank">
                             <Mail />
                         </Link>
                     </div>

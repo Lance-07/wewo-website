@@ -136,8 +136,8 @@ export default function adminNav() {
                   required
                 />
               </div>
-              <DialogFooter className="mt-4 flex-col gap-4 sm:gap-0">
-                <Button type="button" className="text-black border border-slate-900 rounded-sm" onClick={() => setIsSupportOpen(false)}>Cancel</Button>
+              <DialogFooter className="mt-6 gap-4 sm:gap-0">
+                <Button type="button" className="text-black border border-slate-900 rounded-sm hover:bg-slate-100" onClick={() => setIsSupportOpen(false)}>Cancel</Button>
                 <Button type="submit" disabled={loading || (!message || !issue)} className="text-white flex justify-center bg-blue-main rounded-sm transition-transform duration-200 hover:scale-105 hover:bg-blue-700 sm:w-[90px]">
                   {loading && <Loader2 className="w-6 h-6 animate-spin" />}
                   {!loading && 'Send'}
@@ -154,8 +154,8 @@ export default function adminNav() {
               <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
             </DialogHeader>
             <p>Are you sure you want to log out?</p>
-            <DialogFooter>
-              <Button className="hover:border-black hover:bg-slate-100 text-black border border-slate-800 rounded-sm" onClick={() => setIsLogoutOpen(false)}>Cancel</Button>
+            <DialogFooter className="gap-4 mt-6 sm:gap-0">
+              <Button className="hover:bg-slate-100 text-black border border-slate-800 rounded-sm" onClick={() => setIsLogoutOpen(false)}>Cancel</Button>
               <Button className="bg-red-500 hover:bg-red-600 rounded-sm" onClick={() => handleLogout()}>Log Out</Button>
             </DialogFooter>
           </DialogContent>

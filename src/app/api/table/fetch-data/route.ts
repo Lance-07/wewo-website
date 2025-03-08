@@ -32,9 +32,13 @@ export async function GET(req: Request) {
         .range(offset, offset + ITEMS_PER_PAGE - 1)
 
         if (fromDate && toDate) {
+            console.log('run without offset')
             query = query.gte("date", fromDate).lte("date", toDate);
         } else {
             // Apply individual filters and paginate
+            console.log('run with offset and filters')
+            console.log('offset: ', offset)
+            console.log('last offset: ', page * ITEMS_PER_PAGE - 1)
             if (fromDate) query = query.gte("date", fromDate);
             if (toDate) query = query.lte("date", toDate);
             query = query.range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
