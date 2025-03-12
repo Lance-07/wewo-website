@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Info } from "lucide-react";
 import { IconItem } from "@/lib/data";
 import { poppins } from "../fonts";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,12 @@ type DynamicCardProps = {
     imgSrc: string;
     title: string;
     description: string;
+    expandDescription: string;
     baseColor: BaseColor;
     className?: string;
 }
 
-interface HorizontalCardProps extends DynamicCardProps {
+interface HorizontalCardProps extends Omit<DynamicCardProps, 'expandDescription'> {
     /* imgSrc: string; 
     title: string; 
     description: string; 
@@ -33,7 +34,7 @@ interface HorizontalCardProps extends DynamicCardProps {
     iconItems: IconItem[],
 }
 
-type CardProps = & Omit<DynamicCardProps, 'baseColor'>
+type CardProps = Omit<DynamicCardProps, 'baseColor' | 'expandDescription'>
 
 type colorVariants = {
     blue: string;
@@ -76,7 +77,7 @@ export function SimpleCard({number, label, iconLink, title, description, classNa
     )
 }
 
-export function DynamicCard({imgSrc, title, description, baseColor, className} : DynamicCardProps) {
+export function DynamicCard({imgSrc, title, description, expandDescription, baseColor, className} : DynamicCardProps) {
     const colorVariants = getColorVariants('dynamic');
 
     const hoverVariants: colorVariants = {
@@ -92,20 +93,37 @@ export function DynamicCard({imgSrc, title, description, baseColor, className} :
     }
 
     return (
-        <div className={cn(`${colorVariants[baseColor]}
-            md:max-w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`, className)}>
-            <Image src={imgSrc} width={1000} height={1000} alt={title} className="h-[136px] object-cover" />
-            <div className={`flex flex-col w-full flex-1 relative group`}>
+        <div
+        className={cn(`${colorVariants[baseColor]} md:max-w-[366px] h-[356px] overflow-hidden flex flex-col items-center rounded-2xl hover:rounded-b-2xl transition-all duration-300 ease-in-out group shadow-[-2px_2px_8px_rgba(0,_0,_0,_10%)]`,
+            className
+        )}>
+            <Image
+                src={imgSrc}
+                width={1000}
+                height={1000}
+                alt={title}
+                className="h-[136px] object-cover"
+            />
+            <div className="flex flex-col w-full flex-1 relative group">
                 <div className={`${hoverVariants[baseColor]} absolute w-full h-full transform translate-x-[100%] translate-y-[100%] transition-all duration-300`}></div>
-                <div className="flex flex-col pt-5 px-5 w-full flex-1 group-hover:z-10">
-                    <p className="capitalize font-bold text-2xl mb-[10px]">{title}</p>
-                    <p className="text-sm font-light">{description}</p>
+                    <div className="flex flex-col pt-5 px-5 w-full flex-1">
+                        <p className="capitalize font-bold text-2xl mb-[10px]">{title}</p>
+                        {/* Default Description (Fades out on hover) */}
+                        <p className="text-sm font-light transition-opacity duration-300 group-hover:opacity-0">
+                            {description}
+                        </p>
+                        {/* Expanded Description (Overlay effect) */}
+                        <p className="text-sm font-light opacity-0 translate-y-2 absolute top-12 md:top-4 lg:top-12 left-5 right-5 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                            {expandDescription}
+                        </p>
+                    </div>
+                    <div className={`self-end rounded-tl-2xl p-4 pointer-events-none transition-all duration-200 text-white opacity-100 ${buttonVariants[baseColor]}`}>
+                        {/* <ChevronRight size={32} /> */}
+                        <Info size={24} />
+                    </div>
                 </div>
-                <button className={`self-end rounded-tl-2xl p-2 pointer-events-none transition-all duration-200 text-white opacity-100 ${buttonVariants[baseColor]}`}>
-                    <ChevronRight size={32} />
-                </button>
-            </div>
         </div>
+
     )
 }
 

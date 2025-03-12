@@ -9,7 +9,16 @@ export async function GET(req: NextRequest) {
 
         if (error) NextResponse.json({error: error.message}, {status: 500});
 
-        return NextResponse.json({...data, message: 'Successfully fetch pumper values.'}, { status: 200 },);        
+        const renamedSizes = data ? Object.fromEntries(
+            Object.entries(data).map(([key, value]) => {
+                const newKeys = ["small", "medium", "large"];
+                return [newKeys[+key], value.ml];
+            })
+        ) : {};
+
+        console.log(renamedSizes)
+
+        return NextResponse.json({renamedSizes, message: 'Successfully fetch pumper values.'}, { status: 200 },);        
     } catch (error) {
         console.error("Error fetching data:", error);
         return NextResponse.json({ error: "Failed to fetch external data" }, { status: 500 });

@@ -243,11 +243,11 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <div className="absolute sm:left-16 top-16 shadow-md hover:bg-stone-200 transition-all bg-white px-4 py-2 rounded-full hover:scale-105">
+      <div className="absolute left-5 sm:left-16 top-16 shadow-md hover:bg-stone-200 transition-all bg-white px-2 sm:px-4 py-2 rounded-full hover:scale-105">
         <Link href={'/'}>
           <div className="flex items-center gap-2">
             <ArrowLeft size={24} />
-            <p className="tracking-wider">Back To Home page</p>
+            <p className="tracking-wider hidden sm:block">Back To Home page</p>
           </div>
         </Link>
       </div>

@@ -11,12 +11,16 @@ import { calculateTimePerDispensed, convertLiterToMl, formatTimePerDispensed } f
 import { BackwashIndSkeleton, BottleBinIndSkeleton, CardSkeletons, PieSkeleton, TableRowSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/components/pagination";
 import Table from "../ui/components/admin/table";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { poppins } from "../ui/fonts";
 import { Settings } from 'lucide-react';
 import { LayoutGrid } from 'lucide-react';
 import { toast, Toaster } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import useSWR from "swr";
+import FilterOption from "../ui/components/admin/filter";
+import { useSearchParams } from "next/navigation";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface AdminCardItems {
     number: string,
@@ -28,7 +32,6 @@ interface AdminCardItems {
 }
 
 let adminCardItems:AdminCardItems[]
-// let bottleSize 
 
 export default function AdminPage() {
 
@@ -106,64 +109,51 @@ loading: boolean;
 function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps){
     const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
     const [isEdit, setIsEdit] = useState(false)
-
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const router = useRouter();
-
-    const [dateFilter, setDateFilter] = useState({ from: '', to: '' })
-    const [totalPages, setTotalPages] = useState(1)
-    const [data, setData] = useState(null)
-    const [tableLoading, setTableLoading] = useState(true)
-    const tableRef = useRef<HTMLDivElement>(null);
-    const scrollPosition = useRef(0);
     const [saveLoading, setSaveLoading] = useState(false);
-
-    const from = searchParams.get('from')
-    const to = searchParams.get('to')
-    const page = searchParams.get('page')
+    const errorShownRef = useRef<{ [key: string]: boolean }>({});
+    const searchParams = useSearchParams();
+    const queryString = searchParams.toString();
 
     const [dispensedValue, setDispensedValue] = useState<{small: string; medium: string; large: string;}>({
-        small: '250',
-        medium: '500',
-        large: '1000',
+        small: '0',
+        medium: '0',
+        large: '0',
     })
 
-    const [originalDispensedValue, setOriginalDispensedValue] = useState({
-        small: '250',
-        medium: '500',
-        large: '1000',
-    });
+    const fetchPumperValues = async () => {   
+        const res = await fetch("/api/fetch-pumper-values");
+        const data = await res.json();
 
-
-    const fetchPumperValues = async () => {
-        try {
-            
-            const res = await fetch("/api/fetch-pumper-values");
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast.error(data.error);
-            }
-
-        setDispensedValue({
-            small: data[0].ml.toString(),
-            medium: data[1].ml.toString(),
-            large: data[2].ml.toString()
-        })
-        setOriginalDispensedValue({
-            small: data[0].ml.toString(),
-            medium: data[1].ml.toString(),
-            large: data[2].ml.toString()
-        })
-        } catch (error) {
-            console.log(error);
-        }
+        return data.renamedSizes;
     }
-    
+
+    const { data : dispensedData, error: dispensedError, isLoading: dispensedLoading } = useSWR(`/api/fetch-pumper-values`, fetchPumperValues);
+
+    if (dispensedError && !errorShownRef.current["dispensedError"]) {
+        toast.error(dispensedError.message);
+        errorShownRef.current["dispensedError"] = true;
+    }
+
+    const { data: totalPages, error: totalPagesError, isLoading } = useSWR(`/api/table/fetch-total-pages?${queryString}`, fetcher)
+
+    if (totalPagesError && !errorShownRef.current["totalPagesError"]) {
+        toast.error(totalPagesError.message);
+        errorShownRef.current["totalPagesError"] = true;
+    }
+
     useEffect(() => {
-        fetchPumperValues();
-    }, []);
+        if (dispensedData) {
+            setDispensedValue({
+                small: dispensedData.small.toString(),
+                medium: dispensedData.medium.toString(),
+                large: dispensedData.large.toString()
+            })
+        }
+    }, [dispensedData])
+    
+    const smallTime = calculateTimePerDispensed(dispensedValue?.small || 0);
+    const mediumTime = calculateTimePerDispensed(dispensedValue?.medium || 0);
+    const largeTime = calculateTimePerDispensed(dispensedValue?.large || 0);
 
     const handleDispenseValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -212,97 +202,18 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setSaveLoading(true)
         if (await updatePumperValues()) {
             setIsEdit(!isEdit)
-            setOriginalDispensedValue(dispensedValue)
             console.log("di nagkwan");
-        } else {
-            setDispensedValue(originalDispensedValue)
         }
         setSaveLoading(false)
     }
 
     const handleCancelSettings = () => {
         setIsEdit(!isEdit)
-        setDispensedValue(originalDispensedValue)
-    }
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            const params = new URLSearchParams(searchParams);
-            const fromValue = params.get("from") || "";
-            const toValue = params.get("to") || "";
-    
-            if (fromValue !== dateFilter.from || toValue !== dateFilter.to) {
-                setDateFilter({ from: fromValue, to: toValue });
-            }
-        }, 300); // Adjust the debounce delay as needed
-    
-        return () => clearTimeout(timeout);
-    }, [from, to]);
-    
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-    
-        if (dateFilter.from) {
-            params.set("from", dateFilter.from);
-        } else {
-            params.delete("from");
-        }
-    
-        if (dateFilter.to) {
-            params.set("to", dateFilter.to);
-        } else {
-            params.delete("to");
-        }
-    
-        if (params.toString() !== searchParams.toString()) {
-            const timeout = setTimeout(() => {
-                router.push(`${pathname}?${params.toString()}`, { scroll: false });
-            }, 300);
-    
-            return () => clearTimeout(timeout);
-        }
-    }, [dateFilter]);
-    
-    
-    useEffect(() => {
-        if (tableRef.current) {
-            scrollPosition.current = tableRef.current.getBoundingClientRect().top + window.scrollY;
-        }
-    }, [page]); 
-    
-    useEffect(() => {
-        const getData = async () => {
-            setTableLoading(true);
-            try {
-                const res = await fetch(`/api/table/fetch-data?${searchParams.toString()}`);
-                if (!res.ok) throw new Error("Failed to fetch table data.");
-    
-                const data = await res.json();
-                setTotalPages(data.totalPages);
-                setData(data.data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setTableLoading(false);
-            }
-        };
-    
-        getData();
-    }, [page, to, from]);
-    
-    useEffect(() => {
-        if (data) {
-            window.scrollTo({
-                top: scrollPosition.current,
-                behavior: "instant", 
-            });
-        }
-    }, [data]); 
-    
-
-    function handleDateFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value } = e.target;
-        setDateFilter(prev => ({...prev, [name] : value}))
+        setDispensedValue({
+            small: dispensedData.small.toString(),
+            medium: dispensedData.medium.toString(),
+            large: dispensedData.large.toString()
+        })
     }
 
 return (
@@ -357,18 +268,17 @@ return (
                         }
                     </div>
 
-                    <div className={`${poppins.className} px-4 md:px-0 flex flex-wrap items-stretch justify-between gap-4`}>
+                    <div className="w-full md:px-0 px-4 grid gap-4 auto-rows-auto grid-cols-1 sm:grid-cols-[minmax(400px,513px)_auto] lg:grid-cols-[513px_auto_291px]">
                         { loading ? 
                             <PieSkeleton />
                         :
-                            <PieChart bottleStats={bottleStats} className="flex-[2_1_513px] min-w-[250px] sm:min-w-[400px] md:min-w-[513px] w-full"/>
+                            <PieChart bottleStats={bottleStats} className="min-w-[250px] sm:min-w-[400px] md:min-w-[513px] sm:col-span-2 lg:col-span-1 w-full"/>
                         }
                         <BottleStats onDataUpdate={setBottleStats} className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_407px] min-w-[250px] sm:min-w-[320px] md:min-w-[407px] w-full shadow-card-shadow" />
-                        
                         { loading ?
                             <BackwashIndSkeleton />
                         : 
-                            <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_407px] min-w-[250px] sm:min-w-[320px] md:min-w-[407px] w-full shadow-card-shadow">
+                            <div className="p-8 flex rounded-lg gap-4 flex-col min-w-[250px] sm:min-w-[320px] md:min-w-[417px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Backwash Indicator</h1>
                                 <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
                                 <div className="flex flex-col gap-[10px]">
@@ -402,11 +312,10 @@ return (
                                 </div>
                             </div>
                         }
-
                         { loading ? 
                             <BottleBinIndSkeleton />
                         : 
-                            <div className="p-8 flex rounded-lg gap-4 flex-col flex-[1_1_291px] min-w-[200px] sm:min-w-[250px] md:min-w-[291px] w-full shadow-card-shadow">
+                            <div className="p-8 flex rounded-lg gap-4 flex-col min-w-[200px] md:min-w-[291px] w-full shadow-card-shadow">
                                 <h1 className="font-semibold">Bottle Bin Indicator</h1>
                                 <h3 className="font-light text-sm">Predict if the bottle bin is full and should be replaced</h3>
                                 <div className="flex gap-2">
@@ -431,26 +340,20 @@ return (
                         }
                     </div>
 
-                    <div className="w-full flex justify-end mt-4">
-                        <div className="flex flex-col sm:flex-row gap-4 items-center [&>div>input]:border [&>div>input]:py-2 [&>div>input]:px-4 [&>div>input]:outline-none">
-                            <div className="flex items-center gap-4">
-                                <label htmlFor="from">From: </label>
-                                <input value={dateFilter.from} onChange={handleDateFilterChange} name="from" id="from" type="date" />
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <label htmlFor="to">To: </label>
-                                <input value={dateFilter.to} onChange={handleDateFilterChange} name="to" id="to" type="date" />
-                            </div>
+                    <div className="space-y-4">
+                        <div className="w-full flex flex-col sm:flex-row items-center mt-4 px-3">
+                            <h2 className="text-blue-main text-3xl mb-2 sm:mb-0 text-center sm:mr-auto font-bold">WEWO's Usage Logs</h2>
+                            <FilterOption />
                         </div>
-                    </div>
 
-                    <hr />
+                        <hr />
 
-                    <div ref={tableRef} className="flex flex-col w-full px-3">
-                        <Table data={data} loading={tableLoading} />
+                        <div className="flex flex-col w-full px-3">
+                            <Table />
 
-                        <div className="my-6 flex justify-center">
-                            <Pagination totalPages={totalPages} />
+                            <div className="my-6 flex justify-center">
+                                <Pagination totalPages={totalPages} isLoading={isLoading} />
+                            </div>
                         </div>
                     </div>
 
@@ -474,7 +377,9 @@ return (
                                     </DialogHeader>
                                     <form onSubmit={handleSaveSettings} className="flex flex-col w-full gap-4 [&>div>p]:text-sm [&>div>p]:mt-[1px] [&>div>p]:text-gray-500">
                                         <div className="w-full">
-                                            <label htmlFor="small">Small:</label>
+                                            <label htmlFor="small" className="w-full inline-flex">Small 
+                                                <span className="text-sm ml-auto text-gray-500">(min 100 | max 250)</span>
+                                            </label>
                                             <input type="number" 
                                                 className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
                                                 placeholder="240"
@@ -482,11 +387,16 @@ return (
                                                 value={dispensedValue.small}
                                                 onChange={handleDispenseValueChange}
                                                 name="small"
+                                                id="small"
+                                                min={100}
+                                                max={250}
                                             />
-                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.small || 0))}</p>
+                                            <p>Pumper open time: {formatTimePerDispensed(smallTime)}</p>
                                         </div>
                                         <div className="w-full">
-                                            <label htmlFor="small">Medium:</label>
+                                            <label htmlFor="medium" className="w-full inline-flex">Medium 
+                                                <span className="text-sm ml-auto text-gray-500">(min 351 | max 400)</span>
+                                            </label>
                                             <input type="number" 
                                                 className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
                                                 placeholder="400"
@@ -494,11 +404,16 @@ return (
                                                 value={dispensedValue.medium}
                                                 onChange={handleDispenseValueChange}
                                                 name="medium"
+                                                id="medium"
+                                                min={351}
+                                                max={400}
                                             />
-                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.medium || 0))}</p>
+                                            <p>Pumper open time: {formatTimePerDispensed(mediumTime)}</p>
                                         </div>
                                         <div className="w-full">
-                                            <label htmlFor="small">Large:</label>
+                                            <label htmlFor="large" className="w-full inline-flex">Large 
+                                                <span className="text-sm ml-auto text-gray-500">(min 701 | max 900)</span>
+                                            </label>
                                             <input type="number" 
                                                 className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
                                                 placeholder="750"
@@ -506,8 +421,11 @@ return (
                                                 value={dispensedValue.large}
                                                 onChange={handleDispenseValueChange}
                                                 name="large"
+                                                id="large"
+                                                min={701}
+                                                max={900}
                                             />
-                                            <p>Pumper open time: {formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.large || 0))}</p>
+                                            <p>Pumper open time: {formatTimePerDispensed(largeTime)}</p>
                                         </div>
                                         <DialogFooter className="mt-4">
                                             <div className="w-full flex gap-4 justify-center">
@@ -551,7 +469,7 @@ return (
                                 </tr>
                             </thead>
                             <tbody className="divide-y hover:[&>tr]:text-white hover:[&>tr]:bg-slate-400 [&>tr]:transition-all text-center text-nowrap [&>tr>td]:py-2 [&>tr>td]:px-3">
-                                { loading ? 
+                                { dispensedLoading ? 
                                     <>
                                         <TableRowSkeleton />
                                         <TableRowSkeleton />
@@ -561,7 +479,7 @@ return (
                                         <tr>
                                             <td>Small</td>
                                             <td>250 ml - 350 ml</td>
-                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.small || 0))}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedData?.small || 0))}</td>
                                             <td>
                                                 {/* {isEdit ? (
                                                     <input 
@@ -574,13 +492,13 @@ return (
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.small || "0")
                                                 )} */}
-                                                {convertLiterToMl(dispensedValue?.small || "0")}
+                                                {convertLiterToMl(dispensedData?.small || "0")}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Medium</td>
                                             <td>400 ml - 700 ml</td>
-                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.medium || 0))}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedData?.medium || 0))}</td>
                                             <td>
                                                 {/* {isEdit ? (
                                                     <input value={dispensedValue.medium} 
@@ -592,13 +510,13 @@ return (
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.medium || "0")
                                                 )} */}
-                                                {convertLiterToMl(dispensedValue?.medium || "0")}
+                                                {convertLiterToMl(dispensedData?.medium || "0")}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Large</td>
                                             <td>900 ml - 2 L</td>
-                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedValue.large || 0))}</td>
+                                            <td>{formatTimePerDispensed(calculateTimePerDispensed(dispensedData?.large || 0))}</td>
                                             <td>
                                                 {/* {isEdit ? (
                                                     <input value={dispensedValue.large} 
@@ -610,7 +528,7 @@ return (
                                                 ) : (
                                                     convertLiterToMl(dispensedValue?.large || "0")
                                                 )} */}
-                                                {convertLiterToMl(dispensedValue?.large || "0")}
+                                                {convertLiterToMl(dispensedData?.large || "0")}
                                             </td>
                                         </tr>
                                     </>
@@ -621,14 +539,6 @@ return (
                 </div>
             )}
             </div>
-
-            {tableLoading && 
-                <div className="absolute inset-0 z-50 bg-slate-700/90">
-                    <div className="w-full h-screen flex items-center justify-center overflow-hidden">
-                        <Loader2 className="animate-spin text-white" size={64} />
-                    </div>
-                </div>
-            }
     </div>
 );
 }

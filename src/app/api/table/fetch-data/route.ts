@@ -1,16 +1,5 @@
 import { NextResponse } from "next/server";
-// import tableData from "@/lib/tableData.json";
-import moment from "moment";
 import { supabase } from "../../../../../supabase"; 
-
-interface bottleData {
-    id: number,
-    small: number,
-    medium: number,
-    large: number,
-    totalLiters: number,
-    date: string
-}
 
 const ITEMS_PER_PAGE = 10;
 
@@ -27,25 +16,25 @@ export async function GET(req: Request) {
     try {
         let query = supabase
         .from("CollectedBottles")
-        .select("*", {count: 'exact'})
+        .select("*")
         .order('date', { ascending: false })
         .range(offset, offset + ITEMS_PER_PAGE - 1)
 
         if (fromDate && toDate) {
+            console.log('run without offset')
             query = query.gte("date", fromDate).lte("date", toDate);
         } else {
-            // Apply individual filters and paginate
             if (fromDate) query = query.gte("date", fromDate);
             if (toDate) query = query.lte("date", toDate);
             query = query.range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
         }
 
-        const { data, count, error } = await query
+        const { data, error } = await query
         if (data) {
             tableData = data.map((item) => ({
                 id: item.id,               
                 date: item.date,
-                waterDistribution: item.totalLiters,
+                waterDistribution: item.totalLiters  * 1000, // convert to mL
                 totalBottles: item.small + item.medium + item.large,
                 co2: parseFloat((((item.small * 45.54) + ( item.medium * 91.08 ) + ( item.large * 240.12 )) * 0.001).toFixed(1)),
                 bottles: {
@@ -58,8 +47,7 @@ export async function GET(req: Request) {
             console.log("NO BOTTLE FETCHED: ",error);
         }
 
-        const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
-        return NextResponse.json({ data: tableData, totalPages });
+        return NextResponse.json({ data: tableData as TableData[] });
 
     } catch (error) {
         console.log(error);

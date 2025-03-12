@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 const shimmer = 'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent';
 
 export function CardSkeleton() {
@@ -28,7 +30,7 @@ export function CardSkeletons(){
 
 export function PieSkeleton() {
     return (
-        <div className={`${shimmer} bg-gray-100 shadow-card-shadow gap-4 p-4 flex rounded-lg w-full min-w-[513px] h-[291px]`}>
+        <div className={`${shimmer} bg-gray-100 shadow-card-shadow gap-4 p-4 flex rounded-lg w-full h-[291px]`}>
             <div className="flex flex-col w-1/2 gap-4">
                 <div className="w-9/12 h-1/5 bg-gray-200"></div>
                 <div className="w-11/12 h-4/5 bg-gray-200"></div>
@@ -47,7 +49,7 @@ export function PieSkeleton() {
 
 export function BackwashIndSkeleton() {
     return (
-        <div className={`${shimmer} bg-gray-100 flex gap-4 flex-col p-4 w-full min-w-[436px] h-[291px] shadow-card-shadow rounded-lg`}>
+        <div className={`${shimmer} bg-gray-100 flex gap-4 flex-col p-4 w-full h-[291px] shadow-card-shadow rounded-lg`}>
             <div className="bg-gray-200 w-6/12 h-1/6"></div>
             <div className="bg-gray-200 w-11/12 h-1/6"></div>
             <div className="flex gap-2 h-1/6">
@@ -77,7 +79,7 @@ export function BackwashIndSkeleton() {
 
 export function BottleBinIndSkeleton() {
     return (
-        <div className={`${shimmer} bg-gray-100 w-full min-w-[278px] h-[291px] p-4 gap-4 shadow-card-shadow rounded-lg flex flex-col`}>
+        <div className={`${shimmer} bg-gray-100 w-full h-[291px] p-4 gap-4 shadow-card-shadow rounded-lg flex flex-col`}>
             <div className="bg-gray-200 w-6/12 h-[24px]"></div>
             <div className="bg-gray-200 w-11/12 h-[20px]"></div>
             <div className="flex gap-2">
@@ -164,5 +166,33 @@ export function TableSkeleton() {
                 </div>
             </td>
         </tr>
+    );
+}
+
+export function PaginationSkeleton() {
+    return (
+        <div className="inline-flex animate-pulse">
+            {/* Left Arrow */}
+            <div className="flex h-10 w-10 items-center justify-center rounded-md border mr-2 md:mr-4 bg-gray-200" />
+
+            <div className="flex -space-x-px">
+                {/* Generate 5 skeleton numbers */}
+                {[...Array(5)].map((_, i) => (
+                    <div
+                        key={i}
+                        className={clsx(
+                            'flex h-10 w-10 items-center justify-center border bg-gray-200',
+                            {
+                                'rounded-l-md': i === 0,
+                                'rounded-r-md': i === 4,
+                            }
+                        )}
+                    />
+                ))}
+            </div>
+
+            {/* Right Arrow */}
+            <div className="flex h-10 w-10 items-center justify-center rounded-md border ml-2 md:ml-4 bg-gray-200" />
+        </div>
     );
 }
