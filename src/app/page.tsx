@@ -144,50 +144,6 @@ function Impact() {
                                         </div>
                                     </div>
 
-                                    {/* <AnimatedSections activeIdx={activeIdx}>
-                                        <div className="flex flex-col items-center h-full lg:flex-row w-full gap-5 justify-center">
-                                            <SimpleCard 
-                                                number="23" label="liters" iconLink="/icons/droplet.png"
-                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
-                                                title="clean water distributed"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                            <SimpleCard  
-                                                number="70" label="plastics" iconLink="/icons/plastic-bottle.png"
-                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
-                                                title="PET bottles recycled"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
-                                            <SimpleCard  
-                                                number="3" label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                                className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
-                                                title="carbon footprints reduced"  
-                                                description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                        </div>  
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/splash.png" 
-                                            baseColor="blue" 
-                                            title="clean water distributed"     
-                                            description="Accommodating 1,000 liters of clean water is like filling a community reservoir, ensuring vital access for all."
-                                            iconItems={iconItems['clean-water']}
-                                            className="h-full"
-                                        />
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/plastic-bottle.png" 
-                                            baseColor="green" 
-                                            title="recycled plastic bottles"     
-                                            description="Recycling 1,000 bottles may seem small, but it’s like clearing a mountain of waste—every bottle counts toward a greener planet."
-                                            iconItems={iconItems['recycled-plastic']}
-                                            className="h-full"
-                                        />
-                                        <HorizontalCard 
-                                            imgSrc="/illustrations/carbon-footprint.png" 
-                                            baseColor="darkBlue" 
-                                            title="reduced carbon footprint on earth"     
-                                            description="Cutting 1,000 kilograms of emissions is like removing 5 cars from the road for a year, helping clean the air and promote a greener future."
-                                            iconItems={iconItems['reduced-carbon']}
-                                            className="h-full"
-                                        />
-                                    </AnimatedSections> */}
-
                                     <div className="flex-1 relative border-blue-500">
                                         { activeIdx === 0 && 
                                             <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
@@ -308,6 +264,7 @@ function HowItWorks() {
                         imgSrc="/illustrations/collect-plastic.png"
                         title="collect plastic"
                         description="Deposit plastic bottles into the Reverse Vending Machine (RVM) to start the recycling process."
+                        expandDescription="Deposit clean plastic bottles into a Reverse Vending Machine (RVM), which scans, sorts, and processes them for recycling, helping reduce plastic waste and promote sustainability."
                         baseColor="blue"
                     />
                     <DynamicCard 
@@ -315,6 +272,7 @@ function HowItWorks() {
                         imgSrc="/illustrations/filter-water.png"
                         title="filter water"
                         description="Rainwater is purified through natural filtration and UV sterilization, ensuring clean, non-potable water."
+                        expandDescription="Rainwater is collected, pre-filtered to remove debris, naturally filtered through anthracite and silica sand, sterilized with UV light to eliminate microorganisms, and stored for non-potable uses like irrigation and cleaning."
                         baseColor="green"
                     />
                     <DynamicCard 
@@ -322,6 +280,7 @@ function HowItWorks() {
                         imgSrc="/illustrations/dispense-water.png"
                         title="dispense water"
                         description="Receive clean water in exchange for your recycled bottles, rewarding sustainability."
+                        expandDescription="Recycled bottles can be exchanged for clean water through an automated dispensing system, encouraging sustainability and responsible resource consumption."
                         baseColor="darkBlue"
                     />
                 </div>
@@ -369,7 +328,6 @@ function Importance() {
                     <div className="space-y-6">
                         <h1 className="font-bold text-[2.5rem]">Why WEWO Matters</h1>
                         <h2 className={`font-light ${poppins.className}`}>WEWO transforms plastic waste into clean water, reducing pollution, helping communities, and promoting a greener, sustainable future.</h2>
-                        {/* TODO: Add icon */}
                         <Button type="button" href={'#cta'} active={true} border={true} variant="gradient">
                                 Connect With Us &gt;
                         </Button>
@@ -559,18 +517,3 @@ function CTA() {
         </section>
     )
 }
-
-// export function AnimatedSections({ activeIdx, children }: { activeIdx: number; children: ReactNode }) {
-//     return (
-//         <div className="flex-1 box h-full overflow-hidden  relative">
-//             <div className="relative h-full w-full">
-//                 <div
-//                     className="absolute w-full flex flex-col justify-evenly gap-6 transition-transform duration-500"
-//                     style={{ transform: `translateY(-${activeIdx * 345}px)` }}
-//                 >
-//                     {children}
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }

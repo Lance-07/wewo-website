@@ -33,10 +33,9 @@ interface PieChartProps {
     bottleStats: BottleStats;
   }
 
-// , bottleSize:{small: string, medium: string, large:string}
 export default function PieChart({ className, bottleStats }: PieChartProps) {
-    // const [bottleStats, setBottleStats] = useState({ totalLiters: 0, totalBottles: 0, smallTotal: 0, mediumTotal: 0, largeTotal:0 });
 
+    console.log('bottle stats: ',bottleStats)
     const data = {
         labels: bottles.map(bottle => bottle.bottle),
         datasets: [
@@ -77,14 +76,6 @@ export default function PieChart({ className, bottleStats }: PieChartProps) {
                                 ))}
                         </div>
                     </div>
-                    {/* <div id="caption" className="flex flex-col justify-end sm:hidden">
-                            {bottles.map((bottle, idx) => (
-                                <div className="flex gap-2" key={idx}>
-                                    <div className={cn(`bg-[${bottle.color}] w-7 h-5 rounded-sm`)}></div>
-                                    <p className={cn(`text-[${bottle.color}]`)}>{bottle.bottle}</p>
-                                </div>
-                            ))}
-                    </div> */}
                     <div className="flex items-center">
                         <div className="~w-28/52 ~h-28/52">
                             <Doughnut data={data} options={{ animation: false, responsive: true, maintainAspectRatio: false, events: []}} />

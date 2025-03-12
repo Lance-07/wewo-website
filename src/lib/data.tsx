@@ -114,7 +114,7 @@ export const cardItems: CarouselItem[] = [
   },
   {
     title: 'A Smarter Way to Recycle', 
-    description: 'By linking recycling to clean water distribution, the system motivates individuals to participate actively in sustainability. It’s an innovative approach that turns small actions into big results, fostering a culture of environmental responsibility.', 
+    description: 'By linking recycling to clean water distribution, the system motivates individuals to participate actively in sustainability. It\’s an innovative approach that turns small actions into big results, fostering a culture of environmental responsibility.', 
     image: '/images/a_smarter_way.png'
   },
 ]
@@ -122,27 +122,27 @@ export const cardItems: CarouselItem[] = [
 export const faqItems: FaqsItem[] = [
   {
     header: 'What is WEWO, and how does it work?',
-    content: 'Learn about WEWO\'s system that converts recyclable materials into non-potable water using IoT Technology.'
+    content: 'WEWO (Water Efficiency with Waste Optimization) is an IoT-powered rainwater purification system designed to tackle water scarcity and plastic waste. It collects and filters rainwater for non-potable use while integrating a reverse vending machine that accepts plastic bottles in exchange for clean water. The system also monitors water quality and collected waste in real-time for efficient operation.'
   },
   {
     header: 'Where can I find a WEWO station near me?',
-    content: 'Locate WEWO installations in schools, public parks, malls, and other community spaces.'
+    content: 'WEWO stations will be deployed in schools, public parks, malls, barangay halls, and residential areas. You can check our official website or social media pages for an updated list of locations.'
   },
   {
     header: 'What types of recyclable materials does WEWO accept?',
-    content: 'Understand the recyclable items, such as plastic bottles, that WEWO collects in exchange for water.'
+    content: 'Currently, WEWO only accepts plastic bottles (PET bottles of various sizes). Future updates may expand to include other recyclable materials, so stay tuned!'
   },
   {
     header: 'What can WEWO\'s water be used for?',
-    content: 'Discover suitable applications for WEWO\'s non-potable water, such as cleaning irrigation, and other everyday uses.'
+    content: 'WEWO provides non-potable water, which can be used for cleaning, flushing toilets, watering plants, industrial applications, and other general purposes. It is not safe for drinking but serves as an alternative water source during shortages.'
   },
   {
     header: 'Can individuals or organizations partner with WEWO?',
-    content: 'Learn how to collaborate with WEWO to increase access and environmental impact.'
+    content: 'Yes! We welcome partnerships with schools, businesses, local governments, and environmental organizations to expand WEWO\’s reach and impact. If you\’re interested in collaboration, please contact us through our website or social media.'
   },
   {
-    header: 'What should I do if a WEWO station isn’t working?',
-    content: 'Find out how to report issues or request assistance for repairs and maintenance.'
+    header: 'What should I do if a WEWO station isn\’t working?',
+    content: 'If you encounter a malfunctioning WEWO station, please report the issue through our website, app (if available), or contact our support team. Providing details like location and the problem encountered will help us resolve the issue faster.'
   },
 ]
 

@@ -4,8 +4,9 @@ import clsx from "clsx";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation"
+import { PaginationSkeleton } from "../skeletons";
 
-export default function Pagination({totalPages} : { totalPages: number }) {
+export default function Pagination({totalPages, isLoading} : { totalPages: number, isLoading: boolean }) {
     const searchParams = useSearchParams();
 
     const pathname = usePathname();
@@ -17,6 +18,8 @@ export default function Pagination({totalPages} : { totalPages: number }) {
         params.set('page', pageNumber.toString());
         return `${pathname}?${params.toString()}`;
     }
+
+    if (isLoading) return <PaginationSkeleton />
 
     return (
         <>
@@ -83,7 +86,7 @@ function PaginationNumber({
     return isActive || position === 'middle' ? (
         <div className={className}>{page}</div>
     ) : (
-        <Link href={href} className={className}>
+        <Link href={href} className={className} scroll={false}>
             {page}
         </Link>
     );
