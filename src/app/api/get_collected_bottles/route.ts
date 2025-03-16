@@ -11,12 +11,6 @@ export async function POST(request: NextRequest) {
             date_filter: 'all'
         })
     })
-
-    
-        // Parse JSON
-        // const externalData = await externalRes.json();
-
-        // const externalBody = externalData.body;
         console.log(externalRes)
 
 }

@@ -1,18 +1,15 @@
 import { SignJWT } from "jose";
 import { supabase } from "../../../../supabase";
 import moment from "moment";
-
 export type SupabaseInsertResponse = {
     user_id: string | number;
     reset_token: string;
     expires_at: string;
 } | null;
-
 export type SupabaseQueryResponse<T> = {
     data: T | null;
     error: { message: string } | null;
 };
-
 export async function generateResetToken(user: string | number): Promise<string> {
     const userString = typeof user === 'string' ? user : user.toString();
     const secret = new TextEncoder().encode(process.env.SECRET_KEY);
@@ -20,7 +17,6 @@ export async function generateResetToken(user: string | number): Promise<string>
         .setProtectedHeader({ alg: "HS256" })
         .setExpirationTime("1hr")
         .sign(secret);
-
     return token;
 }
 
@@ -53,23 +49,17 @@ export async function verifyResetToken(token: string): Promise<string | number |
         .select("user_id, expires_at")
         .eq("reset_token", token)
         .maybeSingle();
-
-
     console.log('supabase data: ',data)
     console.log('supabase error: ',error)
-
     if (error || !data) return null;
-
     const expiresAt = moment.utc(data.expires_at)
     const now = moment.utc(Date.now())
-
     console.log(expiresAt, now)
     
     if (expiresAt < now) return null;
     
     return data.user_id;
 }
-
 export async function deleteResetToken(token: string): Promise<void> {
     await supabase.from("password_resets").delete().eq("reset_token", token);
 }
