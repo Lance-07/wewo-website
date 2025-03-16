@@ -25,26 +25,18 @@ export async function generateResetToken(user: string | number): Promise<string>
 }
 
 export async function storeResetToken(userId: string | number, resetToken: string): Promise<SupabaseInsertResponse> {
-    try {
         const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
         const storedUserId = parseInt(userId.toString(), 10);
-
         const { data, error }: SupabaseQueryResponse<SupabaseInsertResponse> = await supabase
             .from('password_resets')
             .upsert([{ user_id: storedUserId, reset_token: resetToken, expires_at: expiresAt }], { onConflict: 'user_id' })
             .select()
             .single();
-
         if (error) {
             console.error("Supabase Insert Error:", error);
             return null;
         }
-
         return data;
-    } catch (err) {
-        console.error("Unexpected error in storeResetToken:", err);
-        return null;
-    }
 }
 
 export async function verifyResetToken(token: string): Promise<string | number | null> {
