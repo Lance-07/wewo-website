@@ -23,3 +23,15 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+export async function GET(req: Request) {
+    const { data, error } = await supabase
+        .from('WaterLevelStatus')
+        .select('status')
+        .single()
+
+    if (error) return NextResponse.json({ message: 'Failed to fetch water status' }, { status: 400 });
+
+    console.log('water status', data)
+    return NextResponse.json(data, { status: 200 });
+}

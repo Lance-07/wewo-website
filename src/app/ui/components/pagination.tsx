@@ -41,7 +41,7 @@ export default function Pagination({totalPages, isLoading} : { totalPages: numbe
 
                     return (
                     <PaginationNumber
-                        key={page}
+                        key={index}
                         href={createPageURL(page)}
                         page={page}
                         position={position}

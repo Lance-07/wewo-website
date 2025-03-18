@@ -1,7 +1,6 @@
 'use server'
 import { decrypt } from "@/lib/server-utils"
 import { cookies } from "next/headers"
-import { NextRequest } from "next/server"
 
 export async function getUser() {
     try {

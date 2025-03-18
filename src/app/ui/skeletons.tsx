@@ -196,3 +196,9 @@ export function PaginationSkeleton() {
         </div>
     );
 }
+
+export function WaterStatusSkeleton() {
+    return (
+        <div className={`fixed bottom-4 z-40 right-4 sm:right-9 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-slate-200 shadow-md ${shimmer} animate-pulse`}></div>
+    )
+}

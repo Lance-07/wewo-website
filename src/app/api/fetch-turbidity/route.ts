@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { supabase } from "../../../../supabase";
 
 export async function POST(req: Request) {
   try {
@@ -22,8 +23,18 @@ export async function POST(req: Request) {
     if (!res.ok) throw new Error("Failed to fetch data from ngrok");
 
     const data = await res.json();
-    console.log(data);
-    return NextResponse.json(data);
+
+    const count = Object.keys(data).length;
+    const lastItem = data[count - 1];
+    console.log('turbidity: ', lastItem)
+
+    const { data: supadata, error } = await supabase
+      .from('TurbidityValue')
+      .upsert({id: 1, value: lastItem.value, date: lastItem.date})
+
+    if (error) throw new Error(error.message);
+
+    return NextResponse.json(supadata, {status : 200});
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json({ error: "Failed to fetch external data" }, { status: 500 });

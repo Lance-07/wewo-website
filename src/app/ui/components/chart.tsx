@@ -1,11 +1,11 @@
 'use client';
 import { cn } from "@/lib/utils";
-import { Chart as ChartJS, ArcElement} from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip} from "chart.js";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { poppins } from "../fonts";
 // import BottleStats from "../../admin/bottleStats"
-ChartJS.register(ArcElement)
+ChartJS.register(ArcElement, Tooltip)
 
 const bottles = [
     {
@@ -41,6 +41,7 @@ export default function PieChart({ className, bottleStats }: PieChartProps) {
         datasets: [
             {
                 // data: [bottleSize.small, bottleSize.medium, bottleSize.large],
+                label: '',
                 data: [bottleStats.smallTotal, bottleStats.mediumTotal, bottleStats.largeTotal],
                 backgroundColor: bottles.map(bottle => bottle.color),
                 borderColor:  bottles.map(bottle => bottle.color),
@@ -78,7 +79,7 @@ export default function PieChart({ className, bottleStats }: PieChartProps) {
                     </div>
                     <div className="flex items-center">
                         <div className="~w-28/52 ~h-28/52">
-                            <Doughnut data={data} options={{ animation: false, responsive: true, maintainAspectRatio: false, events: []}} />
+                            <Doughnut data={data} options={{ animation: false, responsive: true, maintainAspectRatio: false, }} />
                         </div>
 
                     </div>

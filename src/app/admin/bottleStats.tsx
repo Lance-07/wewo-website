@@ -32,8 +32,6 @@ export default function BottleStats({ onDataUpdate, setLoading }: BottleStatsPro
             return;
         }
 
-
-
         let smallTotal = 0 
         let mediumTotal = 0
         let largeTotal = 0
@@ -52,7 +50,8 @@ export default function BottleStats({ onDataUpdate, setLoading }: BottleStatsPro
             setLoading(false);
         }
 
-        onDataUpdate({ totalLiters, totalBottles, smallTotal, mediumTotal, largeTotal, ntu });
+        const convertedToLiters = Math.round(totalLiters / 1000);
+        onDataUpdate({ totalLiters: convertedToLiters, totalBottles, smallTotal, mediumTotal, largeTotal, ntu });
     };
 
     useEffect(() => {

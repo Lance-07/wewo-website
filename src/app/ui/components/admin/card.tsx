@@ -5,7 +5,7 @@ import React from "react";
 export default function DashboardHeader() {
   return (
     <div className={`${poppins.className} flex justify-center`}>
-      <div className="w-[1260px] h-[116px] py-5 gap-2.5 bg-white rounded-lg shadow-[0px_4px_4px_0px_#00000026] flex flex-col justify-center items-center">
+      <div className="w-[1260px] sm:h-[116px] py-5 gap-2.5 bg-white rounded-lg shadow-[0px_4px_4px_0px_#00000026] flex flex-col justify-center items-center">
         <h1 className="text-blue-main text-xl font-bold leading-tight tracking-wider text-center">
           Welcome to the WEWO Admin Dashboard!&#127807;&#128167;
         </h1>

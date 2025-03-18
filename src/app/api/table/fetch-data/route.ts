@@ -34,7 +34,7 @@ export async function GET(req: Request) {
             tableData = data.map((item) => ({
                 id: item.id,               
                 date: item.date,
-                waterDistribution: item.totalLiters  * 1000, // convert to mL
+                waterDistribution: item.totalLiters, // convert to mL
                 totalBottles: item.small + item.medium + item.large,
                 co2: parseFloat((((item.small * 45.54) + ( item.medium * 91.08 ) + ( item.large * 240.12 )) * 0.001).toFixed(1)),
                 bottles: {

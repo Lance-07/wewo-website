@@ -79,8 +79,30 @@ export async function POST(req: NextRequest) {
     if (!rpiRes.ok) throw new Error("Failed to fetch data from ngrok");
 
     const data = await rpiRes.json();
-    console.log(data);
-    return NextResponse.json({ message: "Successfully fetched data." }, {status: 200});
+
+    const transformedData = Object.entries(data) 
+      .map(([key, value]) => ({
+        id: parseInt(key, 10), 
+        large: (value as { large: number }).large,
+        medium: (value as { medium: number}).medium,
+        small: (value as { small: number }).small,
+        totalLiters: (value as { total_liters: number }).total_liters,
+        date: (value as { date: string }).date,
+      }))
+      .filter(entry => entry.large !== 0 || entry.medium !== 0 || entry.small !== 0);
+
+      const { data: supadata, error } = await supabase
+        .from("CollectedBottles")
+        .upsert(transformedData, { onConflict: "id" })
+  
+      if (error) {
+        console.error("Error inserting data:", error);
+      } else {
+        console.log("Data inserted successfully");
+      }
+      
+      console.log('fetch bottles in supabase', supadata)
+    return NextResponse.json(supadata, {status: 200});
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json({ error: "Failed to fetch external data" }, { status: 500 });
