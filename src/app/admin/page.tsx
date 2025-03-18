@@ -19,6 +19,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import useSWR from "swr";
 import FilterOption from "../ui/components/admin/filter";
 import { useSearchParams } from "next/navigation";
+import clsx from "clsx";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -560,7 +561,12 @@ function WaterStatus({status}: {status: boolean | undefined}) {
 
     return (
         <div className="fixed bottom-4 z-40 right-4 sm:right-9">
-            <div className="relative bg-blue-main group shadow-xl opacity-75 hover:opacity-100 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full">
+            <div className={clsx(`relative group shadow-xl opacity-75 hover:opacity-100 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full`,
+                {
+                    'bg-red-500' : !status,
+                    'bg-blue-main': status
+                }
+            )}>
                 <div>
                     { 
                         status ? <Droplet color="white" size={32} /> : <DropletOff color="white" />
