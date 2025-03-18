@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     const { data: supadata, error } = await supabase
       .from('TurbidityValue')
-      .upsert({id: 1, value: lastItem.value, date: lastItem.date})
+      .upsert({id: 1, turbidity: lastItem.value, date: lastItem.date})
 
     if (error) throw new Error(error.message);
 
