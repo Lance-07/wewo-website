@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     const responseData = {
       totalBottles: bottlesResult.data,
-      totalLiters: litersResult.data,
+      totalLiters: Math.round(litersResult.data / 1000),
       totalCo2:Math.round(totalCF)
     };
 
