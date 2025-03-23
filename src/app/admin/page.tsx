@@ -128,7 +128,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         return data.renamedSizes;
     }
 
-    const { data : dispensedData, error: dispensedError, isLoading: dispensedLoading } = useSWR(`/api/fetch-pumper-values`, fetchPumperValues);
+    const { data : dispensedData, error: dispensedError, isLoading: dispensedLoading, mutate: dispensedMutate } = useSWR(`/api/fetch-pumper-values`, fetchPumperValues);
 
     if (dispensedError && !errorShownRef.current["dispensedError"]) {
         toast.error(dispensedError.message);
@@ -158,7 +158,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
             })
         }
     }, [dispensedData])
-    
+
     const smallTime = calculateTimePerDispensed(dispensedValue?.small || 0);
     const mediumTime = calculateTimePerDispensed(dispensedValue?.medium || 0);
     const largeTime = calculateTimePerDispensed(dispensedValue?.large || 0);
@@ -171,7 +171,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
 
     const updatePumperValues = async (): Promise<boolean> => { 
 
-        const data = {
+        const bodyData = {
             small_ml: dispensedValue.small,
             medium_ml: dispensedValue.medium,
             large_ml: dispensedValue.large,
@@ -180,11 +180,21 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
             large_sec: calculateTimePerDispensed(dispensedValue.large)
         }
 
+        const updatedValues = {
+            small: Number(dispensedValue.small),
+            medium: Number(dispensedValue.medium),
+            large: Number(dispensedValue.large),
+        }
+
+        if (dispensedMutate) {
+            dispensedMutate({ ...dispensedData, ...updatedValues }, false);
+        }
+
         try {
 
             const res = await fetch("/api/update-pumper-values", {
                 method: "POST", 
-                body: JSON.stringify(data),
+                body: JSON.stringify(bodyData),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -197,6 +207,7 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
                 return false;
             } else {
                 toast.success(response.message);
+
                 return true;
             }
         } catch (error) {
@@ -210,7 +221,6 @@ function DashboardCard({ activeTab, setActiveTab, loading }: DashboardCardProps)
         setSaveLoading(true)
         if (await updatePumperValues()) {
             setIsEdit(!isEdit)
-            console.log("di nagkwan");
         }
         setSaveLoading(false)
     }
@@ -291,7 +301,7 @@ return (
                                     <h1 className="font-semibold">Backwash Indicator</h1>
                                     <h3 className="font-light text-sm">Tell if the filter should be backwash. The default is every 2 weeks</h3>
                                     <div className="flex flex-col gap-[10px]">
-                                        <div className="flex gap-2 sm:text-nowrap text-sm">
+                                        <div className="flex items-center gap-2 sm:text-nowrap text-sm">
                                             <div className="rounded-lg shrink-0 bg-green-second justify-center flex items-center size-[34px]">
                                                 <Check color="white" />
                                             </div>
@@ -300,7 +310,7 @@ return (
                                                 <p className="font-light text-sm text-stone-400">Turbidity is within safe range (less than 5 NTU)</p>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2 sm:text-nowrap text-sm">
+                                        <div className="flex items-center gap-2 sm:text-nowrap text-sm">
                                             <div className="rounded-lg shrink-0 bg-yellow-500 justify-center flex items-center size-[34px]">
                                                 <TriangleAlert color="white" />
                                             </div>
@@ -309,7 +319,7 @@ return (
                                                 <p className="font-light text-sm text-stone-400">Turbidity is acceptable (5 - 10 NTU)</p>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2 sm:text-nowrap text-sm">
+                                        <div className="flex items-center gap-2 sm:text-nowrap text-sm">
                                             <div className="rounded-lg shrink-0 bg-red-700 justify-center flex items-center size-[34px]">
                                                 <X color="white" />
                                             </div>
@@ -327,7 +337,7 @@ return (
                                 <div className="p-8 flex rounded-lg gap-4 flex-col min-w-[200px] md:min-w-[291px] w-full shadow-card-shadow">
                                     <h1 className="font-semibold">Bottle Bin Indicator</h1>
                                     <h3 className="font-light text-sm">Predict if the bottle bin is full and should be replaced</h3>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center gap-2">
                                         <div className="rounded-lg size-[34px] shrink-0 bg-green-second flex items-center justify-center">
                                             <Check color="white" />
                                         </div>
@@ -336,7 +346,7 @@ return (
                                             <p className="text-stone-500 text-sm">Bin is not full</p>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex items-center gap-2">
                                         <div className="rounded-lg size-[34px] shrink-0 bg-stone-600 flex items-center justify-center">
                                             <X color="white" />
                                         </div>
@@ -384,10 +394,10 @@ return (
                                             <DialogTitle>Update Pumper Values</DialogTitle>
                                             <DialogDescription>This will update the amount of water the WEWO machine release per bottle sizes.</DialogDescription>
                                         </DialogHeader>
-                                        <form onSubmit={handleSaveSettings} className="flex flex-col w-full gap-4 [&>div>p]:text-sm [&>div>p]:mt-[1px] [&>div>p]:text-gray-500">
+                                        <form onSubmit={handleSaveSettings} className="flex flex-col w-full gap-4 [&>div>p]:text-xs [&>div>p]:mt-[2px] [&>div>p]:text-gray-500">
                                             <div className="w-full">
                                                 <label htmlFor="small" className="w-full inline-flex">Small 
-                                                    <span className="text-sm ml-auto text-gray-500">(min 100 | max 250)</span>
+                                                    <span className="text-xs ml-auto text-gray-500">(min 100 | max 250)</span>
                                                 </label>
                                                 <input type="number" 
                                                     className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
@@ -397,14 +407,14 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="small"
                                                     id="small"
-                                                    // min={100}
+                                                    min={100}
                                                     max={250}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(smallTime)}</p>
                                             </div>
                                             <div className="w-full">
                                                 <label htmlFor="medium" className="w-full inline-flex">Medium 
-                                                    <span className="text-sm ml-auto text-gray-500">(min 351 | max 400)</span>
+                                                    <span className="text-xs ml-auto text-gray-500">(min 351 | max 400)</span>
                                                 </label>
                                                 <input type="number" 
                                                     className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
@@ -414,14 +424,14 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="medium"
                                                     id="medium"
-                                                    // min={351}
+                                                    min={351}
                                                     max={400}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(mediumTime)}</p>
                                             </div>
                                             <div className="w-full">
                                                 <label htmlFor="large" className="w-full inline-flex">Large 
-                                                    <span className="text-sm ml-auto text-gray-500">(min 701 | max 900)</span>
+                                                    <span className="text-xs ml-auto text-gray-500">(min 701 | max 900)</span>
                                                 </label>
                                                 <input type="number" 
                                                     className="mt-1 w-full px-3 py-2 border border-[#4668B2] rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm" 
@@ -431,7 +441,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="large"
                                                     id="large"
-                                                    // min={701}
+                                                    min={701}
                                                     max={900}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(largeTime)}</p>

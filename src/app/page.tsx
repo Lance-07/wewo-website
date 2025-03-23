@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 import Navbar from "@/app/ui/components/navbar";
 import Footer from "@/app/ui/components/footer";
 import { toast, Toaster } from "sonner";
+import useSWR from "swr";
+import { CardSkeletons } from "./ui/skeletons";
 
 
 export default function LandingPage() {
@@ -47,7 +49,6 @@ export default function LandingPage() {
 function Impact() {
     const [activeIdx, setActiveIdx] = React.useState(0);
     const [isMobile, setIsMobile] = React.useState(false);
-    const [data, setData] = React.useState<{totalBottles: number; totalLiters: number; totalCo2:number} | null>(null)
 
     React.useEffect(() => {
         if (window.innerWidth > 1450) {
@@ -74,16 +75,13 @@ function Impact() {
             const data = await res.json();
 
             if (!res.ok) toast.error('Failed to fetch total bottles from server.');
-            console.log(data)
-            setData(data)
+            return data;
         } catch (error) {
             console.error(error);
         }
     }
-    
-    React.useEffect(() => {
-        fetchBottlesImpact();
-    }, []);
+
+    const { data, error, isLoading } = useSWR<{totalLiters: number; totalBottles: number; totalCo2: number}>(`/api/fetch-bottles`, fetchBottlesImpact);
 
     return (
         <InView as={'section'} rootMargin="-50%" threshold={0} triggerOnce={true} >
@@ -146,23 +144,25 @@ function Impact() {
 
                                     <div className="flex-1 relative border-blue-500">
                                         { activeIdx === 0 && 
-                                            <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
-                                                <SimpleCard 
-                                                    number={data?.totalLiters?.toString() ?? '0'} label="liters" iconLink="/icons/droplet.png"
-                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
-                                                    title="clean water distributed"  
-                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                                <SimpleCard  
-                                                    number={data?.totalBottles?.toString() ?? '0'} label="plastics" iconLink="/icons/plastic-bottle.png"
-                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
-                                                    title="PET bottles recycled"  
-                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
-                                                <SimpleCard  
-                                                    number={data?.totalCo2?.toString() ?? '0'} label="kilograms" iconLink="/icons/carbon-footprint.png"
-                                                    className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
-                                                    title="carbon footprints reduced"  
-                                                    description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
-                                            </div>  
+                                            isLoading ? 
+                                                <CardSkeletons /> : 
+                                                <div className="flex flex-col items-center lg:flex-row w-full gap-5 justify-center">
+                                                    <SimpleCard 
+                                                        number={data?.totalLiters?.toString() ?? '0'} label="liters" iconLink="/icons/droplet.png"
+                                                        className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-second text-blue-second border-2 border-blue-second"
+                                                        title="clean water distributed"  
+                                                        description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                                    <SimpleCard  
+                                                        number={data?.totalBottles?.toString() ?? '0'} label="plastics" iconLink="/icons/plastic-bottle.png"
+                                                        className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-green-second text-green-second border-2 border-green-second"
+                                                        title="PET bottles recycled"  
+                                                        description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."}  />
+                                                    <SimpleCard  
+                                                        number={data?.totalCo2?.toString() ?? '0'} label="kilograms" iconLink="/icons/carbon-footprint.png"
+                                                        className="flex-row w-full h-[90px] max-w-[301px] lg:h-[301px] lg:flex-col bg-blue-main text-blue-main border-2 border-blue-main"
+                                                        title="carbon footprints reduced"  
+                                                        description={isMobile ? "" : "Like filling thousands of water bottles, ensuring access to life’s most vital resource."} />
+                                                </div>  
                                         }
 
                                         { activeIdx === 1 && 

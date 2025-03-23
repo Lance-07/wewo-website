@@ -35,7 +35,6 @@ interface PieChartProps {
 
 export default function PieChart({ className, bottleStats }: PieChartProps) {
 
-    console.log('bottle stats: ',bottleStats)
     const data = {
         labels: bottles.map(bottle => bottle.bottle),
         datasets: [

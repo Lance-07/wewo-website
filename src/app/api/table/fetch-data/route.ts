@@ -18,7 +18,6 @@ export async function GET(req: Request) {
         .from("CollectedBottles")
         .select("*")
         .order('date', { ascending: false })
-        .range(offset, offset + ITEMS_PER_PAGE - 1)
 
         if (fromDate && toDate) {
             console.log('run without offset')

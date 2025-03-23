@@ -98,7 +98,7 @@ export default function adminNav() {
 
               <DropdownMenuItem onClick={() => setIsSupportOpen(true)}>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><Link href={'/'}>Visit Homepage</Link></DropdownMenuItem>
+              <Link href={'/'}><DropdownMenuItem>Visit Homepage</DropdownMenuItem></Link>
 
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setIsLogoutOpen(true)}>Log out</DropdownMenuItem>
@@ -108,7 +108,7 @@ export default function adminNav() {
 
         {/* Support Dialog */}
         <Dialog open={isSupportOpen} onOpenChange={setIsSupportOpen}>
-          <DialogContent>
+          <DialogContent aria-describedby="support-description">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold">Support</DialogTitle>
             </DialogHeader>
@@ -149,7 +149,7 @@ export default function adminNav() {
 
         {/* Logout Confirmation Dialog */}
         <Dialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
-          <DialogContent>
+          <DialogContent aria-describedby="logout-description">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold">Confirm Logout</DialogTitle>
             </DialogHeader>

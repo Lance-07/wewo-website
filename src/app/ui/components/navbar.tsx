@@ -142,7 +142,7 @@ export default function Navbar() {
             <Menu />
           </button>
 
-          <Button className={'shrink-0 hidden sm:block px-3 py-[2px] text-sm'} border={true} active={true} variant={'gradient'}><Link href={'/auth/login'}>Login</Link></Button>
+          <Button className={'shrink-0 hidden sm:block px-4 py-[6px] text-xs'} border={true} active={true} variant={'gradient'}><Link href={'/auth/login'}>Login</Link></Button>
         </div>
 
         <div
