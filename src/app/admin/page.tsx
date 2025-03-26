@@ -407,7 +407,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="small"
                                                     id="small"
-                                                    min={100}
+                                                    min={0}
                                                     max={250}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(smallTime)}</p>
@@ -424,7 +424,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="medium"
                                                     id="medium"
-                                                    min={351}
+                                                    min={0}
                                                     max={400}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(mediumTime)}</p>
@@ -441,7 +441,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="large"
                                                     id="large"
-                                                    min={701}
+                                                    min={0}
                                                     max={900}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(largeTime)}</p>
