@@ -272,7 +272,7 @@ return (
                     <div className="flex py-4 flex-col w-full gap-8">
                         <div className="flex flex-wrap justify-around gap-6 lg:gap-4 w-full mt-4">
                             {loading ? 
-                                <CardSkeletons/>
+                                <CardSkeletons />
                             :
                                 adminCardItems.map((item, idx) => (
                                     <AdminCard 
@@ -407,7 +407,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="small"
                                                     id="small"
-                                                    min={0}
+                                                    min={100}
                                                     max={250}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(smallTime)}</p>
@@ -424,7 +424,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="medium"
                                                     id="medium"
-                                                    min={0}
+                                                    min={351}
                                                     max={400}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(mediumTime)}</p>
@@ -441,7 +441,7 @@ return (
                                                     onChange={handleDispenseValueChange}
                                                     name="large"
                                                     id="large"
-                                                    min={0}
+                                                    min={701}
                                                     max={900}
                                                 />
                                                 <p>Pumper open time: {formatTimePerDispensed(largeTime)}</p>
